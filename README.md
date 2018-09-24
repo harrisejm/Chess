@@ -33,7 +33,10 @@ These additional features will use the same technologies
 
 ## Specifications
 
-- 1.) ...
+- 1.)..
+
+
+![Component Tree](1.jpg)
 
 
 
