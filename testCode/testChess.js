@@ -15,6 +15,7 @@ let arr = [];   /// this will be STATE
 let arrTest = [];
 
 let selectedRow = 0;
+let selectedId = 0;
 for (let i = 0; i < 8; i++) {
 let positionArr = [];
 let objectArr = [];
@@ -22,8 +23,7 @@ selectedRow += 1;
 
 
   for (let a = 0; a < 8; a++) {
-  //let position = board[i][a];
-// let position = "[" + i + "," + a +"]";
+
    if (i === 0 || i === 1 || i === 6 || i === 7) {
      let position = new BoardPos(i,a,true);
      objectArr.push(position);
@@ -31,12 +31,13 @@ selectedRow += 1;
      let space = document.createElement("td");
      let node = document.createTextNode("[" + i + "," + a +"]" + position.occupied);
      space.appendChild(node);
-    //  if (a === 0) {
-    //    selectedRow += 1;
-    //  }
+
      let element = document.getElementById("row" + selectedRow.toString());
      element.appendChild(space);
 
+     let spaceId = i.toString() + a.toString();
+     document.getElementsByTagName("td")[selectedId].setAttribute("id", spaceId);
+     selectedId += 1;
    } else {
        let position = new BoardPos(i,a,false);
        objectArr.push(position);
@@ -46,6 +47,10 @@ selectedRow += 1;
        space.appendChild(node);
        let element = document.getElementById("row" + selectedRow.toString());
        element.appendChild(space);
+
+       let spaceId = i.toString() + a.toString();
+       document.getElementsByTagName("td")[selectedId].setAttribute("id", spaceId);
+       selectedId += 1;
    }
    positionArr.push("[" + i + "," + a +"]");
    if (a === 7) {
@@ -57,17 +62,6 @@ selectedRow += 1;
   }
 
 }
-///populate board
-// for (let i = 0; i < 8; i++) {
-//   let test = i;
-//   let space = document.createElement("td");
-//   let node = document.createTextNode(test.toString());
-//   space.appendChild(node);
-//   let element = document.getElementById("row1");
-//   element.appendChild(space);
-// }
-
-
 
 /////////////
 let Pawn = function(firstMove, selected, color, taken, positionY, positionX) {
