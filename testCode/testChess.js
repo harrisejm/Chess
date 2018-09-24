@@ -7,35 +7,39 @@ let BoardPos = function(positionY, positionX, occupied) {
   this.positionY = positionY;
   this.positionX = positionX;
   this.occupied = occupied;
+  this.piece = null;
 }
 
 //gen board with BoardPos object.
-let arr = [];
+let arr = [];   /// this will be STATE
 let arrTest = [];
 
 
 for (let i = 0; i < 8; i++) {
-let position = [];
+let positionArr = [];
+let objectArr = [];
   for (let a = 0; a < 8; a++) {
   //let position = board[i][a];
 // let position = "[" + i + "," + a +"]";
    if (i === 0 || i === 1 || i === 6 || i === 7) {
      let position = new BoardPos(i,a,true);
-     arrTest.push(position);
+     objectArr.push(position);
    } else {
        let position = new BoardPos(i,a,false);
-       arrTest.push(position);
+       objectArr.push(position);
    }
-
-   position.push("[" + i + "," + a +"]");
+   positionArr.push("[" + i + "," + a +"]");
    if (a === 7) {
-     arr.push(position);
+     arr.push(positionArr);
+     arrTest.push(objectArr);
      //position.length = 0;
    }
-
   }
 }
 
+
+
+/////////////
 let Pawn = function(firstMove, selected, color, taken, positionY, positionX) {
   this.firstMove = firstMove;
   this.selected = selected;
@@ -46,7 +50,6 @@ let Pawn = function(firstMove, selected, color, taken, positionY, positionX) {
 }
 
 let testMove = board[1][2];
-
 
 Pawn.prototype.movePawn = function(testMove) {
   if (testMove === board[this.positionY - 1][this.positionX]) {
@@ -61,16 +64,16 @@ Pawn.prototype.movePawn = function(testMove) {
 
 pawn1 = new Pawn(true, true, "white", false, 3, 2);
 pawn1.movePawn(testMove);
-//board
-let hello = [];
 
+//board TEST if boardPos object are in the array
+let hello = [];
 for (let b = 0; b < arrTest.length; b++) {
   hello.push("occupied " + arrTest[b].occupied);
 }
-
+//////
 document.getElementById("test").innerHTML = board[pawn1.positionY][pawn1.positionX];
 document.getElementById("test1").innerHTML = pawn1.positionY;
 document.getElementById("test2").innerHTML = pawn1.positionX;
-document.getElementById("test3").innerHTML = arr;
-document.getElementById("test4").innerHTML = arrTest;
+document.getElementById("test3").innerHTML = arr[3];
+document.getElementById("test4").innerHTML = arrTest[3];
 document.getElementById("test5").innerHTML = hello;
