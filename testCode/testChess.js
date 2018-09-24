@@ -13,17 +13,14 @@ let BoardPos = function(positionY, positionX, occupied) {
 //gen board with BoardPos object.
 let arr = [];   /// this will be STATE
 let arrTest = [];
-
 let selectedRow = 0;
 let selectedId = 0;
+
 for (let i = 0; i < 8; i++) {
 let positionArr = [];
 let objectArr = [];
 selectedRow += 1;
-
-
   for (let a = 0; a < 8; a++) {
-
    if (i === 0 || i === 1 || i === 6 || i === 7) {
      let position = new BoardPos(i,a,true);
      objectArr.push(position);
@@ -42,12 +39,14 @@ selectedRow += 1;
        let position = new BoardPos(i,a,false);
        objectArr.push(position);
 
+       //Add cord and text (occupied: true)
        let space = document.createElement("td");
        let node = document.createTextNode("[" + i + "," + a +"]" + position.occupied);
        space.appendChild(node);
        let element = document.getElementById("row" + selectedRow.toString());
        element.appendChild(space);
 
+       ///Add Id to td
        let spaceId = i.toString() + a.toString();
        document.getElementsByTagName("td")[selectedId].setAttribute("id", spaceId);
        selectedId += 1;
@@ -58,9 +57,7 @@ selectedRow += 1;
      arrTest.push(objectArr);
      //position.length = 0;
    }
-
   }
-
 }
 
 /////////////
@@ -109,9 +106,7 @@ for (let b = 0; b < arrTest.length; b++) {
 }
 //////
 
-
-//let firstVar = "1";
-//document.getElementById(firstVar).innerHTML = "hello";
+document.getElementById("00").innerHTML = "hi";
 
 document.getElementById("test").innerHTML = board[pawn1.positionY][pawn1.positionX];
 document.getElementById("test1").innerHTML = pawn1.positionY;
