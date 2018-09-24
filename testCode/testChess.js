@@ -7,7 +7,7 @@ let BoardPos = function(positionY, positionX, occupied) {
   this.positionY = positionY;
   this.positionX = positionX;
   this.occupied = occupied;
-  this.piece = null;
+//  this.piece = null;
 }
 
 //gen board with BoardPos object.
@@ -68,12 +68,14 @@ pawn1.movePawn(testMove);
 //board TEST if boardPos object are in the array
 let hello = [];
 for (let b = 0; b < arrTest.length; b++) {
-  hello.push("occupied " + arrTest[b].occupied);
+  for (let q = 0; q < 8; q++) {
+  hello.push("occupied " + arrTest[b][q].occupied);
+  }
 }
 //////
 document.getElementById("test").innerHTML = board[pawn1.positionY][pawn1.positionX];
 document.getElementById("test1").innerHTML = pawn1.positionY;
 document.getElementById("test2").innerHTML = pawn1.positionX;
-document.getElementById("test3").innerHTML = arr[3];
-document.getElementById("test4").innerHTML = arrTest[3];
+document.getElementById("test3").innerHTML = arr;
+document.getElementById("test4").innerHTML = arrTest;
 document.getElementById("test5").innerHTML = hello;
