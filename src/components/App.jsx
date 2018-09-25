@@ -4,14 +4,6 @@ import { Switch, Route } from 'react-router-dom';
 
 
 class App extends React.Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     //masterBrewList: []
-  //   };
-  //   this.handleNewBrew = this.handleNewBrew.bind(this);
-  //   this.counter = this.counter.bind(this);
-  // }
 
 
   render(){
