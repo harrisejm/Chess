@@ -6,7 +6,11 @@ class MainBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      board: []
+      board: [],
+      click: 0,
+      moveFrom: [0,0],
+      moveTo: []
+
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.testRender = this.testRender.bind(this);
@@ -41,14 +45,21 @@ class MainBoard extends React.Component {
     this.populateBoard();
   }
 
-  movePiece(piecePosition){
-  let newBoard = this.state.board.slice();
-  //let position = piecePosition.split("");
+  movePiece(pos){
+   let newBoard = this.state.board.slice();
+   //let pos = newPosition.split("");
+  //  if (this.state.click === 0) {
+  //  let currentMove = this.state.moveFrom;
+  //  currentMove = position;
+  //
+  //
+  //
+  //  }
 
-  if (newBoard[0][0].occupied === 'true') {
-    newBoard[0][0].occupied = 'false';
+  if (newBoard[pos[0]][pos[1]].occupied === 'true') {
+    newBoard[pos[0]][pos[1]].occupied = 'false';
   } else {
-    newBoard[0][0].occupied = 'true';
+    newBoard[pos[0]][pos[1]].occupied = 'true';
   }
 
 
@@ -85,12 +96,13 @@ class MainBoard extends React.Component {
            height: 60px;
          }
       `}</style>
-      <p style={test}>Does this work</p>
+    <p style={test}>Does this work</p>
 
       <table>
         <tbody>
           <tr className="row1">
-            <td onClick={this.movePiece}>{this.state.board[0][0].occupied}</td>
+            <td
+              onClick={() => this.movePiece([0,0])} >{this.state.board[0][0].occupied}</td>
             <td>{this.state.board[0][1].occupied}</td>
             <td>{this.state.board[0][2].occupied}</td>
             <td>{this.state.board[0][3].occupied}</td>
