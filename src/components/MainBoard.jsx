@@ -10,6 +10,7 @@ class MainBoard extends React.Component {
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.testRender = this.testRender.bind(this);
+    this.movePiece = this.movePiece.bind(this);
   }
 
   populateBoard() {
@@ -34,13 +35,27 @@ class MainBoard extends React.Component {
     }
     this.setState({board: newBoard});
     console.log(this.state.board.length);
-    if (this.state.board.length === 8) {
-    }
   }
 
   componentWillMount(){
     this.populateBoard();
   }
+
+  movePiece(piecePosition){
+  let newBoard = this.state.board.slice();
+  //let position = piecePosition.split("");
+
+  if (newBoard[0][0].occupied === 'true') {
+    newBoard[0][0].occupied = 'false';
+  } else {
+    newBoard[0][0].occupied = 'true';
+  }
+
+
+    this.setState({board: newBoard})
+    console.log(this.state.board);
+  }
+
 
   testRender(){
     let test = {
@@ -49,39 +64,110 @@ class MainBoard extends React.Component {
 
   //  const row1 = <td> {this.state.board[0][0].occupied} </td>;
   //  const row2 = <td> {this.state.board[3][0].occupied} </td>;
-let greeting = React.createElement('h1', {}, this.state.board[3][0].occupied);
+
+// let grid = [];
+//
+// for (let q = 0; q < 8; q++) {
+//   for (let z = 0; z < 8; z++) {
+//     grid.push(React.createElement('td', {className: 'hello'}, this.state.board[q][z].occupied))
+//   }
+//
+// }
+
+//let greeting = React.createElement('td', {}, this.state.board[3][0].occupied);
 
     const chessBoard =
     <div>
       <style jsx>{`
-
+         td {
+           border-style: solid;
+           width: 60px;
+           height: 60px;
+         }
       `}</style>
       <p style={test}>Does this work</p>
-      {greeting}
+
       <table>
         <tbody>
           <tr className="row1">
-            <td>{this.state.board[0][0].occupied}</td>
+            <td onClick={this.movePiece}>{this.state.board[0][0].occupied}</td>
             <td>{this.state.board[0][1].occupied}</td>
             <td>{this.state.board[0][2].occupied}</td>
-            <td>{this.state.board[0][3].occupied}</td>       <td>{this.state.board[0][4].occupied}</td>
+            <td>{this.state.board[0][3].occupied}</td>
+            <td>{this.state.board[0][4].occupied}</td>
             <td>{this.state.board[0][5].occupied}</td>
             <td>{this.state.board[0][6].occupied}</td>
-            <td>{this.state.board[0][7].occupied}</td>;
+            <td>{this.state.board[0][7].occupied}</td>
           </tr>
           <tr className="row2">
+            <td>{this.state.board[1][0].occupied}</td>
+            <td>{this.state.board[1][1].occupied}</td>
+            <td>{this.state.board[1][2].occupied}</td>
+            <td>{this.state.board[1][3].occupied}</td>
+            <td>{this.state.board[1][4].occupied}</td>
+            <td>{this.state.board[1][5].occupied}</td>
+            <td>{this.state.board[1][6].occupied}</td>
+            <td>{this.state.board[1][7].occupied}</td>
           </tr>
           <tr className="row3">
+            <td>{this.state.board[2][0].occupied}</td>
+            <td>{this.state.board[2][1].occupied}</td>
+            <td>{this.state.board[2][2].occupied}</td>
+            <td>{this.state.board[2][3].occupied}</td>
+            <td>{this.state.board[2][4].occupied}</td>
+            <td>{this.state.board[2][5].occupied}</td>
+            <td>{this.state.board[2][6].occupied}</td>
+            <td>{this.state.board[2][7].occupied}</td>
           </tr>
           <tr className="row4">
+            <td>{this.state.board[3][0].occupied}</td>
+            <td>{this.state.board[3][1].occupied}</td>
+            <td>{this.state.board[3][2].occupied}</td>
+            <td>{this.state.board[3][3].occupied}</td>
+            <td>{this.state.board[3][4].occupied}</td>
+            <td>{this.state.board[3][5].occupied}</td>
+            <td>{this.state.board[3][6].occupied}</td>
+            <td>{this.state.board[3][7].occupied}</td>
           </tr>
           <tr className="row5">
+            <td>{this.state.board[4][0].occupied}</td>
+            <td>{this.state.board[4][1].occupied}</td>
+            <td>{this.state.board[4][2].occupied}</td>
+            <td>{this.state.board[4][3].occupied}</td>
+            <td>{this.state.board[4][4].occupied}</td>
+            <td>{this.state.board[4][5].occupied}</td>
+            <td>{this.state.board[4][6].occupied}</td>
+            <td>{this.state.board[4][7].occupied}</td>
           </tr>
           <tr className="row6">
+            <td>{this.state.board[5][0].occupied}</td>
+            <td>{this.state.board[5][1].occupied}</td>
+            <td>{this.state.board[5][2].occupied}</td>
+            <td>{this.state.board[5][3].occupied}</td>
+            <td>{this.state.board[5][4].occupied}</td>
+            <td>{this.state.board[5][5].occupied}</td>
+            <td>{this.state.board[5][6].occupied}</td>
+            <td>{this.state.board[5][7].occupied}</td>
           </tr>
           <tr className="row7">
+            <td>{this.state.board[6][0].occupied}</td>
+            <td>{this.state.board[6][1].occupied}</td>
+            <td>{this.state.board[6][2].occupied}</td>
+            <td>{this.state.board[6][3].occupied}</td>
+            <td>{this.state.board[6][4].occupied}</td>
+            <td>{this.state.board[6][5].occupied}</td>
+            <td>{this.state.board[6][6].occupied}</td>
+            <td>{this.state.board[6][7].occupied}</td>
           </tr>
           <tr className="row8">
+            <td>{this.state.board[7][0].occupied}</td>
+            <td>{this.state.board[7][1].occupied}</td>
+            <td>{this.state.board[7][2].occupied}</td>
+            <td>{this.state.board[7][3].occupied}</td>
+            <td>{this.state.board[7][4].occupied}</td>
+            <td>{this.state.board[7][5].occupied}</td>
+            <td>{this.state.board[7][6].occupied}</td>
+            <td>{this.state.board[7][7].occupied}</td>
           </tr>
         </tbody>
       </table>

@@ -3,7 +3,7 @@ td {
   width: 60px;
   height: 60px;
 }
-td.left {
+/*td.left {
   border-left-width: 6px;
 }
 td.right {
@@ -16,4 +16,4 @@ td.bottom {
 
 td.top {
   border-top-width: 6px;
-}
+}*/
