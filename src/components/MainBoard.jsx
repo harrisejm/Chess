@@ -75,11 +75,16 @@ class MainBoard extends React.Component {
      this.setState({moveTo: [pos[0],pos[1]]});
    }
 
+  // if (this.state.board[pos[0]][pos[1]].occupied === 'true') {
+  //   newBoard[pos[0]][pos[1]].occupied = 'false';
+  // } else {
+  //   newBoard[pos[0]][pos[1]].occupied = 'true';
+  // }
 
-  if (this.state.board[pos[0]][pos[1]].occupied === 'true') {
-    newBoard[pos[0]][pos[1]].occupied = 'false';
-  } else {
-    newBoard[pos[0]][pos[1]].occupied = 'true';
+  if (this.state.moveFrom.length !== 0 && this.state.moveTo.length !== 0) {
+    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = "";
+    newBoard[this.state.moveTo[0]][this.state.moveTo[1]].occupied = "pawn"//this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+    this.setState({board: newBoard})
   }
 
 
@@ -112,7 +117,8 @@ class MainBoard extends React.Component {
          }
       `}</style>
     <p style={test}>{this.state.click} Does this work</p>
-
+    <p>Move From: [{this.state.moveFrom[0]},{this.state.moveFrom[1]}]</p>
+    <p>Move To: [{this.state.moveTo[0]},{this.state.moveTo[1]}]</p>
       <table>
         <tbody>
           <tr className="row1">
