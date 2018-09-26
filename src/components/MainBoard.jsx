@@ -47,8 +47,9 @@ class MainBoard extends React.Component {
       color: "green"
     }
 
-    const row1 = <td> {this.state.board[0][0].occupied} </td>;
-    const row2 = <td> {this.state.board[3][0].occupied} </td>;
+  //  const row1 = <td> {this.state.board[0][0].occupied} </td>;
+  //  const row2 = <td> {this.state.board[3][0].occupied} </td>;
+let greeting = React.createElement('h1', {}, this.state.board[3][0].occupied);
 
     const chessBoard =
     <div>
@@ -56,13 +57,17 @@ class MainBoard extends React.Component {
 
       `}</style>
       <p style={test}>Does this work</p>
+      {greeting}
       <table>
         <tbody>
           <tr className="row1">
-            <td>{this.state.board[0][0].occupied}</td>;
-            <td>{this.state.board[0][1].occupied}</td>;
-            <td>{this.state.board[0][2].occupied}</td>;
-            <td>{this.state.board[0][3].occupied}</td>        <td>{this.state.board[0][4].occupied}</td>;
+            <td>{this.state.board[0][0].occupied}</td>
+            <td>{this.state.board[0][1].occupied}</td>
+            <td>{this.state.board[0][2].occupied}</td>
+            <td>{this.state.board[0][3].occupied}</td>       <td>{this.state.board[0][4].occupied}</td>
+            <td>{this.state.board[0][5].occupied}</td>
+            <td>{this.state.board[0][6].occupied}</td>
+            <td>{this.state.board[0][7].occupied}</td>;
           </tr>
           <tr className="row2">
           </tr>
