@@ -1,6 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import bb from '../assets/img/BB.png';
+import bk from '../assets/img/BK.png';
+import bkn from '../assets/img/Bkn.png';
+import bp from '../assets/img/BP.png';
+import bq from '../assets/img/BQ.png';
+import br from '../assets/img/BR.png';
+
+import wb from '../assets/img/WB.png';
+import wk from '../assets/img/WK.png';
+import wkn from '../assets/img/WKn.png';
+import wp from '../assets/img/WP.png';
+import wq from '../assets/img/WQ.png';
+import wr from '../assets/img/WR.png';
+
+
+
 class MainBoard extends React.Component {
 
   constructor(props) {
@@ -8,9 +24,8 @@ class MainBoard extends React.Component {
     this.state = {
       board: [],
       click: 0,
-      moveFrom: [0,0],
+      moveFrom: [],
       moveTo: [],
-
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.testRender = this.testRender.bind(this);
@@ -24,24 +39,49 @@ class MainBoard extends React.Component {
     for (let i = 0; i < 8; i++) {
       for (let a = 0; a < 8; a++) {
       //  let position = i.toString() + a.toString();
-        if (i === 1 || i === 6) {
-          let test1 = Object.assign({positionY: i, positionX: a, occupied: 'pawn'}, {});
+        if (i === 1) {
+          let test1 = Object.assign({positionY: i, positionX: a, occupied: bp}, {});
           objectArr.push(test1);
-        } else if ((i === 0 && a === 0) || (i === 0 && a === 7) || (i === 7 && a === 0) || (i === 7 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: 'Rook'}, {});
+        } else if (i === 6) {
+            let test1 = Object.assign({positionY: i, positionX: a, occupied: wp}, {});
+            objectArr.push(test1);
+
+        } else if ((i === 0 && a === 0) || (i === 0 && a === 7)) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: br}, {});
           objectArr.push(test2);
-        } else if ((i === 0 && a === 1) || (i === 0 && a === 6) || (i === 7 && a === 1) || (i === 7 && a === 6)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: 'Knight'}, {});
+        } else if ((i === 7 && a === 0) || (i === 7 && a === 7)) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: wr}, {});
           objectArr.push(test2);
-        } else if ((i === 0 && a === 2) || (i === 0 && a === 5) || (i === 7 && a === 2) || (i === 7 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: 'Bishop'}, {});
+
+        } else if ((i === 0 && a === 1) || (i === 0 && a === 6)) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: bkn}, {});
           objectArr.push(test2);
-        } else if ((i === 0 && a === 3) || (i === 7 && a === 3)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: 'Queen'}, {});
+        } else if ((i === 7 && a === 1) || (i === 7 && a === 6)) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: wkn}, {});
           objectArr.push(test2);
-        } else if ((i === 0 && a === 4) || (i === 7 && a === 4)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: 'King'}, {});
+
+
+        } else if ((i === 0 && a === 2) || (i === 0 && a === 5)) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: bb}, {});
           objectArr.push(test2);
+        } else if ((i === 7 && a === 2) || (i === 7 && a === 5)) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: wb}, {});
+          objectArr.push(test2);
+
+        } else if (i === 0 && a === 3) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: bq}, {});
+          objectArr.push(test2);
+        } else if (i === 7 && a === 3) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: wq}, {});
+          objectArr.push(test2);
+
+        } else if (i === 0 && a === 4) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: bk}, {});
+          objectArr.push(test2);
+        } else if (i === 7 && a === 4) {
+          let test2 = Object.assign({positionY: i, positionX: a, occupied: wk}, {});
+          objectArr.push(test2);
+
         } else {
           let test2 = Object.assign({positionY: i, positionX: a, occupied: null}, {});
           objectArr.push(test2);
@@ -76,9 +116,7 @@ class MainBoard extends React.Component {
      if (this.state.board[pos[0]][pos[1]].occupied === null) {
             this.setState({click: 0});
      }
-
   //   this.setState({moveTo: [pos[0],pos[1]]});
-
 
    }
 
@@ -89,16 +127,17 @@ class MainBoard extends React.Component {
   // }
 
   if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
+
+    newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-    newBoard[pos[0]][pos[1]].occupied = "pawn" //this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+  //  console.log(this.state.moveFrom[0]);
+    console.log(newBoard);
     this.setState({board: newBoard})
   }
-
 
 //    this.setState({board: newBoard})
     console.log(this.state.board);
   }
-
 
   testRender(){
     let test = {
@@ -119,95 +158,110 @@ class MainBoard extends React.Component {
       <style jsx>{`
          td {
            border-style: solid;
-           width: 60px;
-           height: 60px;
+           width: 80px;
+           height: 80px;
          }
       `}</style>
     <p style={test}>{this.state.click} Does this work</p>
     <p>Move From: [{this.state.moveFrom[0]},{this.state.moveFrom[1]}]</p>
     <p>Move To: [{this.state.moveTo[0]},{this.state.moveTo[1]}]</p>
-    <p>Test: {this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied}</p>
+
+
+    <img src={bb}/>
+    <img src={bk}/>
+    <img src={bkn}/>
+    <img src={bp}/>
+    <img src={bq}/>
+    <img src={br}/>
+
+    <img src={wb}/>
+    <img src={wk}/>
+    <img src={wkn}/>
+    <img src={wp}/>
+    <img src={wq}/>
+    <img src={wr}/>
+
       <table>
         <tbody>
           <tr className="row1">
-            <td onClick={()=>this.movePiece([0,0])}>{this.state.board[0][0].occupied}</td>
-            <td onClick={()=>this.movePiece([0,1])}>{this.state.board[0][1].occupied}</td>
-            <td onClick={()=>this.movePiece([0,2])}>{this.state.board[0][2].occupied}</td>
-            <td onClick={()=>this.movePiece([0,3])}>{this.state.board[0][3].occupied}</td>
-            <td onClick={()=>this.movePiece([0,4])}>{this.state.board[0][4].occupied}</td>
-            <td onClick={()=>this.movePiece([0,5])}>{this.state.board[0][5].occupied}</td>
-            <td onClick={()=>this.movePiece([0,6])}>{this.state.board[0][6].occupied}</td>
-            <td onClick={()=>this.movePiece([0,7])}>{this.state.board[0][7].occupied}</td>
+            <td onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([0,2])}><img src={this.state.board[0][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([0,4])}><img src={this.state.board[0][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([0,5])}><img src={this.state.board[0][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([0,6])}><img src={this.state.board[0][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([0,7])}><img src={this.state.board[0][7].occupied}/></td>
           </tr>
           <tr className="row2">
-            <td onClick={()=>this.movePiece([1,0])}>{this.state.board[1][0].occupied}</td>
-            <td onClick={()=>this.movePiece([1,1])}>{this.state.board[1][1].occupied}</td>
-            <td onClick={()=>this.movePiece([1,2])}>{this.state.board[1][2].occupied}</td>
-            <td onClick={()=>this.movePiece([1,3])}>{this.state.board[1][3].occupied}</td>
-            <td onClick={()=>this.movePiece([1,4])}>{this.state.board[1][4].occupied}</td>
-            <td onClick={()=>this.movePiece([1,5])}>{this.state.board[1][5].occupied}</td>
-            <td onClick={()=>this.movePiece([1,6])}>{this.state.board[1][6].occupied}</td>
-            <td onClick={()=>this.movePiece([1,7])}>{this.state.board[1][7].occupied}</td>
+            <td onClick={()=>this.movePiece([1,0])}><img src={this.state.board[1][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([1,1])}><img src={this.state.board[1][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([1,2])}><img src={this.state.board[1][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([1,3])}><img src={this.state.board[1][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([1,4])}><img src={this.state.board[1][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([1,5])}><img src={this.state.board[1][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([1,6])}><img src={this.state.board[1][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([1,7])}><img src={this.state.board[1][7].occupied}/></td>
           </tr>
           <tr className="row3">
-            <td onClick={()=>this.movePiece([2,0])}>{this.state.board[2][0].occupied}</td>
-            <td onClick={()=>this.movePiece([2,1])}>{this.state.board[2][1].occupied}</td>
-            <td onClick={()=>this.movePiece([2,2])}>{this.state.board[2][2].occupied}</td>
-            <td onClick={()=>this.movePiece([2,3])}>{this.state.board[2][3].occupied}</td>
-            <td onClick={()=>this.movePiece([2,4])}>{this.state.board[2][4].occupied}</td>
-            <td onClick={()=>this.movePiece([2,5])}>{this.state.board[2][5].occupied}</td>
-            <td onClick={()=>this.movePiece([2,6])}>{this.state.board[2][6].occupied}</td>
-            <td onClick={()=>this.movePiece([2,7])}>{this.state.board[2][7].occupied}</td>
+            <td onClick={()=>this.movePiece([2,0])}><img src={this.state.board[2][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([2,1])}><img src={this.state.board[2][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([2,2])}><img src={this.state.board[2][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([2,3])}><img src={this.state.board[2][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([2,4])}><img src={this.state.board[2][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([2,5])}><img src={this.state.board[2][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([2,6])}><img src={this.state.board[2][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([2,7])}><img src={this.state.board[2][7].occupied}/></td>
           </tr>
           <tr className="row4">
-            <td onClick={()=>this.movePiece([3,0])}>{this.state.board[3][0].occupied}</td>
-            <td onClick={()=>this.movePiece([3,1])}>{this.state.board[3][1].occupied}</td>
-            <td onClick={()=>this.movePiece([3,2])}>{this.state.board[3][2].occupied}</td>
-            <td onClick={()=>this.movePiece([3,3])}>{this.state.board[3][3].occupied}</td>
-            <td onClick={()=>this.movePiece([3,4])}>{this.state.board[3][4].occupied}</td>
-            <td onClick={()=>this.movePiece([3,5])}>{this.state.board[3][5].occupied}</td>
-            <td onClick={()=>this.movePiece([3,6])}>{this.state.board[3][6].occupied}</td>
-            <td onClick={()=>this.movePiece([3,7])}>{this.state.board[3][7].occupied}</td>
+            <td onClick={()=>this.movePiece([3,0])}><img src={this.state.board[3][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([3,1])}><img src={this.state.board[3][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([3,2])}><img src={this.state.board[3][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([3,3])}><img src={this.state.board[3][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([3,4])}><img src={this.state.board[3][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([3,5])}><img src={this.state.board[3][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([3,6])}><img src={this.state.board[3][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([3,7])}><img src={this.state.board[3][7].occupied}/></td>
           </tr>
           <tr className="row5">
-            <td onClick={()=>this.movePiece([4,0])}>{this.state.board[4][0].occupied}</td>
-            <td onClick={()=>this.movePiece([4,1])}>{this.state.board[4][1].occupied}</td>
-            <td onClick={()=>this.movePiece([4,2])}>{this.state.board[4][2].occupied}</td>
-            <td onClick={()=>this.movePiece([4,3])}>{this.state.board[4][3].occupied}</td>
-            <td onClick={()=>this.movePiece([4,4])}>{this.state.board[4][4].occupied}</td>
-            <td onClick={()=>this.movePiece([4,5])}>{this.state.board[4][5].occupied}</td>
-            <td onClick={()=>this.movePiece([4,6])}>{this.state.board[4][6].occupied}</td>
-            <td onClick={()=>this.movePiece([4,7])}>{this.state.board[4][7].occupied}</td>
+            <td onClick={()=>this.movePiece([4,0])}><img src={this.state.board[4][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([4,1])}><img src={this.state.board[4][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([4,2])}><img src={this.state.board[4][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([4,3])}><img src={this.state.board[4][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([4,4])}><img src={this.state.board[4][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([4,5])}><img src={this.state.board[4][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([4,6])}><img src={this.state.board[4][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([4,7])}><img src={this.state.board[4][7].occupied}/></td>
           </tr>
           <tr className="row6">
-            <td onClick={()=>this.movePiece([5,0])}>{this.state.board[5][0].occupied}</td>
-            <td onClick={()=>this.movePiece([5,1])}>{this.state.board[5][1].occupied}</td>
-            <td onClick={()=>this.movePiece([5,2])}>{this.state.board[5][2].occupied}</td>
-            <td onClick={()=>this.movePiece([5,3])}>{this.state.board[5][3].occupied}</td>
-            <td onClick={()=>this.movePiece([5,4])}>{this.state.board[5][4].occupied}</td>
-            <td onClick={()=>this.movePiece([5,5])}>{this.state.board[5][5].occupied}</td>
-            <td onClick={()=>this.movePiece([5,6])}>{this.state.board[5][6].occupied}</td>
-            <td onClick={()=>this.movePiece([5,7])}>{this.state.board[5][7].occupied}</td>
+            <td onClick={()=>this.movePiece([5,0])}><img src={this.state.board[5][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([5,1])}><img src={this.state.board[5][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([5,2])}><img src={this.state.board[5][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([5,3])}><img src={this.state.board[5][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([5,4])}><img src={this.state.board[5][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([5,5])}><img src={this.state.board[5][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([5,6])}><img src={this.state.board[5][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([5,7])}><img src={this.state.board[5][7].occupied}/></td>
           </tr>
           <tr className="row7">
-            <td onClick={()=>this.movePiece([6,0])}>{this.state.board[6][0].occupied}</td>
-            <td onClick={()=>this.movePiece([6,1])}>{this.state.board[6][1].occupied}</td>
-            <td onClick={()=>this.movePiece([6,2])}>{this.state.board[6][2].occupied}</td>
-            <td onClick={()=>this.movePiece([6,3])}>{this.state.board[6][3].occupied}</td>
-            <td onClick={()=>this.movePiece([6,4])}>{this.state.board[6][4].occupied}</td>
-            <td onClick={()=>this.movePiece([6,5])}>{this.state.board[6][5].occupied}</td>
-            <td onClick={()=>this.movePiece([6,6])}>{this.state.board[6][6].occupied}</td>
-            <td onClick={()=>this.movePiece([6,7])}>{this.state.board[6][7].occupied}</td>
+            <td onClick={()=>this.movePiece([6,0])}><img src={this.state.board[6][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([6,1])}><img src={this.state.board[6][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([6,2])}><img src={this.state.board[6][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([6,3])}><img src={this.state.board[6][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([6,4])}><img src={this.state.board[6][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([6,5])}><img src={this.state.board[6][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([6,6])}><img src={this.state.board[6][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([6,7])}><img src={this.state.board[6][7].occupied}/></td>
           </tr>
           <tr className="row8">
-            <td onClick={()=>this.movePiece([7,0])}>{this.state.board[7][0].occupied}</td>
-            <td onClick={()=>this.movePiece([7,1])}>{this.state.board[7][1].occupied}</td>
-            <td onClick={()=>this.movePiece([7,2])}>{this.state.board[7][2].occupied}</td>
-            <td onClick={()=>this.movePiece([7,3])}>{this.state.board[7][3].occupied}</td>
-            <td onClick={()=>this.movePiece([7,4])}>{this.state.board[7][4].occupied}</td>
-            <td onClick={()=>this.movePiece([7,5])}>{this.state.board[7][5].occupied}</td>
-            <td onClick={()=>this.movePiece([7,6])}>{this.state.board[7][6].occupied}</td>
-            <td onClick={()=>this.movePiece([7,7])}>{this.state.board[7][7].occupied}</td>
+            <td onClick={()=>this.movePiece([7,0])}><img src={this.state.board[7][0].occupied}/></td>
+            <td onClick={()=>this.movePiece([7,1])}><img src={this.state.board[7][1].occupied}/></td>
+            <td onClick={()=>this.movePiece([7,2])}><img src={this.state.board[7][2].occupied}/></td>
+            <td onClick={()=>this.movePiece([7,3])}><img src={this.state.board[7][3].occupied}/></td>
+            <td onClick={()=>this.movePiece([7,4])}><img src={this.state.board[7][4].occupied}/></td>
+            <td onClick={()=>this.movePiece([7,5])}><img src={this.state.board[7][5].occupied}/></td>
+            <td onClick={()=>this.movePiece([7,6])}><img src={this.state.board[7][6].occupied}/></td>
+            <td onClick={()=>this.movePiece([7,7])}><img src={this.state.board[7][7].occupied}/></td>
           </tr>
         </tbody>
       </table>
