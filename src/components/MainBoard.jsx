@@ -8,8 +8,8 @@ class MainBoard extends React.Component {
     this.state = {
       board: [],
       click: 0,
-      moveFrom: [],
-      moveTo: []
+      moveFrom: [0,0],
+      moveTo: [],
 
     };
     this.populateBoard = this.populateBoard.bind(this);
@@ -66,13 +66,20 @@ class MainBoard extends React.Component {
 //   let newMoveTo = this.state.moveTo;
 
    if (this.state.click === 0) {
-     this.setState({click: 1});
-     this.setState({moveFrom: [pos[0],pos[1]]});
+     if (this.state.board[pos[0]][pos[1]].occupied !== null) {
+       this.setState({click: 1});
+       this.setState({moveFrom: [pos[0],pos[1]]});
+     }
    }
 
    if (this.state.click === 1) {
-     this.setState({click: 0});
-     this.setState({moveTo: [pos[0],pos[1]]});
+     if (this.state.board[pos[0]][pos[1]].occupied === null) {
+            this.setState({click: 0});
+     }
+
+  //   this.setState({moveTo: [pos[0],pos[1]]});
+
+
    }
 
   // if (this.state.board[pos[0]][pos[1]].occupied === 'true') {
@@ -81,14 +88,14 @@ class MainBoard extends React.Component {
   //   newBoard[pos[0]][pos[1]].occupied = 'true';
   // }
 
-  if (this.state.moveFrom.length !== 0 && this.state.moveTo.length !== 0) {
-    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = "";
-    newBoard[this.state.moveTo[0]][this.state.moveTo[1]].occupied = "pawn"//this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+  if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
+    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+    newBoard[pos[0]][pos[1]].occupied = "pawn" //this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
     this.setState({board: newBoard})
   }
 
 
-    this.setState({board: newBoard})
+//    this.setState({board: newBoard})
     console.log(this.state.board);
   }
 
@@ -119,6 +126,7 @@ class MainBoard extends React.Component {
     <p style={test}>{this.state.click} Does this work</p>
     <p>Move From: [{this.state.moveFrom[0]},{this.state.moveFrom[1]}]</p>
     <p>Move To: [{this.state.moveTo[0]},{this.state.moveTo[1]}]</p>
+    <p>Test: {this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied}</p>
       <table>
         <tbody>
           <tr className="row1">
