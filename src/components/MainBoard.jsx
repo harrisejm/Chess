@@ -140,8 +140,9 @@ class MainBoard extends React.Component {
   }
 
   testRender(){
-    let test = {
-      color: "green"
+    let squareColor = {
+    //  color: "green"
+    backgroundColor: "#F0F8FF"
     }
   //  const row1 = <td> {this.state.board[0][0].occupied} </td>;
   //  const row2 = <td> {this.state.board[3][0].occupied} </td>;
@@ -158,11 +159,11 @@ class MainBoard extends React.Component {
       <style jsx>{`
          td {
            border-style: solid;
-           width: 80px;
-           height: 80px;
+           width: 75px;
+           height: 75px;
          }
       `}</style>
-    <p style={test}>{this.state.click} Does this work</p>
+    <p>{this.state.click} Does this work</p>
     <p>Move From: [{this.state.moveFrom[0]},{this.state.moveFrom[1]}]</p>
     <p>Move To: [{this.state.moveTo[0]},{this.state.moveTo[1]}]</p>
 
@@ -185,82 +186,82 @@ class MainBoard extends React.Component {
         <tbody>
           <tr className="row1">
             <td onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
-            <td onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
             <td onClick={()=>this.movePiece([0,2])}><img src={this.state.board[0][2].occupied}/></td>
-            <td onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
             <td onClick={()=>this.movePiece([0,4])}><img src={this.state.board[0][4].occupied}/></td>
-            <td onClick={()=>this.movePiece([0,5])}><img src={this.state.board[0][5].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([0,5])}><img src={this.state.board[0][5].occupied}/></td>
             <td onClick={()=>this.movePiece([0,6])}><img src={this.state.board[0][6].occupied}/></td>
-            <td onClick={()=>this.movePiece([0,7])}><img src={this.state.board[0][7].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([0,7])}><img src={this.state.board[0][7].occupied}/></td>
           </tr>
           <tr className="row2">
-            <td onClick={()=>this.movePiece([1,0])}><img src={this.state.board[1][0].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([1,0])}><img src={this.state.board[1][0].occupied}/></td>
             <td onClick={()=>this.movePiece([1,1])}><img src={this.state.board[1][1].occupied}/></td>
-            <td onClick={()=>this.movePiece([1,2])}><img src={this.state.board[1][2].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([1,2])}><img src={this.state.board[1][2].occupied}/></td>
             <td onClick={()=>this.movePiece([1,3])}><img src={this.state.board[1][3].occupied}/></td>
-            <td onClick={()=>this.movePiece([1,4])}><img src={this.state.board[1][4].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([1,4])}><img src={this.state.board[1][4].occupied}/></td>
             <td onClick={()=>this.movePiece([1,5])}><img src={this.state.board[1][5].occupied}/></td>
-            <td onClick={()=>this.movePiece([1,6])}><img src={this.state.board[1][6].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([1,6])}><img src={this.state.board[1][6].occupied}/></td>
             <td onClick={()=>this.movePiece([1,7])}><img src={this.state.board[1][7].occupied}/></td>
           </tr>
           <tr className="row3">
             <td onClick={()=>this.movePiece([2,0])}><img src={this.state.board[2][0].occupied}/></td>
-            <td onClick={()=>this.movePiece([2,1])}><img src={this.state.board[2][1].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([2,1])}><img src={this.state.board[2][1].occupied}/></td>
             <td onClick={()=>this.movePiece([2,2])}><img src={this.state.board[2][2].occupied}/></td>
-            <td onClick={()=>this.movePiece([2,3])}><img src={this.state.board[2][3].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([2,3])}><img src={this.state.board[2][3].occupied}/></td>
             <td onClick={()=>this.movePiece([2,4])}><img src={this.state.board[2][4].occupied}/></td>
-            <td onClick={()=>this.movePiece([2,5])}><img src={this.state.board[2][5].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([2,5])}><img src={this.state.board[2][5].occupied}/></td>
             <td onClick={()=>this.movePiece([2,6])}><img src={this.state.board[2][6].occupied}/></td>
-            <td onClick={()=>this.movePiece([2,7])}><img src={this.state.board[2][7].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([2,7])}><img src={this.state.board[2][7].occupied}/></td>
           </tr>
           <tr className="row4">
-            <td onClick={()=>this.movePiece([3,0])}><img src={this.state.board[3][0].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([3,0])}><img src={this.state.board[3][0].occupied}/></td>
             <td onClick={()=>this.movePiece([3,1])}><img src={this.state.board[3][1].occupied}/></td>
-            <td onClick={()=>this.movePiece([3,2])}><img src={this.state.board[3][2].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([3,2])}><img src={this.state.board[3][2].occupied}/></td>
             <td onClick={()=>this.movePiece([3,3])}><img src={this.state.board[3][3].occupied}/></td>
-            <td onClick={()=>this.movePiece([3,4])}><img src={this.state.board[3][4].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([3,4])}><img src={this.state.board[3][4].occupied}/></td>
             <td onClick={()=>this.movePiece([3,5])}><img src={this.state.board[3][5].occupied}/></td>
-            <td onClick={()=>this.movePiece([3,6])}><img src={this.state.board[3][6].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([3,6])}><img src={this.state.board[3][6].occupied}/></td>
             <td onClick={()=>this.movePiece([3,7])}><img src={this.state.board[3][7].occupied}/></td>
           </tr>
           <tr className="row5">
             <td onClick={()=>this.movePiece([4,0])}><img src={this.state.board[4][0].occupied}/></td>
-            <td onClick={()=>this.movePiece([4,1])}><img src={this.state.board[4][1].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([4,1])}><img src={this.state.board[4][1].occupied}/></td>
             <td onClick={()=>this.movePiece([4,2])}><img src={this.state.board[4][2].occupied}/></td>
-            <td onClick={()=>this.movePiece([4,3])}><img src={this.state.board[4][3].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([4,3])}><img src={this.state.board[4][3].occupied}/></td>
             <td onClick={()=>this.movePiece([4,4])}><img src={this.state.board[4][4].occupied}/></td>
-            <td onClick={()=>this.movePiece([4,5])}><img src={this.state.board[4][5].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([4,5])}><img src={this.state.board[4][5].occupied}/></td>
             <td onClick={()=>this.movePiece([4,6])}><img src={this.state.board[4][6].occupied}/></td>
-            <td onClick={()=>this.movePiece([4,7])}><img src={this.state.board[4][7].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([4,7])}><img src={this.state.board[4][7].occupied}/></td>
           </tr>
           <tr className="row6">
-            <td onClick={()=>this.movePiece([5,0])}><img src={this.state.board[5][0].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([5,0])}><img src={this.state.board[5][0].occupied}/></td>
             <td onClick={()=>this.movePiece([5,1])}><img src={this.state.board[5][1].occupied}/></td>
-            <td onClick={()=>this.movePiece([5,2])}><img src={this.state.board[5][2].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([5,2])}><img src={this.state.board[5][2].occupied}/></td>
             <td onClick={()=>this.movePiece([5,3])}><img src={this.state.board[5][3].occupied}/></td>
-            <td onClick={()=>this.movePiece([5,4])}><img src={this.state.board[5][4].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([5,4])}><img src={this.state.board[5][4].occupied}/></td>
             <td onClick={()=>this.movePiece([5,5])}><img src={this.state.board[5][5].occupied}/></td>
-            <td onClick={()=>this.movePiece([5,6])}><img src={this.state.board[5][6].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([5,6])}><img src={this.state.board[5][6].occupied}/></td>
             <td onClick={()=>this.movePiece([5,7])}><img src={this.state.board[5][7].occupied}/></td>
           </tr>
           <tr className="row7">
             <td onClick={()=>this.movePiece([6,0])}><img src={this.state.board[6][0].occupied}/></td>
-            <td onClick={()=>this.movePiece([6,1])}><img src={this.state.board[6][1].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([6,1])}><img src={this.state.board[6][1].occupied}/></td>
             <td onClick={()=>this.movePiece([6,2])}><img src={this.state.board[6][2].occupied}/></td>
-            <td onClick={()=>this.movePiece([6,3])}><img src={this.state.board[6][3].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([6,3])}><img src={this.state.board[6][3].occupied}/></td>
             <td onClick={()=>this.movePiece([6,4])}><img src={this.state.board[6][4].occupied}/></td>
-            <td onClick={()=>this.movePiece([6,5])}><img src={this.state.board[6][5].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([6,5])}><img src={this.state.board[6][5].occupied}/></td>
             <td onClick={()=>this.movePiece([6,6])}><img src={this.state.board[6][6].occupied}/></td>
-            <td onClick={()=>this.movePiece([6,7])}><img src={this.state.board[6][7].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([6,7])}><img src={this.state.board[6][7].occupied}/></td>
           </tr>
           <tr className="row8">
-            <td onClick={()=>this.movePiece([7,0])}><img src={this.state.board[7][0].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([7,0])}><img src={this.state.board[7][0].occupied}/></td>
             <td onClick={()=>this.movePiece([7,1])}><img src={this.state.board[7][1].occupied}/></td>
-            <td onClick={()=>this.movePiece([7,2])}><img src={this.state.board[7][2].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([7,2])}><img src={this.state.board[7][2].occupied}/></td>
             <td onClick={()=>this.movePiece([7,3])}><img src={this.state.board[7][3].occupied}/></td>
-            <td onClick={()=>this.movePiece([7,4])}><img src={this.state.board[7][4].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([7,4])}><img src={this.state.board[7][4].occupied}/></td>
             <td onClick={()=>this.movePiece([7,5])}><img src={this.state.board[7][5].occupied}/></td>
-            <td onClick={()=>this.movePiece([7,6])}><img src={this.state.board[7][6].occupied}/></td>
+            <td style={squareColor} onClick={()=>this.movePiece([7,6])}><img src={this.state.board[7][6].occupied}/></td>
             <td onClick={()=>this.movePiece([7,7])}><img src={this.state.board[7][7].occupied}/></td>
           </tr>
         </tbody>
