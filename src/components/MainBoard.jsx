@@ -102,8 +102,6 @@ class MainBoard extends React.Component {
 
   movePiece(pos){
    let newBoard = this.state.board.slice();
-   //let newMoveFrom = this.state.moveFrom;
-//   let newMoveTo = this.state.moveTo;
 
    if (this.state.click === 0) {
      if (this.state.board[pos[0]][pos[1]].occupied !== null) {
@@ -113,11 +111,10 @@ class MainBoard extends React.Component {
    }
 
    if (this.state.click === 1) {
-     if (this.state.board[pos[0]][pos[1]].occupied === null) {
+  //   if (this.state.board[pos[0]][pos[1]].occupied === null) {
             this.setState({click: 0});
-     }
+//     }
   //   this.setState({moveTo: [pos[0],pos[1]]});
-
    }
 
   // if (this.state.board[pos[0]][pos[1]].occupied === 'true') {
@@ -142,7 +139,7 @@ class MainBoard extends React.Component {
   testRender(){
     let squareColor = {
     //  color: "green"
-    backgroundColor: "#F0F8FF"
+    backgroundColor: "#ADD8E6"
     }
   //  const row1 = <td> {this.state.board[0][0].occupied} </td>;
   //  const row2 = <td> {this.state.board[3][0].occupied} </td>;
@@ -159,8 +156,8 @@ class MainBoard extends React.Component {
       <style jsx>{`
          td {
            border-style: solid;
-           width: 75px;
-           height: 75px;
+           width: 70px;
+           height: 70px;
          }
       `}</style>
     <p>{this.state.click} Does this work</p>
