@@ -40,50 +40,50 @@ class MainBoard extends React.Component {
       for (let a = 0; a < 8; a++) {
       //  let position = i.toString() + a.toString();
         if (i === 1) {
-          let test1 = Object.assign({positionY: i, positionX: a, occupied: bp}, {});
+          let test1 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bp}, {});
           objectArr.push(test1);
         } else if (i === 6) {
-            let test1 = Object.assign({positionY: i, positionX: a, occupied: wp}, {});
+            let test1 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wp}, {});
             objectArr.push(test1);
 
         } else if ((i === 0 && a === 0) || (i === 0 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: br}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: br}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 0) || (i === 7 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: wr}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wr}, {});
           objectArr.push(test2);
 
         } else if ((i === 0 && a === 1) || (i === 0 && a === 6)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: bkn}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bkn}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 1) || (i === 7 && a === 6)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: wkn}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wkn}, {});
           objectArr.push(test2);
 
 
         } else if ((i === 0 && a === 2) || (i === 0 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: bb}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bb}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 2) || (i === 7 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: wb}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wb}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: bq}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bq}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: wq}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wq}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: bk}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bk}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: wk}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wk}, {});
           objectArr.push(test2);
 
         } else {
-          let test2 = Object.assign({positionY: i, positionX: a, occupied: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: null, occupied: null}, {});
           objectArr.push(test2);
         }
         if (a === 7) {
@@ -112,7 +112,7 @@ class MainBoard extends React.Component {
 
    if (this.state.click === 1) {
   //   if (this.state.board[pos[0]][pos[1]].occupied === null) {
-            this.setState({click: 0});
+          //  this.setState({click: 0});
 //     }
   //   this.setState({moveTo: [pos[0],pos[1]]});
    }
@@ -124,12 +124,21 @@ class MainBoard extends React.Component {
   // }
 
   if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
+    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color !== this.state.board[pos[0]][pos[1]].color) {
+
 
     newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+    newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+
+
   //  console.log(this.state.moveFrom[0]);
     console.log(newBoard);
-    this.setState({board: newBoard})
+    this.setState({board: newBoard, click: 0})
+  } else {
+    this.setState({moveFrom: [pos[0],pos[1]]});
+    //this.setState({board: newBoard})
+  }
   }
 
 //    this.setState({board: newBoard})
@@ -160,7 +169,7 @@ class MainBoard extends React.Component {
            height: 70px;
          }
       `}</style>
-    <p>{this.state.click} Does this work</p>
+
     <p>Move From: [{this.state.moveFrom[0]},{this.state.moveFrom[1]}]</p>
     <p>Move To: [{this.state.moveTo[0]},{this.state.moveTo[1]}]</p>
 
@@ -178,7 +187,7 @@ class MainBoard extends React.Component {
     <img src={wp}/>
     <img src={wq}/>
     <img src={wr}/>
-
+  <p>{this.state.click} Does this work</p>
       <table>
         <tbody>
           <tr className="row1">
