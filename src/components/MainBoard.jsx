@@ -32,27 +32,28 @@ class MainBoard extends React.Component {
     this.movePiece = this.movePiece.bind(this);
     this.movePawn = this.movePawn.bind(this);
     this.moveKight = this.moveKight.bind(this);
+    this.moveRook = this.moveRook.bind(this);
+    this.moveBishop = this.moveBishop.bind(this);
+    this.updateBoard = this.updateBoard.bind(this);
   }
 
-
+  updateBoard(pos) {
+    let newBoard = this.state.board.slice();
+    newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+    newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
+    newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
+    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
+    this.setState({board: newBoard, click: 0});
+  }
 
   movePawn(pos) {
     console.log("heelgjdgfljgdg");
     let newBoard = this.state.board.slice();
     if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])) {
-      newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
-      newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
-      newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
-      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
-      this.setState({board: newBoard, click: 0})
+      this.updateBoard(pos);
     } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && (pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1])) {
-      newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
-      newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
-    newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
-      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
-      this.setState({board: newBoard, click: 0})
+      this.updateBoard(pos);
     }
   }
   moveKight(pos) {
@@ -67,20 +68,25 @@ class MainBoard extends React.Component {
      || (pos[0] === this.state.moveFrom[0]+2 && pos[1]-1 === this.state.moveFrom[1])
      || (pos[0] === this.state.moveFrom[0]+2 && pos[1]+1 === this.state.moveFrom[1])) {
 
-       newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
-       newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
-       newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
-       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
-       this.setState({board: newBoard, click: 0})
-     } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && (pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1])) {
-       newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
-       newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
-       newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
-       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
-       this.setState({board: newBoard, click: 0})
+     this.updateBoard(pos);
      }
+}
+
+moveRook(pos) {
+console.log("Rook");
+let newBoard = this.state.board.slice();
+if (pos[0] === this.state.moveFrom[0] || pos[1] === this.state.moveFrom[1]) {
+ this.updateBoard(pos);
+  }
+}
+
+moveBishop(pos) {
+console.log("Bishop");
+let newBoard = this.state.board.slice();
+if (pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
+   || pos[0] - this.state.moveFrom[0] === this.state.moveFrom[1]-pos[1]) {
+ this.updateBoard(pos);
+  }
 }
 
   populateBoard() {
@@ -98,10 +104,10 @@ class MainBoard extends React.Component {
             objectArr.push(test1);
 
         } else if ((i === 0 && a === 0) || (i === 0 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: br, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: br, piece: this.moveRook}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 0) || (i === 7 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wr, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wr, piece: this.moveRook}, {});
           objectArr.push(test2);
 
         } else if ((i === 0 && a === 1) || (i === 0 && a === 6)) {
@@ -112,10 +118,10 @@ class MainBoard extends React.Component {
           objectArr.push(test2);
 
         } else if ((i === 0 && a === 2) || (i === 0 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bb, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bb, piece: this.moveBishop}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 2) || (i === 7 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wb, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wb, piece: this.moveBishop}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 3) {
@@ -240,8 +246,9 @@ class MainBoard extends React.Component {
       <table>
         <tbody>
           <tr className="row1">
-            <td onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
+
+            <td style={testColor} onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
+            <td style={Object.assign({}, squareColor, testColor)} onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
             <td onClick={()=>this.movePiece([0,2])}><img src={this.state.board[0][2].occupied}/></td>
             <td style={squareColor} onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
             <td onClick={()=>this.movePiece([0,4])}><img src={this.state.board[0][4].occupied}/></td>
