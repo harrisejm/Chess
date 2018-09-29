@@ -34,6 +34,7 @@ class MainBoard extends React.Component {
     this.moveKight = this.moveKight.bind(this);
     this.moveRook = this.moveRook.bind(this);
     this.moveBishop = this.moveBishop.bind(this);
+    this.moveQueen = this.moveQueen.bind(this);
     this.updateBoard = this.updateBoard.bind(this);
   }
 
@@ -48,7 +49,7 @@ class MainBoard extends React.Component {
   }
 
   movePawn(pos) {
-    console.log("heelgjdgfljgdg");
+    console.log("Pawn");
     let newBoard = this.state.board.slice();
     if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])) {
       this.updateBoard(pos);
@@ -89,6 +90,17 @@ if (pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
   }
 }
 
+moveQueen(pos) {
+  console.log("Queen");
+  let newBoard = this.state.board.slice();
+  if (pos[0] === this.state.moveFrom[0]
+     || pos[1] === this.state.moveFrom[1]
+     || pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
+     || pos[0] - this.state.moveFrom[0] === this.state.moveFrom[1]-pos[1]) {
+   this.updateBoard(pos);
+    }
+}
+
   populateBoard() {
     let newBoard = this.state.board.slice();
     let objectArr = [];
@@ -125,10 +137,10 @@ if (pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
           objectArr.push(test2);
 
         } else if (i === 0 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bq, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bq, piece: this.moveQueen}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wq, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wq, piece: this.moveQueen}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 4) {
