@@ -35,10 +35,8 @@ class MainBoard extends React.Component {
     this.moveRook = this.moveRook.bind(this);
     this.moveBishop = this.moveBishop.bind(this);
     this.moveQueen = this.moveQueen.bind(this);
+    this.moveKing = this.moveKing.bind(this);
     this.updateBoard = this.updateBoard.bind(this);
-
-  //  this.highlightSquare = this.highlightSquare.bind(this);
-
   }
 
   updateBoard(pos) {
@@ -106,14 +104,23 @@ moveQueen(pos) {
     }
 }
 
-  // highlightSquare(){
-  //   const testColor = {
-  //     border: 'solid',
-  //     borderWidth: 'thick',
-  //     borderColor: 'green'
-  //   }
-  //   return testColor;
-  // }
+moveKing(pos) {
+  console.log('King');
+  let newBoard = this.state.board.slice();
+  if ((pos[0] === this.state.moveFrom[0]+1 && pos[1]-1 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]+1 && pos[1]+1 === this.state.moveFrom[1])
+
+     || (pos[0] === this.state.moveFrom[0] && pos[1]-1 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0] && pos[1]+1 === this.state.moveFrom[1])
+
+     || (pos[0] === this.state.moveFrom[0]-1 && pos[1]-1 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]-1 && pos[1]+1 === this.state.moveFrom[1])) {
+
+     this.updateBoard(pos);
+     }
+}
 
   populateBoard() {
     let newBoard = this.state.board.slice();
@@ -158,10 +165,10 @@ moveQueen(pos) {
           objectArr.push(test2);
 
         } else if (i === 0 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: bk, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: bk, piece: this.moveKing}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wk, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wk, piece: this.moveKing}, {});
           objectArr.push(test2);
 
         } else {
@@ -188,28 +195,23 @@ moveQueen(pos) {
    if (this.state.click === 0) {
      if (this.state.board[pos[0]][pos[1]].occupied !== null) {
        let newBoard = this.state.board.slice();
-       newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
+       newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid', borderWidth: 'thick', borderColor: 'green'}, {});
 
-       this.setState({click: 1});
-       this.setState({moveFrom: [pos[0],pos[1]]});
+    //   this.setState({click: 1});
+       this.setState({moveFrom: [pos[0],pos[1]], click: 1});
      }
    }
 
   if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
     if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color !== this.state.board[pos[0]][pos[1]].color) {
-  //  this.movePawn(pos);
-    this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos);
-    // newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
-    // newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
-    // newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-    // newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
 
+    this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos);
 
    console.log(newBoard);
 //   this.setState({board: newBoard, click: 0})
   } else {
-newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
-newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
+  newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
+  newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
 
     this.setState({moveFrom: [pos[0],pos[1]]});
     this.setState({board: newBoard})
@@ -231,11 +233,11 @@ newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
     const squareColor = {
     backgroundColor: "#ADD8E6"
     }
-    const testColor = {
-      border: 'solid',
-      borderWidth: 'thick',
-      borderColor: 'green'
-    }
+    // const testColor = {
+    //   border: 'solid',
+    //   borderWidth: 'thick',
+    //   borderColor: 'green'
+    // }
 
   //  const row1 = <td> {this.state.board[0][0].occupied} </td>;
   //  const row2 = <td> {this.state.board[3][0].occupied} </td>;
@@ -257,8 +259,8 @@ newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
          }
       `}</style>
 
-    <p>Move From: [{this.state.moveFrom[0]},{this.state.moveFrom[1]}]</p>
-    <p>Move To: {this.state.moveFrom[0]-1} {this.state.moveFrom[0]}</p>
+    <p>Move From: []</p>
+    <p>Move To: </p>
 
 
     <img src={bb}/>
@@ -275,7 +277,7 @@ newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
     <img src={wq}/>
     <img src={wr}/>
   <p>{this.state.click} Does this work</p>
-  <p>style: {this.state.board[0][0].highlight}</p>
+  <p>style</p>
       <table>
         <tbody>
           <tr className="row1">
