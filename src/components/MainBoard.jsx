@@ -53,9 +53,13 @@ class MainBoard extends React.Component {
   movePawn(pos) {
     console.log("Pawn");
     let newBoard = this.state.board.slice();
-    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])) {
+    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1]) {
       this.updateBoard(pos);
-    } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && (pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1])) {
+    } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1]) {
+      this.updateBoard(pos);
+    } else if (this.state.moveFrom[0] === 6 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1]) {
+      this.updateBoard(pos);
+    } else if (this.state.moveFrom[0] === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+2 && pos[1] === this.state.moveFrom[1]) {
       this.updateBoard(pos);
     }
   }
