@@ -36,6 +36,9 @@ class MainBoard extends React.Component {
     this.moveBishop = this.moveBishop.bind(this);
     this.moveQueen = this.moveQueen.bind(this);
     this.updateBoard = this.updateBoard.bind(this);
+
+  //  this.highlightSquare = this.highlightSquare.bind(this);
+
   }
 
   updateBoard(pos) {
@@ -45,6 +48,7 @@ class MainBoard extends React.Component {
     newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
+    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
     this.setState({board: newBoard, click: 0});
   }
 
@@ -101,6 +105,15 @@ moveQueen(pos) {
     }
 }
 
+  // highlightSquare(){
+  //   const testColor = {
+  //     border: 'solid',
+  //     borderWidth: 'thick',
+  //     borderColor: 'green'
+  //   }
+  //   return testColor;
+  // }
+
   populateBoard() {
     let newBoard = this.state.board.slice();
     let objectArr = [];
@@ -109,49 +122,49 @@ moveQueen(pos) {
       for (let a = 0; a < 8; a++) {
       //  let position = i.toString() + a.toString();
         if (i === 1) {
-          let test1 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bp, piece: this.movePawn}, {});
+          let test1 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: bp, piece: this.movePawn}, {});
           objectArr.push(test1);
         } else if (i === 6) {
-            let test1 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wp, piece: this.movePawn}, {});
+            let test1 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wp, piece: this.movePawn}, {});
             objectArr.push(test1);
 
         } else if ((i === 0 && a === 0) || (i === 0 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: br, piece: this.moveRook}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: br, piece: this.moveRook}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 0) || (i === 7 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wr, piece: this.moveRook}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wr, piece: this.moveRook}, {});
           objectArr.push(test2);
 
         } else if ((i === 0 && a === 1) || (i === 0 && a === 6)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bkn, piece: this.moveKight}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: bkn, piece: this.moveKight}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 1) || (i === 7 && a === 6)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wkn, piece: this.moveKight}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wkn, piece: this.moveKight}, {});
           objectArr.push(test2);
 
         } else if ((i === 0 && a === 2) || (i === 0 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bb, piece: this.moveBishop}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: bb, piece: this.moveBishop}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 2) || (i === 7 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wb, piece: this.moveBishop}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wb, piece: this.moveBishop}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bq, piece: this.moveQueen}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: bq, piece: this.moveQueen}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wq, piece: this.moveQueen}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wq, piece: this.moveQueen}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bk, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, occupied: bk, piece: null}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wk, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, occupied: wk, piece: null}, {});
           objectArr.push(test2);
 
         } else {
-          let test2 = Object.assign({positionY: i, positionX: a, color: null, occupied: null, piece: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: null, highlight: null, occupied: null, piece: null}, {});
           objectArr.push(test2);
         }
         if (a === 7) {
@@ -173,6 +186,9 @@ moveQueen(pos) {
 
    if (this.state.click === 0) {
      if (this.state.board[pos[0]][pos[1]].occupied !== null) {
+       let newBoard = this.state.board.slice();
+       newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
+
        this.setState({click: 1});
        this.setState({moveFrom: [pos[0],pos[1]]});
      }
@@ -255,38 +271,39 @@ moveQueen(pos) {
     <img src={wq}/>
     <img src={wr}/>
   <p>{this.state.click} Does this work</p>
+  <p>style: {this.state.board[0][0].highlight}</p>
       <table>
         <tbody>
           <tr className="row1">
 
-            <td style={testColor} onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
-            <td style={Object.assign({}, squareColor, testColor)} onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
-            <td onClick={()=>this.movePiece([0,2])}><img src={this.state.board[0][2].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
-            <td onClick={()=>this.movePiece([0,4])}><img src={this.state.board[0][4].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([0,5])}><img src={this.state.board[0][5].occupied}/></td>
-            <td onClick={()=>this.movePiece([0,6])}><img src={this.state.board[0][6].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([0,7])}><img src={this.state.board[0][7].occupied}/></td>
+            <td style={this.state.board[0][0].highlight} onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[0][1].highlight)} onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
+            <td style={this.state.board[0][2].highlight} onClick={()=>this.movePiece([0,2])}><img src={this.state.board[0][2].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[0][3].highlight)} onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
+            <td style={this.state.board[0][4].highlight} onClick={()=>this.movePiece([0,4])}><img src={this.state.board[0][4].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[0][5].highlight)} onClick={()=>this.movePiece([0,5])}><img src={this.state.board[0][5].occupied}/></td>
+            <td style={this.state.board[0][6].highlight} onClick={()=>this.movePiece([0,6])}><img src={this.state.board[0][6].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[0][7].highlight)} onClick={()=>this.movePiece([0,7])}><img src={this.state.board[0][7].occupied}/></td>
           </tr>
           <tr className="row2">
-            <td style={squareColor} onClick={()=>this.movePiece([1,0])}><img src={this.state.board[1][0].occupied}/></td>
-            <td onClick={()=>this.movePiece([1,1])}><img src={this.state.board[1][1].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([1,2])}><img src={this.state.board[1][2].occupied}/></td>
-            <td onClick={()=>this.movePiece([1,3])}><img src={this.state.board[1][3].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([1,4])}><img src={this.state.board[1][4].occupied}/></td>
-            <td onClick={()=>this.movePiece([1,5])}><img src={this.state.board[1][5].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([1,6])}><img src={this.state.board[1][6].occupied}/></td>
-            <td onClick={()=>this.movePiece([1,7])}><img src={this.state.board[1][7].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[1][0].highlight)} onClick={()=>this.movePiece([1,0])}><img src={this.state.board[1][0].occupied}/></td>
+            <td style={this.state.board[1][1].highlight} onClick={()=>this.movePiece([1,1])}><img src={this.state.board[1][1].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[1][2].highlight)} onClick={()=>this.movePiece([1,2])}><img src={this.state.board[1][2].occupied}/></td>
+            <td style={this.state.board[1][3].highlight} onClick={()=>this.movePiece([1,3])}><img src={this.state.board[1][3].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[1][4].highlight)} onClick={()=>this.movePiece([1,4])}><img src={this.state.board[1][4].occupied}/></td>
+            <td style={this.state.board[1][5].highlight} onClick={()=>this.movePiece([1,5])}><img src={this.state.board[1][5].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[1][6].highlight)} onClick={()=>this.movePiece([1,6])}><img src={this.state.board[1][6].occupied}/></td>
+            <td style={this.state.board[1][7].highlight} onClick={()=>this.movePiece([1,7])}><img src={this.state.board[1][7].occupied}/></td>
           </tr>
           <tr className="row3">
-            <td onClick={()=>this.movePiece([2,0])}><img src={this.state.board[2][0].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([2,1])}><img src={this.state.board[2][1].occupied}/></td>
-            <td onClick={()=>this.movePiece([2,2])}><img src={this.state.board[2][2].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([2,3])}><img src={this.state.board[2][3].occupied}/></td>
-            <td onClick={()=>this.movePiece([2,4])}><img src={this.state.board[2][4].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([2,5])}><img src={this.state.board[2][5].occupied}/></td>
-            <td onClick={()=>this.movePiece([2,6])}><img src={this.state.board[2][6].occupied}/></td>
-            <td style={squareColor} onClick={()=>this.movePiece([2,7])}><img src={this.state.board[2][7].occupied}/></td>
+            <td style={this.state.board[2][0].highlight} onClick={()=>this.movePiece([2,0])}><img src={this.state.board[2][0].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[2][1].highlight)} onClick={()=>this.movePiece([2,1])}><img src={this.state.board[2][1].occupied}/></td>
+            <td style={this.state.board[2][2].highlight} onClick={()=>this.movePiece([2,2])}><img src={this.state.board[2][2].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[2][3].highlight)} onClick={()=>this.movePiece([2,3])}><img src={this.state.board[2][3].occupied}/></td>
+            <td style={this.state.board[2][4].highlight} onClick={()=>this.movePiece([2,4])}><img src={this.state.board[2][4].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[2][5].highlight)} onClick={()=>this.movePiece([2,5])}><img src={this.state.board[2][5].occupied}/></td>
+            <td style={this.state.board[2][6].highlight} onClick={()=>this.movePiece([2,6])}><img src={this.state.board[2][6].occupied}/></td>
+            <td style={Object.assign({}, squareColor, this.state.board[2][7].highlight)} onClick={()=>this.movePiece([2,7])}><img src={this.state.board[2][7].occupied}/></td>
           </tr>
           <tr className="row4">
             <td style={squareColor} onClick={()=>this.movePiece([3,0])}><img src={this.state.board[3][0].occupied}/></td>
