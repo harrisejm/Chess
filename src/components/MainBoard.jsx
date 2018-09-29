@@ -30,60 +30,110 @@ class MainBoard extends React.Component {
     this.populateBoard = this.populateBoard.bind(this);
     this.testRender = this.testRender.bind(this);
     this.movePiece = this.movePiece.bind(this);
+    this.movePawn = this.movePawn.bind(this);
+    this.moveKight = this.moveKight.bind(this);
   }
+
+
+
+  movePawn(pos) {
+    console.log("heelgjdgfljgdg");
+    let newBoard = this.state.board.slice();
+    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])) {
+      newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+      newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
+      newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
+      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
+      this.setState({board: newBoard, click: 0})
+    } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && (pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1])) {
+      newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+      newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
+    newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
+      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+      newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
+      this.setState({board: newBoard, click: 0})
+    }
+  }
+  moveKight(pos) {
+  console.log("knight");
+  let newBoard = this.state.board.slice();
+  if ((pos[0] === this.state.moveFrom[0]-2 && pos[1]+1 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]-2 && pos[1]-1 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]-1 && pos[1]-2 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]-1 && pos[1]+2 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]+1 && pos[1]-2 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]+1 && pos[1]+2 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]+2 && pos[1]-1 === this.state.moveFrom[1])
+     || (pos[0] === this.state.moveFrom[0]+2 && pos[1]+1 === this.state.moveFrom[1])) {
+
+       newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+       newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
+       newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
+       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
+       this.setState({board: newBoard, click: 0})
+     } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && (pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1])) {
+       newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+       newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
+       newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
+       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
+       this.setState({board: newBoard, click: 0})
+     }
+}
 
   populateBoard() {
     let newBoard = this.state.board.slice();
     let objectArr = [];
-
+  //  let pos;
     for (let i = 0; i < 8; i++) {
       for (let a = 0; a < 8; a++) {
       //  let position = i.toString() + a.toString();
         if (i === 1) {
-          let test1 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bp}, {});
+          let test1 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bp, piece: this.movePawn}, {});
           objectArr.push(test1);
         } else if (i === 6) {
-            let test1 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wp}, {});
+            let test1 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wp, piece: this.movePawn}, {});
             objectArr.push(test1);
 
         } else if ((i === 0 && a === 0) || (i === 0 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: br}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: br, piece: null}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 0) || (i === 7 && a === 7)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wr}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wr, piece: null}, {});
           objectArr.push(test2);
 
         } else if ((i === 0 && a === 1) || (i === 0 && a === 6)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bkn}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bkn, piece: this.moveKight}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 1) || (i === 7 && a === 6)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wkn}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wkn, piece: this.moveKight}, {});
           objectArr.push(test2);
-
 
         } else if ((i === 0 && a === 2) || (i === 0 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bb}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bb, piece: null}, {});
           objectArr.push(test2);
         } else if ((i === 7 && a === 2) || (i === 7 && a === 5)) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wb}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wb, piece: null}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bq}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bq, piece: null}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 3) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wq}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wq, piece: null}, {});
           objectArr.push(test2);
 
         } else if (i === 0 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bk}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'black', occupied: bk, piece: null}, {});
           objectArr.push(test2);
         } else if (i === 7 && a === 4) {
-          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wk}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: 'white', occupied: wk, piece: null}, {});
           objectArr.push(test2);
 
         } else {
-          let test2 = Object.assign({positionY: i, positionX: a, color: null, occupied: null}, {});
+          let test2 = Object.assign({positionY: i, positionX: a, color: null, occupied: null, piece: null}, {});
           objectArr.push(test2);
         }
         if (a === 7) {
@@ -110,46 +160,45 @@ class MainBoard extends React.Component {
      }
    }
 
-   if (this.state.click === 1) {
-  //   if (this.state.board[pos[0]][pos[1]].occupied === null) {
-          //  this.setState({click: 0});
-//     }
-  //   this.setState({moveTo: [pos[0],pos[1]]});
-   }
-
-  // if (this.state.board[pos[0]][pos[1]].occupied === 'true') {
-  //   newBoard[pos[0]][pos[1]].occupied = 'false';
-  // } else {
-  //   newBoard[pos[0]][pos[1]].occupied = 'true';
-  // }
-
   if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
     if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color !== this.state.board[pos[0]][pos[1]].color) {
+  //  this.movePawn(pos);
+    this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos);
+    // newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+    // newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
+    // newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+    // newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
 
 
-    newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
-    newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
-    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-
-
-  //  console.log(this.state.moveFrom[0]);
-    console.log(newBoard);
-    this.setState({board: newBoard, click: 0})
+   console.log(newBoard);
+//   this.setState({board: newBoard, click: 0})
   } else {
     this.setState({moveFrom: [pos[0],pos[1]]});
     //this.setState({board: newBoard})
   }
   }
-
 //    this.setState({board: newBoard})
     console.log(this.state.board);
   }
 
+  // highlightPiece(pos){
+  //   this.state.moveFrom[0]][this.state.moveFrom[1]
+  //
+  //   const selectedPiece = {
+  //
+  //   }
+  // }
+
   testRender(){
-    let squareColor = {
-    //  color: "green"
+    const squareColor = {
     backgroundColor: "#ADD8E6"
     }
+    const testColor = {
+      border: 'solid',
+      borderWidth: 'thick',
+      borderColor: 'green'
+    }
+
   //  const row1 = <td> {this.state.board[0][0].occupied} </td>;
   //  const row2 = <td> {this.state.board[3][0].occupied} </td>;
 // let grid = [];
@@ -171,7 +220,7 @@ class MainBoard extends React.Component {
       `}</style>
 
     <p>Move From: [{this.state.moveFrom[0]},{this.state.moveFrom[1]}]</p>
-    <p>Move To: [{this.state.moveTo[0]},{this.state.moveTo[1]}]</p>
+    <p>Move To: {this.state.moveFrom[0]-1} {this.state.moveFrom[0]}</p>
 
 
     <img src={bb}/>
