@@ -96,19 +96,47 @@ class MainBoard extends React.Component {
     let newBoard = this.state.board.slice();
     if (pos[0] === this.state.moveFrom[0] || pos[1] === this.state.moveFrom[1]) {
       let pieceBlocking = 0;
-      for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-        if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
-          pieceBlocking += 1;
+
+      if (pos[0] - this.state.moveFrom[0] > 0) {
+        for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+          if (this.state.board[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
+            pieceBlocking += 1;
+          }
         }
       }
-      for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
-        if (this.state.board[this.state.moveFrom[0]][pos[1]-i].occupied !== null) {
-          pieceBlocking += 1;
+      if (pos[0] - this.state.moveFrom[0] < 0) {
+        for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+          if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
+            pieceBlocking += 1;
+          }
         }
       }
+      if (pos[1] - this.state.moveFrom[1] > 0) {
+        for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+          if (this.state.board[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
+            pieceBlocking += 1;
+          }
+        }
+      }
+      if (pos[1] - this.state.moveFrom[1] < 0) {
+        for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+          if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
+            pieceBlocking += 1;
+          }
+        }
+      }
+
+      // for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
+      //   if (this.state.board[this.state.moveFrom[0]][pos[1]-i].occupied !== null) {
+      //     pieceBlocking += 1;
+      //   }
+      // }
+      console.log(pieceBlocking);
       if (pieceBlocking === 0) {
         this.updateBoard(pos);
         console.log("inner");
+      } else {
+        pieceBlocking = 0;
       }
       console.log("outer");
     }
@@ -118,10 +146,28 @@ class MainBoard extends React.Component {
     console.log("Bishop");
 
     let newBoard = this.state.board.slice();
+    let pieceBlocking = 0;
     if (pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
       || pos[0] - this.state.moveFrom[0] === this.state.moveFrom[1]-pos[1]) {
-        this.updateBoard(pos);
+
+
+        // for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+        //
+        //   if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null
+        //   || this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null
+        //   || this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null
+        //   || this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]+i].occupied !== null) {
+        //     pieceBlocking += 1;
+        //   }
+        // }
+        if (pieceBlocking === 0) {
+          this.updateBoard(pos);
+          console.log("inner");
+        } else {
+          pieceBlocking = 0;
+        }
       }
+
     }
 
     moveQueen(pos) {
