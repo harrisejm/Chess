@@ -53,13 +53,24 @@ class MainBoard extends React.Component {
   movePawn(pos) {
     console.log("Pawn");
     let newBoard = this.state.board.slice();
-    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1]) {
+
+    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'black') {
       this.updateBoard(pos);
-    } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1]) {
+    } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'white') {
       this.updateBoard(pos);
-    } else if (this.state.moveFrom[0] === 6 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1]) {
+      //first move. two spaces up
+    } else if (this.state.moveFrom[0] === 6 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'black') {
       this.updateBoard(pos);
-    } else if (this.state.moveFrom[0] === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+2 && pos[1] === this.state.moveFrom[1]) {
+    } else if (this.state.moveFrom[0] === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+2 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'white') {
+      this.updateBoard(pos);
+      //piece detection.  can't take a piece moving forward
+    } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white'
+    && this.state.board[pos[0]][pos[1]].color === 'black' && ((this.state.moveFrom[0]-1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
+    || (this.state.moveFrom[0]-1 === pos[0] && this.state.moveFrom[1]+1 === pos[1]))) {
+      this.updateBoard(pos);
+    } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black'
+    && this.state.board[pos[0]][pos[1]].color === 'white' && ((this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
+    || (this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]+1 === pos[1]))) {
       this.updateBoard(pos);
     }
   }
@@ -83,6 +94,13 @@ moveRook(pos) {
 console.log("Rook");
 let newBoard = this.state.board.slice();
 if (pos[0] === this.state.moveFrom[0] || pos[1] === this.state.moveFrom[1]) {
+
+  for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+    if (this.state.board[moveFrom[0]+i][1].occupied !== null) {
+      this.updateBoard(pos);
+    }
+  }
+
  this.updateBoard(pos);
   }
 }
