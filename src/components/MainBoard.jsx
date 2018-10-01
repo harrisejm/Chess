@@ -25,6 +25,12 @@ class MainBoard extends React.Component {
       board: [],
       click: 0,
       moveFrom: [],
+      whiteKingMove: false, //for castling
+      blackKingMove: false, //for castling
+      whiteRookMoveOne: false, //for castling
+      whiteRookMoveTwo: false, //for castling
+      blackRookMoveOne: false, //for castling
+      blackRookMoveTwo: false, //for castling
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.testRender = this.testRender.bind(this);
@@ -91,6 +97,7 @@ class MainBoard extends React.Component {
     }
   }
   ///DONE
+
   moveRook(pos) {
     console.log("Rook");
     let newBoard = this.state.board.slice();
@@ -232,7 +239,6 @@ class MainBoard extends React.Component {
               }
             }
           }
-
           if (pieceBlocking === 0) {
             this.updateBoard(pos);
             console.log("inner");
@@ -258,7 +264,30 @@ class MainBoard extends React.Component {
 
           this.updateBoard(pos);
         }
-      }
+        //  else if (this.state.whiteKingMove === false && pos[0] === this.state.moveFrom[0]
+        //   && pos[1]-2 === this.state.moveFrom[1]
+        //   && this.state.board[pos[0]][pos[1]-1].occupied === null
+        //   && this.state.board[7][7].color === 'white') {
+        //     if (this.state.whiteRookMoveOne === false
+        //         &&) {
+        //
+
+
+
+
+        //    whiteRookMoveOne: false, //for castling
+        //    whiteRookMoveTwo: false, //for castling
+        //    blackRookMoveOne: false, //for castling
+        //    blackRookMoveTwo: false, //for castling
+
+        //  newBoard = null;
+
+          this.setState({whiteKingMove: true});
+
+          this.updateBoard(pos);
+        }
+
+    
 
       populateBoard() {
         let newBoard = this.state.board.slice();
