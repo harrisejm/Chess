@@ -25,7 +25,6 @@ class MainBoard extends React.Component {
       board: [],
       click: 0,
       moveFrom: [],
-      //  moveTo: [],
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.testRender = this.testRender.bind(this);
@@ -49,6 +48,8 @@ class MainBoard extends React.Component {
     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
     this.setState({board: newBoard, click: 0});
   }
+  ///Add piece detection. First move can jump a piece.
+
 
   movePawn(pos) {
     console.log("Pawn");
@@ -59,9 +60,9 @@ class MainBoard extends React.Component {
     } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'white') {
       this.updateBoard(pos);
       //first move. two spaces up
-    } else if (this.state.moveFrom[0] === 6 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'black') {
+    } else if (this.state.moveFrom[0] === 6 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1] && this.state.board[this.state.moveFrom[0]-1][this.state.moveFrom[1]].occupied === null && this.state.board[pos[0]][pos[1]].color !== 'black') {
       this.updateBoard(pos);
-    } else if (this.state.moveFrom[0] === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+2 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'white') {
+    } else if (this.state.moveFrom[0] === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+2 && pos[1] === this.state.moveFrom[1] && this.state.board[this.state.moveFrom[0]+1][this.state.moveFrom[1]].occupied === null && this.state.board[pos[0]][pos[1]].color !== 'white') {
       this.updateBoard(pos);
       //piece detection.  can't take a piece moving forward
     } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white'
@@ -89,7 +90,7 @@ class MainBoard extends React.Component {
       this.updateBoard(pos);
     }
   }
-
+///DONE
   moveRook(pos) {
     console.log("Rook");
     let newBoard = this.state.board.slice();
