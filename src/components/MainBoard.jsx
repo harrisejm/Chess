@@ -136,12 +136,10 @@ class MainBoard extends React.Component {
 
   moveBishop(pos) {
     console.log("Bishop");
-
     let newBoard = this.state.board.slice();
     let pieceBlocking = 0;
     if (pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
       || pos[0] - this.state.moveFrom[0] === this.state.moveFrom[1]-pos[1]) {
-
         if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] < 0) {
           for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
             if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null) {
@@ -167,34 +165,80 @@ class MainBoard extends React.Component {
             }
           }
         }
-
-        // for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-        //
-        //   if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null
-        //   || this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null
-        //   || this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null
-        //   || this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]+i].occupied !== null) {
-        //     pieceBlocking += 1;
-        //   }
-        // }
         if (pieceBlocking === 0) {
           this.updateBoard(pos);
           console.log("inner");
         } else {
           pieceBlocking = 0;
         }
-
       }
     }
 
     moveQueen(pos) {
       console.log("Queen");
       let newBoard = this.state.board.slice();
+      let pieceBlocking = 0;
       if (pos[0] === this.state.moveFrom[0]
         || pos[1] === this.state.moveFrom[1]
         || pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
         || pos[0] - this.state.moveFrom[0] === this.state.moveFrom[1]-pos[1]) {
-          this.updateBoard(pos);
+
+          if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] < 0) {
+            for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+              if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          } else if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] > 0) {
+            for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+              if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] < 0) {
+            for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+              if (this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] > 0) {
+            for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+              if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          } else if (pos[0] - this.state.moveFrom[0] > 0) {
+            for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+              if (this.state.board[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          } else if (pos[0] - this.state.moveFrom[0] < 0) {
+            for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+              if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          } else if (pos[1] - this.state.moveFrom[1] > 0) {
+            for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
+              if (this.state.board[pos[0]][this.state.moveFrom[1]+i].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          } else if (pos[1] - this.state.moveFrom[1] < 0) {
+            for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
+              if (this.state.board[pos[0]][this.state.moveFrom[1]-i].occupied !== null) {
+                pieceBlocking += 1;
+              }
+            }
+          }
+
+          if (pieceBlocking === 0) {
+            this.updateBoard(pos);
+            console.log("inner");
+          } else {
+            pieceBlocking = 0;
+          }
         }
       }
 
