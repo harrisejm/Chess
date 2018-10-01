@@ -25,7 +25,7 @@ class MainBoard extends React.Component {
       board: [],
       click: 0,
       moveFrom: [],
-      moveTo: [],
+    //  moveTo: [],
     };
     this.populateBoard = this.populateBoard.bind(this);
     this.testRender = this.testRender.bind(this);
@@ -92,16 +92,32 @@ class MainBoard extends React.Component {
 
 moveRook(pos) {
 console.log("Rook");
+console.log(Math.abs(pos[0]-this.state.moveFrom[0]) +1);
+//console.log(this.state.board[this.state.moveFrom[0]][0]);
 let newBoard = this.state.board.slice();
 if (pos[0] === this.state.moveFrom[0] || pos[1] === this.state.moveFrom[1]) {
-
+  let pieceBlocking = 0;
   for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-    if (this.state.board[moveFrom[0]+i][1].occupied !== null) {
-      this.updateBoard(pos);
+    //let spaces = this.state.board[this.state.moveFrom[0]-i][pos[1]].color;
+    if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
+      pieceBlocking += 1;
     }
-  }
 
- this.updateBoard(pos);
+    }
+    if (pieceBlocking === 0) {
+    this.updateBoard(pos);
+     console.log("inner");
+    }
+    // else {
+    //   this.updateBoard(pos);
+    //   console.log("inner");
+    //   console.log(this.state.board[this.state.moveFrom[0]][0]);
+    //
+    // }
+
+
+// this.updateBoard(pos);
+ console.log("outer");
   }
 }
 
@@ -399,7 +415,6 @@ moveKing(pos) {
     );
   }
 }
-
 // App.propTypes = {
 //   populateBoard: PropTypes.func
 // };
