@@ -90,7 +90,7 @@ class MainBoard extends React.Component {
       this.updateBoard(pos);
     }
   }
-///DONE
+  ///DONE
   moveRook(pos) {
     console.log("Rook");
     let newBoard = this.state.board.slice();
@@ -122,12 +122,6 @@ class MainBoard extends React.Component {
           }
         }
       }
-
-      // for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
-      //   if (this.state.board[this.state.moveFrom[0]][pos[1]-i].occupied !== null) {
-      //     pieceBlocking += 1;
-      //   }
-      // }
       console.log(pieceBlocking);
       if (pieceBlocking === 0) {
         this.updateBoard(pos);
@@ -148,6 +142,31 @@ class MainBoard extends React.Component {
     if (pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
       || pos[0] - this.state.moveFrom[0] === this.state.moveFrom[1]-pos[1]) {
 
+        if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] < 0) {
+          for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+            if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null) {
+              pieceBlocking += 1;
+            }
+          }
+        } else if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] > 0) {
+          for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+            if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
+              pieceBlocking += 1;
+            }
+          }
+        } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] < 0) {
+          for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+            if (this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null) {
+              pieceBlocking += 1;
+            }
+          }
+        } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] > 0) {
+          for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
+            if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
+              pieceBlocking += 1;
+            }
+          }
+        }
 
         // for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
         //
@@ -164,8 +183,8 @@ class MainBoard extends React.Component {
         } else {
           pieceBlocking = 0;
         }
-      }
 
+      }
     }
 
     moveQueen(pos) {
@@ -276,7 +295,6 @@ class MainBoard extends React.Component {
             this.setState({moveFrom: [pos[0],pos[1]], click: 1});
           }
         }
-
         if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
           if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color !== this.state.board[pos[0]][pos[1]].color) {
 
