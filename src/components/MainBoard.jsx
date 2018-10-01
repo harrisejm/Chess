@@ -103,24 +103,21 @@ class MainBoard extends React.Component {
             pieceBlocking += 1;
           }
         }
-      }
-      if (pos[0] - this.state.moveFrom[0] < 0) {
+      } else if (pos[0] - this.state.moveFrom[0] < 0) {
         for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
           if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
             pieceBlocking += 1;
           }
         }
-      }
-      if (pos[1] - this.state.moveFrom[1] > 0) {
-        for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-          if (this.state.board[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
+      } else if (pos[1] - this.state.moveFrom[1] > 0) {
+        for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
+          if (this.state.board[pos[0]][this.state.moveFrom[1]+i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
-      }
-      if (pos[1] - this.state.moveFrom[1] < 0) {
-        for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-          if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
+      } else if (pos[1] - this.state.moveFrom[1] < 0) {
+        for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
+          if (this.state.board[pos[0]][this.state.moveFrom[1]-i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -135,6 +132,7 @@ class MainBoard extends React.Component {
       if (pieceBlocking === 0) {
         this.updateBoard(pos);
         console.log("inner");
+        console.log(pieceBlocking);
       } else {
         pieceBlocking = 0;
       }
