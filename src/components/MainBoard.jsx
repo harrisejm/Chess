@@ -170,7 +170,7 @@ class MainBoard extends React.Component {
           }
         } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] > 0) {
           for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-            if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
+            if (this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]+i].occupied !== null) {
               pieceBlocking += 1;
             }
           }
@@ -264,13 +264,13 @@ class MainBoard extends React.Component {
         || (pos[0] === this.state.moveFrom[0]-1 && pos[1]-1 === this.state.moveFrom[1])
         || (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])
         || (pos[0] === this.state.moveFrom[0]-1 && pos[1]+1 === this.state.moveFrom[1])) {
-  this.setState({whiteKingMove: true});
+          this.setState({whiteKingMove: true});
           this.updateBoard(pos);
         }
         else if (this.state.whiteKingMove === false && pos[0] === this.state.moveFrom[0]
           && pos[1]-2 === this.state.moveFrom[1]
           && this.state.board[pos[0]][pos[1]-1].occupied === null
-          && this.state.board[7][7].firstMove === true) {
+          && this.state.board[7][7].firstMove === true && this.state.board[pos[0]][pos[1]-2].color === 'white') {
 
             newBoard[7][5].occupied = newBoard[7][7].occupied;
             newBoard[7][5].color = newBoard[7][7].color;
@@ -281,13 +281,12 @@ class MainBoard extends React.Component {
             if (newBoard[7][7].firstMove === true) {
               newBoard[7][5].firstMove = false;
             }
-
             this.setState({whiteKingMove: true});
             this.updateBoard(pos);
           } else if (this.state.whiteKingMove === false && pos[0] === this.state.moveFrom[0]
             && pos[1]+2 === this.state.moveFrom[1]
             && this.state.board[pos[0]][pos[1]+1].occupied === null
-            && this.state.board[7][0].firstMove === true) {
+            && this.state.board[7][0].firstMove === true && this.state.board[pos[0]][pos[1]-2].color === 'white') {
 
               newBoard[7][3].occupied = newBoard[7][0].occupied;
               newBoard[7][3].color = newBoard[7][0].color;
@@ -302,6 +301,42 @@ class MainBoard extends React.Component {
               this.setState({whiteKingMove: true});
               this.updateBoard(pos);
             }
+//// black
+            else if (this.state.blackKingMove === false && pos[0] === this.state.moveFrom[0]
+              && pos[1]-2 === this.state.moveFrom[1]
+              && this.state.board[pos[0]][pos[1]-1].occupied === null
+              && this.state.board[0][7].firstMove === true && this.state.board[pos[0]][pos[1]-2].color === 'black') {
+
+                newBoard[0][5].occupied = newBoard[0][7].occupied;
+                newBoard[0][5].color = newBoard[0][7].color;
+                newBoard[0][5].piece = newBoard[0][7].piece;
+                newBoard[0][7].occupied = null;
+                newBoard[0][7].color = null;
+                newBoard[0][7].highlight = null;
+                if (newBoard[0][7].firstMove === true) {
+                  newBoard[0][5].firstMove = false;
+                }
+                this.setState({blackKingMove: true});
+                this.updateBoard(pos);
+              } else if (this.state.blackKingMove === false && pos[0] === this.state.moveFrom[0]
+                && pos[1]-2 === this.state.moveFrom[1]
+                && this.state.board[pos[0]][pos[1]-1].occupied === null
+                && this.state.board[0][0].firstMove === true && this.state.board[pos[0]][pos[1]-2].color === 'black') {
+
+                  newBoard[0][3].occupied = newBoard[0][0].occupied;
+                  newBoard[0][3].color = newBoard[0][0].color;
+                  newBoard[0][3].piece = newBoard[0][0].piece;
+                  newBoard[0][0].occupied = null;
+                  newBoard[0][0].color = null;
+                  newBoard[0][0].highlight = null;
+                  if (newBoard[0][0].firstMove === true) {
+                    newBoard[0][3].firstMove = false;
+                  }
+
+                  this.setState({blackKingMove: true});
+                  this.updateBoard(pos);
+                }
+
         }
 
 
