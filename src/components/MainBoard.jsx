@@ -48,18 +48,21 @@ class MainBoard extends React.Component {
     this.updateBoard = this.updateBoard.bind(this);
   }
 
+
+
   inCheck(pos) {
     if (this.state.click === 1) {
       //black pawn
-      if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && this.state.whiteKingPos[0]-1 === pos[0] && (this.state.whiteKingPos[1]-1 === pos[1] || this.state.whiteKingPos[1]+1 === pos[1]) && (this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]-1].occupied === bp || this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]+1].occupied === bp)) {
+      if (this.state.whiteKingPos[0]-1 === pos[0]
+      && (this.state.whiteKingPos[1]-1 === pos[1] || this.state.whiteKingPos[1]+1 === pos[1])
+      && (this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]-1].occupied === bp || this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]+1].occupied === bp)) {
         this.setState({check: " White king is in Check" });
         //white pawn
-      } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && this.state.blackKingPos[0]+1 === pos[0] && (this.state.blackKingPos[1]-1 === pos[1] || this.state.blackKingPos[1]+1 === pos[1]) && (this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]-1].occupied === wp || this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]+1].occupied === wp)) {
+      } else if (this.state.blackKingPos[0]+1 === pos[0] && (this.state.blackKingPos[1]-1 === pos[1] || this.state.blackKingPos[1]+1 === pos[1]) && (this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]-1].occupied === wp || this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]+1].occupied === wp)) {
         this.setState({check: " Black king is in Check" });
-
-        // white Kight
+      //  white Kight
       }
-      else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' &&
+      else if (
            (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1])
         || (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1])
         || (this.state.whiteKingPos[0]-1 === pos[0] && this.state.whiteKingPos[1]-2 === pos[1])
@@ -68,9 +71,11 @@ class MainBoard extends React.Component {
         || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1])
         || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1])
         || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1])
+
       ){
         this.setState({check: " White king is in Check" });
-      } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' &&
+        //black knight
+      } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === wk &&
            (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1])
         || (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1])
         || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1])
@@ -79,7 +84,6 @@ class MainBoard extends React.Component {
         || (this.state.blackKingPos[0]+1 === pos[0] && this.state.blackKingPos[1]+2 === pos[1])
         || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1])
         || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1])
-
       ) {
         this.setState({check: " Black king is in Check" });
       } else {
