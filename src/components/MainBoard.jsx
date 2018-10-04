@@ -33,7 +33,7 @@ class MainBoard extends React.Component {
       blackRookMoveTwo: false, //for castling
       //////
       whiteKingPos: [7,4],
-      blackKingPos: [],
+      blackKingPos: [0,4],
       check: null,
     };
     this.populateBoard = this.populateBoard.bind(this);
@@ -48,18 +48,24 @@ class MainBoard extends React.Component {
     this.updateBoard = this.updateBoard.bind(this);
   }
 
-  inCheck() {
-    let newBoard = this.state.board.slice();
+  inCheck(pos) {
     if (this.state.click === 1) {
-      if (this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]-1].color === "black") {
-        this.setState({check: "Check" });
+      //black pawn
+      if (this.state.whiteKingPos[0]-1 === pos[0] && (this.state.whiteKingPos[1]-1 === pos[1] || this.state.whiteKingPos[1]+1 === pos[1]) && (this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]-1].occupied === bp || this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]+1].occupied === bp)) {
+        this.setState({check: " White king is in Check" });
+      //white pawn
+      } else if (this.state.blackKingPos[0]+1 === pos[0] && (this.state.blackKingPos[1]-1 === pos[1] || this.state.blackKingPos[1]+1 === pos[1]) && (this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]-1].occupied === wp || this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]+1].occupied === wp)) {
+      this.setState({check: " Black king is in Check" });
+
+    } else if ( )
+
       } else {
         this.setState({check: null});
       }
     }
   }
   updateBoard(pos) {
-    this.inCheck();
+    //this.inCheck();
     let newBoard = this.state.board.slice();
     newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
     newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
@@ -281,6 +287,7 @@ class MainBoard extends React.Component {
         || (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])
         || (pos[0] === this.state.moveFrom[0]-1 && pos[1]+1 === this.state.moveFrom[1])) {
           this.setState({whiteKingMove: true, whiteKingPos: pos});
+          this.setState({blackKingMove: true, blackKingPos: pos});
           this.updateBoard(pos);
         }
         else if (this.state.whiteKingMove === false && pos[0] === this.state.moveFrom[0]
@@ -335,6 +342,7 @@ class MainBoard extends React.Component {
                 this.setState({blackKingMove: true, blackKingPos: pos});;
                 this.updateBoard(pos);
               } else if (this.state.blackKingMove === false && pos[0] === this.state.moveFrom[0]
+                && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === bk
                 && pos[1]+2 === this.state.moveFrom[1]
                 && this.state.board[pos[0]][pos[1]-1].occupied === null
                 && this.state.board[pos[0]][pos[1]+1].occupied === null
@@ -430,6 +438,7 @@ class MainBoard extends React.Component {
               //  this.inCheck(pos); //////////////////////////////////////
                 /////////////
                 if (this.state.click === 0) {
+
                   if (this.state.board[pos[0]][pos[1]].occupied !== null) {
                     let newBoard = this.state.board.slice();
                     newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid', borderWidth: 'thick', borderColor: 'green'}, {});
@@ -439,6 +448,7 @@ class MainBoard extends React.Component {
                   }
                 }
                 if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
+
                   if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color !== this.state.board[pos[0]][pos[1]].color) {
 
                     this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos);
@@ -446,26 +456,29 @@ class MainBoard extends React.Component {
                     console.log(newBoard);
                     //   this.setState({board: newBoard, click: 0})
                   } else {
+
                     newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
                     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
 
                     this.setState({moveFrom: [pos[0],pos[1]]});
                     this.setState({board: newBoard});
+
                   }
                 }
                 //    this.setState({board: newBoard})
                 console.log(this.state.board);
+ this.inCheck(pos);
               }
 
               testRender(){
                 const squareColor = {
                   backgroundColor: '#ADD8E6'
                 };
-                // const testColor = {
-                //   border: 'solid',
-                //   borderWidth: 'thick',
-                //   borderColor: 'green'
-                // }
+
+                const showCheck = {
+                  fontSize: '30px',
+                  color: 'red'
+                }
 
                 //  const row1 = <td> {this.state.board[0][0].occupied} </td>;
                 //  const row2 = <td> {this.state.board[3][0].occupied} </td>;
@@ -506,7 +519,9 @@ class MainBoard extends React.Component {
                     <img src={wr}/>
                     <p>{this.state.click} Does this work</p>
                     <p>White King: {this.state.whiteKingPos[0]} - {this.state.whiteKingPos[1]}</p>
-                    <p>In Check {this.state.check}</p>
+                    <p>Black King: {this.state.blackKingPos[0]} - {this.state.blackKingPos[1]}</p>
+                    <p>Click: {this.state.click}</p>
+                    <p style={showCheck}> In Check {this.state.check}</p>
                     <table>
                       <tbody>
                         <tr className="row1">
