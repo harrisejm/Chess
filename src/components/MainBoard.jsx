@@ -63,27 +63,27 @@ class MainBoard extends React.Component {
       //  white Kight
       }
       else if (
-           (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1])
-        || (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1])
-        || (this.state.whiteKingPos[0]-1 === pos[0] && this.state.whiteKingPos[1]-2 === pos[1])
-        || (this.state.whiteKingPos[0]-1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1])
-        || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]-2 === pos[1])
-        || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1])
-        || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1])
-        || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1])
+           (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1] && this.state.board[this.state.whiteKingPos[0]-2][this.state.whiteKingPos[1]-1].occupied === bkn)
+        || (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1] && this.state.board[this.state.whiteKingPos[0]-2][this.state.whiteKingPos[1]+1].occupied === bkn)
+        || (this.state.whiteKingPos[0]-1 === pos[0] && this.state.whiteKingPos[1]-2 === pos[1] && this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]-2].occupied === bkn)
+        || (this.state.whiteKingPos[0]-1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1] && this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]+2].occupied === bkn)
+        || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]-2 === pos[1] && this.state.board[this.state.whiteKingPos[0]+1][this.state.whiteKingPos[1]-2].occupied === bkn)
+        || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1] && this.state.board[this.state.whiteKingPos[0]+1][this.state.whiteKingPos[1]+2].occupied === bkn)
+        || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1] && this.state.board[this.state.whiteKingPos[0]+2][this.state.whiteKingPos[1]-1].occupied === bkn)
+        || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1] && this.state.board[this.state.whiteKingPos[0]+2][this.state.whiteKingPos[1]+1].occupied === bkn)
 
       ){
         this.setState({check: " White king is in Check" });
         //black knight
-      } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === wk &&
-           (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1])
-        || (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1])
-        || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1])
-        || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]+2 === pos[1])
-        || (this.state.blackKingPos[0]+1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1])
-        || (this.state.blackKingPos[0]+1 === pos[0] && this.state.blackKingPos[1]+2 === pos[1])
-        || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1])
-        || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1])
+      } else if (//this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === wk &&
+           (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1] && this.state.board[this.state.blackKingPos[0]-2][this.state.blackKingPos[1]-1].occupied === wkn)
+        || (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1] && this.state.board[this.state.blackKingPos[0]-2][this.state.blackKingPos[1]+1].occupied === wkn)
+        || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1] && this.state.board[this.state.blackKingPos[0]-1][this.state.blackKingPos[1]-2].occupied === wkn)
+        || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]+2 === pos[1] && this.state.board[this.state.blackKingPos[0]-1][this.state.blackKingPos[1]+2].occupied === wkn)
+        || (this.state.blackKingPos[0]+1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1] && this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]-2].occupied === wkn)
+        || (this.state.blackKingPos[0]+1 === pos[0] && this.state.blackKingPos[1]+2 === pos[1] && this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]+2].occupied === wkn)
+        || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1] && this.state.board[this.state.blackKingPos[0]+2][this.state.blackKingPos[1]-1].occupied === wkn)
+        || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1] && this.state.board[this.state.blackKingPos[0]+2][this.state.blackKingPos[1]+1].occupied === wkn)
       ) {
         this.setState({check: " Black king is in Check" });
       } else {
