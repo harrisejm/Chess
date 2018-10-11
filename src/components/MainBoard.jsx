@@ -71,11 +71,10 @@ class MainBoard extends React.Component {
         || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1] && this.state.board[this.state.whiteKingPos[0]+1][this.state.whiteKingPos[1]+2].occupied === bkn)
         || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1] && this.state.board[this.state.whiteKingPos[0]+2][this.state.whiteKingPos[1]-1].occupied === bkn)
         || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1] && this.state.board[this.state.whiteKingPos[0]+2][this.state.whiteKingPos[1]+1].occupied === bkn)
-
       ){
         this.setState({check: " White king is in Check" });
         //black knight
-      } else if (//this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === wk &&
+      } else if (
            (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1] && this.state.board[this.state.blackKingPos[0]-2][this.state.blackKingPos[1]-1].occupied === wkn)
         || (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1] && this.state.board[this.state.blackKingPos[0]-2][this.state.blackKingPos[1]+1].occupied === wkn)
         || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1] && this.state.board[this.state.blackKingPos[0]-1][this.state.blackKingPos[1]-2].occupied === wkn)
@@ -90,8 +89,39 @@ class MainBoard extends React.Component {
         this.setState({check: null});
       }
 
+
+
+        let rook = false;
+        let distanceToKing = [];
+        for (let i=1; i < 8 - this.state.whiteKingPos[0]; i++) {
+
+          if (this.state.board[this.state.whiteKingPos[0]+i][this.state.whiteKingPos[1]].occupied === br) {
+            rook = true;
+            distanceToKing.push(i);
+            //  this.setState({check: " White king is in Check" });
+
+          //  pieceBlocking += 1;
+        }
+      }
+      console.log(distanceToKing + " " + rook);
+      if (rook === true) {
+      let pieceBlocking = 0;
+        for (let i=1; i < distanceToKing[0]; i++) {
+          if (this.state.board[this.state.whiteKingPos[0]+i][this.state.whiteKingPos[1]].occupied !== null) {
+            pieceBlocking += 1;
+           }
+        }
+
+        if (pieceBlocking === 0) {
+            this.setState({check: " White king is in Check" });
+
+      }
+
+}
+
     }
   }
+
   updateBoard(pos) {
     //this.inCheck();
     let newBoard = this.state.board.slice();
