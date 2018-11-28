@@ -23,8 +23,11 @@ class MainBoard extends React.Component {
     super(props);
     this.state = {
       board: [],
+      takenPiecesWhite: [],
+      takenPiecesBlack: [],
       click: 0,
       moveFrom: [],
+      switchPawn: [],
       whiteKingMove: false, //for castling
       blackKingMove: false, //for castling
       whiteRookMoveOne: false, //for castling
@@ -47,49 +50,70 @@ class MainBoard extends React.Component {
     this.moveKing = this.moveKing.bind(this);
     this.updateBoard = this.updateBoard.bind(this);
     this.checkByRook = this.checkByRook.bind(this);
+    this.selectTakenPiece = this.selectTakenPiece.bind(this);
   }
 
-  checkByRook(pos){
+  checkByRook(pos,color){
+    let kingPieceColor;
+    let rookPieceColor;
+    let queenPieceColor;
+    let colorOfKing;
+    let kingPosY;
+    let kingPosX;
+    if (color === 1) {
+      kingPieceColor = wk;
+      rookPieceColor = br;
+      queenPieceColor = bq;
+      colorOfKing = " White";
+      kingPosY = this.state.whiteKingPos[0];
+      kingPosX = this.state.whiteKingPos[1];
+    } else if (color === 2) {
+      kingPieceColor = bk;
+      rookPieceColor = wr;
+      queenPieceColor = wq;
+      colorOfKing = " Black";
+      kingPosY = this.state.blackKingPos[0];
+      kingPosX = this.state.blackKingPos[1];
+    }
     let rookUp = false, rookDown = false, rookLeft = false, rookRight = false;
     let distanceToKingUp = [], distanceToKingDown = [], distanceToKingLeft = [], distanceToKingRight = [];
     ///////
-    let rookUpBlack = false, rookDownBlack = false, rookLeftBlack = false, rookRightBlack = false;
-    let distanceToKingUpBlack = [], distanceToKingDownBlack = [], distanceToKingLeftBlack = [], distanceToKingRightBlack = [];
+
     // let a=0,b=0,c=0,d=0;
     // let whiteKingArr = [this.state.board[this.state.whiteKingPos[0]+a][this.state.whiteKingPos[1]].occupied === br, this.state.board[this.state.whiteKingPos[0]-b][this.state.whiteKingPos[1]].occupied === br, this.state.board[this.state.whiteKingPos[0]][this.state.whiteKingPos[1]-c].occupied === br, this.state.board[this.state.whiteKingPos[0]][this.state.whiteKingPos[1]+d].occupied === br]
     //
 
     //allows king to move out of check
-    if (this.state.board[pos[0]][pos[1]].occupied === wk || this.state.board[pos[0]][pos[1]].occupied === bk) {
+    if (this.state.board[pos[0]][pos[1]].occupied === colorOfKing) {
       this.setState({check: null});
     } else {
 
-      for (let i=1; i < 8-this.state.whiteKingPos[0]; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]+i][this.state.whiteKingPos[1]].occupied === br) {
+      for (let i=1; i < 8-kingPosY; i++) {
+        if (this.state.board[kingPosY+i][kingPosX].occupied === rookPieceColor || this.state.board[kingPosY+i][kingPosX].occupied === queenPieceColor) {
           rookUp = true;
           console.log("up");
           distanceToKingUp.push(i);
         }
       }
       //rook down
-      for (let i=1; i < this.state.whiteKingPos[0]+1; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]-i][this.state.whiteKingPos[1]].occupied === br) {
+      for (let i=1; i < kingPosY+1; i++) {
+        if (this.state.board[kingPosY-i][kingPosX].occupied === rookPieceColor || this.state.board[kingPosY-i][kingPosX].occupied === queenPieceColor) {
           rookDown = true;
           console.log("down");
           distanceToKingDown.push(i);
         }
       }
       //rook left
-      for (let i=1; i < this.state.whiteKingPos[1]+1; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]][this.state.whiteKingPos[1]-i].occupied === br) {
+      for (let i=1; i < kingPosX+1; i++) {
+        if (this.state.board[kingPosY][kingPosX-i].occupied === rookPieceColor || this.state.board[kingPosY][kingPosX-i].occupied === queenPieceColor) {
           rookLeft = true;
           console.log("left");
           distanceToKingLeft.push(i);
         }
       }
       //rook right
-      for (let i=1; i < 8 - this.state.whiteKingPos[1]; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]][this.state.whiteKingPos[1]+i].occupied === br) {
+      for (let i=1; i < 8 - kingPosX; i++) {
+        if (this.state.board[kingPosY][kingPosX+i].occupied === rookPieceColor || this.state.board[kingPosY][kingPosX+i].occupied === queenPieceColor) {
           rookRight = true;
           console.log("right")
           distanceToKingRight.push(i);
@@ -97,181 +121,225 @@ class MainBoard extends React.Component {
       }
       //////////////////
       //rookUp
-      if (rookUpBlack === true) {
+      if (rookUp === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingUp[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]+i][this.state.whiteKingPos[1]].occupied !== null) {
+          if (this.state.board[kingPosY+i][kingPosX].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
       //rook down
       if (rookDown === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingDown[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]-i][this.state.whiteKingPos[1]].occupied !== null) {
+          if (this.state.board[kingPosY-i][kingPosX].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
       //rook left
       if (rookLeft === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingLeft[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]][this.state.whiteKingPos[1]-i].occupied !== null) {
+          if (this.state.board[kingPosY][kingPosX-i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
       //rook right
       if (rookRight === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingRight[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]][this.state.whiteKingPos[1]+i].occupied !== null) {
+          if (this.state.board[kingPosY][kingPosX+i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
       //////////////////
       ///BLACK
       //////////////////
-      for (let i=1; i < 8-this.state.blackKingPos[0]; i++) {
-        if (this.state.board[this.state.blackKingPos[0]+i][this.state.blackKingPos[1]].occupied === wr) {
-          rookUpBlack = true;
-          console.log("up");
-          distanceToKingUpBlack.push(i);
-        }
-      }
-      //rook down
-      for (let i=1; i < this.state.blackKingPos[0]+1; i++) {
-        if (this.state.board[this.state.blackKingPos[0]-i][this.state.blackKingPos[1]].occupied === wr) {
-          rookDownBlack = true;
-          console.log("down");
-          distanceToKingDownBlack.push(i);
-        }
-      }
-      //rook left
-      for (let i=1; i < this.state.blackKingPos[1]+1; i++) {
-        if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]-i].occupied === wr) {
-          rookLeftBlack = true;
-          console.log("left");
-          distanceToKingLeftBlack.push(i);
-        }
-      }
-      //rook right
-      for (let i=1; i < 8 - this.state.blackKingPos[1]; i++) {
-        if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]+i].occupied === wr) {
-          rookRightBlack = true;
-          console.log("right")
-          distanceToKingRightBlack.push(i);
-        }
-      }
-      /////////////////////////////
-      //rookUpBlack
-      if (rookUpBlack === true) {
-        let pieceBlocking = 0;
-        for (let i=1; i < distanceToKingUpBlack[0]; i++) {
-          if (this.state.board[this.state.blackKingPos[0]+i][this.state.blackKingPos[1]].occupied !== null) {
-            pieceBlocking += 1;
-          }
-        }
-        if (pieceBlocking === 0) {
-          this.setState({check: "Black king is in Check" });
-        }
-      }
-      //rook down
-      if (rookDownBlack === true) {
-        let pieceBlocking = 0;
-        for (let i=1; i < distanceToKingDownBlack[0]; i++) {
-          if (this.state.board[this.state.blackKingPos[0]-i][this.state.blackKingPos[1]].occupied !== null) {
-            pieceBlocking += 1;
-          }
-        }
-        if (pieceBlocking === 0) {
-          this.setState({check: "Black king is in Check" });
-        }
-      }
-      //rook left
-      if (rookLeftBlack === true) {
-        let pieceBlocking = 0;
-        for (let i=1; i < distanceToKingLeftBlack[0]; i++) {
-          if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]-i].occupied !== null) {
-            pieceBlocking += 1;
-          }
-        }
-        if (pieceBlocking === 0) {
-          this.setState({check: "Black king is in Check" });
-        }
-      }
-      //rook right
-      if (rookRightBlack === true) {
-        let pieceBlocking = 0;
-        for (let i=1; i < distanceToKingRightBlack[0]; i++) {
-          if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]+i].occupied !== null) {
-            pieceBlocking += 1;
-          }
-        }
-        if (pieceBlocking === 0) {
-          this.setState({check: "Black king is in Check" });
-        }
-      }
+      // for (let i=1; i < 8-this.state.blackKingPos[0]; i++) {
+      //   if (this.state.board[this.state.blackKingPos[0]+i][this.state.blackKingPos[1]].occupied === wr) {
+      //     rookUpBlack = true;
+      //     console.log("up");
+      //     distanceToKingUpBlack.push(i);
+      //   }
+      // }
+      // //rook down
+      // for (let i=1; i < this.state.blackKingPos[0]+1; i++) {
+      //   if (this.state.board[this.state.blackKingPos[0]-i][this.state.blackKingPos[1]].occupied === wr) {
+      //     rookDownBlack = true;
+      //     console.log("down");
+      //     distanceToKingDownBlack.push(i);
+      //   }
+      // }
+      // //rook left
+      // for (let i=1; i < this.state.blackKingPos[1]+1; i++) {
+      //   if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]-i].occupied === wr) {
+      //     rookLeftBlack = true;
+      //     console.log("left");
+      //     distanceToKingLeftBlack.push(i);
+      //   }
+      // }
+      // //rook right
+      // for (let i=1; i < 8 - this.state.blackKingPos[1]; i++) {
+      //   if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]+i].occupied === wr) {
+      //     rookRightBlack = true;
+      //     console.log("right")
+      //     distanceToKingRightBlack.push(i);
+      //   }
+      // }
+      // /////////////////////////////
+      // //rookUpBlack
+      // if (rookUpBlack === true) {
+      //   let pieceBlocking = 0;
+      //   for (let i=1; i < distanceToKingUpBlack[0]; i++) {
+      //     if (this.state.board[this.state.blackKingPos[0]+i][this.state.blackKingPos[1]].occupied !== null) {
+      //       pieceBlocking += 1;
+      //     }
+      //   }
+      //   if (pieceBlocking === 0) {
+      //     this.setState({check: "Black king is in Check" });
+      //   }
+      // }
+      // //rook down
+      // if (rookDownBlack === true) {
+      //   let pieceBlocking = 0;
+      //   for (let i=1; i < distanceToKingDownBlack[0]; i++) {
+      //     if (this.state.board[this.state.blackKingPos[0]-i][this.state.blackKingPos[1]].occupied !== null) {
+      //       pieceBlocking += 1;
+      //     }
+      //   }
+      //   if (pieceBlocking === 0) {
+      //     this.setState({check: "Black king is in Check" });
+      //   }
+      // }
+      // //rook left
+      // if (rookLeftBlack === true) {
+      //   let pieceBlocking = 0;
+      //   for (let i=1; i < distanceToKingLeftBlack[0]; i++) {
+      //     if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]-i].occupied !== null) {
+      //       pieceBlocking += 1;
+      //     }
+      //   }
+      //   if (pieceBlocking === 0) {
+      //     this.setState({check: "Black king is in Check" });
+      //   }
+      // }
+      // //rook right
+      // if (rookRightBlack === true) {
+      //   let pieceBlocking = 0;
+      //   for (let i=1; i < distanceToKingRightBlack[0]; i++) {
+      //     if (this.state.board[this.state.blackKingPos[0]][this.state.blackKingPos[1]+i].occupied !== null) {
+      //       pieceBlocking += 1;
+      //     }
+      //   }
+      //   if (pieceBlocking === 0) {
+      //     this.setState({check: "Black king is in Check" });
+      //   }
+      // }
       /////
     }
   }
 
-  checkByBishop(pos) {
+  checkByBishop(pos, color) {
+    let kingPieceColor;
+    let bishopPieceColor;
+    let queenPieceColor;
+    let colorOfKing;
+    let kingPosY;
+    let kingPosX;
+    if (color === 1) {
+      kingPieceColor = wk;
+      bishopPieceColor = bb;
+      queenPieceColor = bq;
+      colorOfKing = " White";
+      kingPosY = this.state.whiteKingPos[0];
+      kingPosX = this.state.whiteKingPos[1];
+    } else if (color === 2) {
+      kingPieceColor = bk;
+      bishopPieceColor = wb;
+      queenPieceColor = wq;
+      colorOfKing = " Black";
+      kingPosY = this.state.blackKingPos[0];
+      kingPosX = this.state.blackKingPos[1];
+    }
+    let tl, tr, bl, br;
     let bishopTopLeft = false, bishopTopRight = false, bishopBottomLeft = false, bishopBottomRight = false;
-    let distanceTopLeft = [], distanceTopRight = [], distanceBottomLeft = [], distanceBottoRight = [];
-    ///////
-    // let rookUpBlack = false, rookDownBlack = false, rookLeftBlack = false, rookRightBlack = false;
-    // let distanceToKingUpBlack = [], distanceToKingDownBlack = [], distanceToKingLeftBlack = [], distanceToKingRightBlack = [];
-
+    let distanceTopLeft = [], distanceTopRight = [], distanceBottomLeft = [], distanceBottomRight = [];
 
     //allows king to move out of check
-    if (this.state.board[pos[0]][pos[1]].occupied === wk || this.state.board[pos[0]][pos[1]].occupied === bk) {
+    if (this.state.board[pos[0]][pos[1]].occupied === kingPieceColor) {
       this.setState({check: null});
     } else {
-  //bishop Top left
-      for (let i=1; i < 8-this.state.whiteKingPos[0]; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]-i][this.state.whiteKingPos[1]-i].occupied === bb) {
+      //bishop Top left
+      if (kingPosY >= kingPosX) {
+        tl = kingPosX+1;
+        console.log("tl path 1");
+      } else {
+        tl = kingPosY+1;
+        console.log("tl path 2");
+      }
+
+      for (let i=1; i < tl; i++) {
+        if (this.state.board[kingPosY-i][kingPosX-i].occupied === bishopPieceColor || this.state.board[kingPosY-i][kingPosX-i].occupied === queenPieceColor) {
           bishopTopLeft = true;
-          console.log("up");
+          console.log("topleft " + tl);
           distanceTopLeft.push(i);
         }
       }
       //bishop top right
-      for (let i=1; i < 8-this.state.whiteKingPos[0]; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]-i][this.state.whiteKingPos[1]+i].occupied === bb) {
+      if (kingPosY+1 >= 8-kingPosX) {
+        tr = 8-kingPosX;
+      } else {
+        tr = kingPosY+1;
+      }
+      for (let i=1; i < tr; i++) {
+        if (this.state.board[kingPosY-i][kingPosX+i].occupied === bishopPieceColor || this.state.board[kingPosY-i][kingPosX+i].occupied === queenPieceColor) {
           bishopTopRight = true;
-          console.log("down");
+          console.log("topRight " + tr);
+            console.log("EDDIE " + tr);
           distanceTopRight.push(i);
         }
       }
       //bishop bottom left
-      for (let i=1; i < this.state.whiteKingPos[1]+1; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]+1][this.state.whiteKingPos[1]-i].occupied === bb) {
-          bishopTopLeft = true;
-          console.log("left");
+      if (8-kingPosY >= kingPosX+1) {
+        bl = kingPosX+1;
+      } else {
+        bl = 8-kingPosY;
+      }
+      for (let i=1; i < bl; i++) {
+        if (this.state.board[kingPosY+i][kingPosX-i].occupied === bishopPieceColor || this.state.board[kingPosY+i][kingPosX-i].occupied === queenPieceColor) {
+          bishopBottomLeft = true;
+          console.log("bottomLeft");
+          console.log("EDDIE " + bl);
           distanceBottomLeft.push(i);
         }
       }
       //bishop bottom right
-      for (let i=1; i < this.state.whiteKingPos[1]+1; i++) {
-        if (this.state.board[this.state.whiteKingPos[0]-i][this.state.whiteKingPos[1]+i].occupied === bb) {
+      if (8-kingPosY >= 8-kingPosX) {
+        br = 8-kingPosX;
+      } else {
+        br = 8-kingPosY;
+      }
+      for (let i=1; i < br; i++) {
+      if (this.state.board[kingPosY+i][kingPosX+i].occupied === bishopPieceColor || this.state.board[kingPosY+i][kingPosX+i].occupied === queenPieceColor) {
           bishopTopRight = true;
-          console.log("right")
+          console.log("bottomRight");
+          console.log("EDDIE " + br);
           distanceBottomRight.push(i);
         }
       }
@@ -280,52 +348,52 @@ class MainBoard extends React.Component {
       if (bishopTopLeft === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceTopLeft[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]-i][this.state.whiteKingPos[1]-i].occupied !== null) {
+          if (this.state.board[kingPosY-i][kingPosX-i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
       //bishop top right
       if (bishopTopRight === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceTopRight[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]-i][this.state.whiteKingPos[1]+i].occupied !== null) {
+          if (this.state.board[kingPosY-i][kingPosX+i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
       //bishop bottom left
       if (bishopBottomLeft === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceBottomLeft[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]+i][this.state.whiteKingPos[1]-i].occupied !== null) {
+          if (this.state.board[kingPosY+i][kingPosX-i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
       //bishop bottom right
       if (bishopBottomRight === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceBottomRight[0]; i++) {
-          if (this.state.board[this.state.whiteKingPos[0]+i][this.state.whiteKingPos[1]+i].occupied !== null) {
+          if (this.state.board[kingPosY+i][kingPosX+i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: " White king is in Check" });
+          this.setState({check: colorOfKing + " king is in Check" });
         }
       }
+    }
   }
-}
 
   inCheck(pos) {
 
@@ -369,16 +437,31 @@ class MainBoard extends React.Component {
             this.setState({check: null});
           }
 
-          this.checkByRook(pos);
-          this.checkByBishop(pos);
-
+          this.checkByRook(pos,1);
+          this.checkByRook(pos,2);
+          this.checkByBishop(pos,1);
+          this.checkByBishop(pos,2);
 
         }
       }
 
+
       updateBoard(pos) {
         //this.inCheck();
         let newBoard = this.state.board.slice();
+        let newTakenPiecesWhite = this.state.takenPiecesWhite.slice();
+        let newTakenPiecesBlack = this.state.takenPiecesBlack.slice();
+
+        if (this.state.board[pos[0]][pos[1]].occupied !== null) {
+          let takenPiece = Object.assign({positionY: this.state.board[pos[0]][pos[1]].positionY, positionX: this.state.board[pos[0]][pos[1]].positionX, color: this.state.board[pos[0]][pos[1]].color, highlight: null, firstMove: this.state.board[pos[0]][pos[1]].firstMove, occupied: this.state.board[pos[0]][pos[1]].occupied, piece: this.state.board[pos[0]][pos[1]].piece}, {});
+          if (this.state.board[pos[0]][pos[1]].color === 'white') {
+            newTakenPiecesWhite.push(takenPiece);
+            this.setState({takenPiecesWhite: newTakenPiecesWhite});
+          } else if (this.state.board[pos[0]][pos[1]].color === 'black') {
+            newTakenPiecesBlack.push(takenPiece);
+            this.setState({takenPiecesBlack: newTakenPiecesBlack});
+          }
+        }
         newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
         newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
         newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
@@ -390,8 +473,26 @@ class MainBoard extends React.Component {
         }
         this.setState({board: newBoard, click: 0});
       }
-      ///Add piece detection. First move can jump a piece.
 
+      selectTakenPiece(piece) {
+        let newBoard = this.state.board.slice();
+        let selectedPiece;
+
+        if (this.state.switchPawn[0] === 0) {
+          selectedPiece = this.state.takenPiecesWhite[piece];
+        } else {
+          selectedPiece = this.state.takenPiecesBlack[piece];
+        }
+
+        newBoard[this.state.switchPawn[0]][this.state.switchPawn[1]].occupied = selectedPiece.occupied;
+        newBoard[this.state.switchPawn[0]][this.state.switchPawn[1]].color = selectedPiece.color;
+        newBoard[this.state.switchPawn[0]][this.state.switchPawn[1]].piece = selectedPiece.piece;
+        this.setState({board: newBoard});
+        alert(this.state.switchPawn[0]);
+      }
+
+
+      ///Add piece detection. First move can jump a piece.
 
       movePawn(pos) {
         console.log('Pawn');
@@ -416,6 +517,9 @@ class MainBoard extends React.Component {
         && this.state.board[pos[0]][pos[1]].color === 'white' && ((this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
         || (this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]+1 === pos[1]))) {
           this.updateBoard(pos);
+        }
+        if (pos[0] === 0 || pos[0] === 7) {
+            this.setState({switchPawn: [pos[0],pos[1]]});
         }
       }
       moveKight(pos) {
@@ -810,132 +914,146 @@ class MainBoard extends React.Component {
 
                     const chessBoard =
                     <div>
-                      <style jsx>{`
-                          td {
-                            border-style: solid;
-                            width: 70px;
-                            height: 70px;
-                          }
-                          `}</style>
+                    <style jsx>{`
+                      td {
+                        border-style: solid;
+                        width: 70px;
+                        height: 70px;
+                      }
+                      `}</style>
 
-                        <p>Move From: []</p>
-                        <p>Move To: </p>
+                      <p>Move From: []</p>
+                      <p>Move To: </p>
 
 
-                        <img src={bb}/>
-                        <img src={bk}/>
-                        <img src={bkn}/>
-                        <img src={bp}/>
-                        <img src={bq}/>
-                        <img src={br}/>
+                      <img src={bb}/>
+                      <img src={bk}/>
+                      <img src={bkn}/>
+                      <img src={bp}/>
+                      <img src={bq}/>
+                      <img src={br}/>
 
-                        <img src={wb}/>
-                        <img src={wk}/>
-                        <img src={wkn}/>
-                        <img src={wp}/>
-                        <img src={wq}/>
-                        <img src={wr}/>
-                        <p>{this.state.click} Does this work</p>
-                        <p>White King: {this.state.whiteKingPos[0]} - {this.state.whiteKingPos[1]}</p>
-                        <p>Black King: {this.state.blackKingPos[0]} - {this.state.blackKingPos[1]}</p>
-                        <p>Click: {this.state.click}</p>
+                      <img src={wb}/>
+                      <img src={wk}/>
+                      <img src={wkn}/>
+                      <img src={wp}/>
+                      <img src={wq}/>
+                      <img src={wr}/>
+                      <p>{this.state.click} Does this work</p>
+                      <p>White King: {this.state.whiteKingPos[0]} - {this.state.whiteKingPos[1]}</p>
+                      <p>Black King: {this.state.blackKingPos[0]} - {this.state.blackKingPos[1]}</p>
+                      <p>Click: {this.state.click}</p>
+                      <p style={showCheck}> In Check {this.state.check}</p>
+                      <table>
+                      <tbody>
+                      <tr className="row1">
 
-                        <p style={showCheck}> In Check {this.state.check}</p>
-                        <table>
-                          <tbody>
-                            <tr className="row1">
-
-                              <td style={this.state.board[0][0].highlight} onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[0][1].highlight)} onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
-                              <td style={this.state.board[0][2].highlight} onClick={()=>this.movePiece([0,2])}><img src={this.state.board[0][2].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[0][3].highlight)} onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
-                              <td style={this.state.board[0][4].highlight} onClick={()=>this.movePiece([0,4])}><img src={this.state.board[0][4].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[0][5].highlight)} onClick={()=>this.movePiece([0,5])}><img src={this.state.board[0][5].occupied}/></td>
-                              <td style={this.state.board[0][6].highlight} onClick={()=>this.movePiece([0,6])}><img src={this.state.board[0][6].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[0][7].highlight)} onClick={()=>this.movePiece([0,7])}><img src={this.state.board[0][7].occupied}/></td>
-                            </tr>
-                            <tr className="row2">
-                              <td style={Object.assign({}, squareColor, this.state.board[1][0].highlight)} onClick={()=>this.movePiece([1,0])}><img src={this.state.board[1][0].occupied}/></td>
-                              <td style={this.state.board[1][1].highlight} onClick={()=>this.movePiece([1,1])}><img src={this.state.board[1][1].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[1][2].highlight)} onClick={()=>this.movePiece([1,2])}><img src={this.state.board[1][2].occupied}/></td>
-                              <td style={this.state.board[1][3].highlight} onClick={()=>this.movePiece([1,3])}><img src={this.state.board[1][3].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[1][4].highlight)} onClick={()=>this.movePiece([1,4])}><img src={this.state.board[1][4].occupied}/></td>
-                              <td style={this.state.board[1][5].highlight} onClick={()=>this.movePiece([1,5])}><img src={this.state.board[1][5].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[1][6].highlight)} onClick={()=>this.movePiece([1,6])}><img src={this.state.board[1][6].occupied}/></td>
-                              <td style={this.state.board[1][7].highlight} onClick={()=>this.movePiece([1,7])}><img src={this.state.board[1][7].occupied}/></td>
-                            </tr>
-                            <tr className="row3">
-                              <td style={this.state.board[2][0].highlight} onClick={()=>this.movePiece([2,0])}><img src={this.state.board[2][0].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[2][1].highlight)} onClick={()=>this.movePiece([2,1])}><img src={this.state.board[2][1].occupied}/></td>
-                              <td style={this.state.board[2][2].highlight} onClick={()=>this.movePiece([2,2])}><img src={this.state.board[2][2].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[2][3].highlight)} onClick={()=>this.movePiece([2,3])}><img src={this.state.board[2][3].occupied}/></td>
-                              <td style={this.state.board[2][4].highlight} onClick={()=>this.movePiece([2,4])}><img src={this.state.board[2][4].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[2][5].highlight)} onClick={()=>this.movePiece([2,5])}><img src={this.state.board[2][5].occupied}/></td>
-                              <td style={this.state.board[2][6].highlight} onClick={()=>this.movePiece([2,6])}><img src={this.state.board[2][6].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[2][7].highlight)} onClick={()=>this.movePiece([2,7])}><img src={this.state.board[2][7].occupied}/></td>
-                            </tr>
-                            <tr className="row4">
-                              <td style={Object.assign({}, squareColor, this.state.board[3][0].highlight)} onClick={()=>this.movePiece([3,0])}><img src={this.state.board[3][0].occupied}/></td>
-                              <td style={this.state.board[3][1].highlight} onClick={()=>this.movePiece([3,1])}><img src={this.state.board[3][1].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[3][2].highlight)} onClick={()=>this.movePiece([3,2])}><img src={this.state.board[3][2].occupied}/></td>
-                              <td style={this.state.board[3][3].highlight} onClick={()=>this.movePiece([3,3])}><img src={this.state.board[3][3].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[3][4].highlight)} onClick={()=>this.movePiece([3,4])}><img src={this.state.board[3][4].occupied}/></td>
-                              <td style={this.state.board[3][5].highlight} onClick={()=>this.movePiece([3,5])}><img src={this.state.board[3][5].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[3][6].highlight)} onClick={()=>this.movePiece([3,6])}><img src={this.state.board[3][6].occupied}/></td>
-                              <td style={this.state.board[3][7].highlight} onClick={()=>this.movePiece([3,7])}><img src={this.state.board[3][7].occupied}/></td>
-                            </tr>
-                            <tr className="row5">
-                              <td style={this.state.board[4][0].highlight} onClick={()=>this.movePiece([4,0])}><img src={this.state.board[4][0].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[4][1].highlight)} onClick={()=>this.movePiece([4,1])}><img src={this.state.board[4][1].occupied}/></td>
-                              <td style={this.state.board[4][2].highlight} onClick={()=>this.movePiece([4,2])}><img src={this.state.board[4][2].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[4][3].highlight)} onClick={()=>this.movePiece([4,3])}><img src={this.state.board[4][3].occupied}/></td>
-                              <td style={this.state.board[4][4].highlight} onClick={()=>this.movePiece([4,4])}><img src={this.state.board[4][4].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[4][5].highlight)} onClick={()=>this.movePiece([4,5])}><img src={this.state.board[4][5].occupied}/></td>
-                              <td style={this.state.board[4][6].highlight} onClick={()=>this.movePiece([4,6])}><img src={this.state.board[4][6].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[4][7].highlight)} onClick={()=>this.movePiece([4,7])}><img src={this.state.board[4][7].occupied}/></td>
-                            </tr>
-                            <tr className="row6">
-                              <td style={Object.assign({}, squareColor, this.state.board[5][0].highlight)} onClick={()=>this.movePiece([5,0])}><img src={this.state.board[5][0].occupied}/></td>
-                              <td style={this.state.board[5][1].highlight} onClick={()=>this.movePiece([5,1])}><img src={this.state.board[5][1].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[5][2].highlight)} onClick={()=>this.movePiece([5,2])}><img src={this.state.board[5][2].occupied}/></td>
-                              <td style={this.state.board[5][3].highlight} onClick={()=>this.movePiece([5,3])}><img src={this.state.board[5][3].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[5][4].highlight)} onClick={()=>this.movePiece([5,4])}><img src={this.state.board[5][4].occupied}/></td>
-                              <td style={this.state.board[5][5].highlight} onClick={()=>this.movePiece([5,5])}><img src={this.state.board[5][5].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[5][6].highlight)} onClick={()=>this.movePiece([5,6])}><img src={this.state.board[5][6].occupied}/></td>
-                              <td style={this.state.board[5][7].highlight} onClick={()=>this.movePiece([5,7])}><img src={this.state.board[5][7].occupied}/></td>
-                            </tr>
-                            <tr className="row7">
-                              <td style={this.state.board[6][0].highlight} onClick={()=>this.movePiece([6,0])}><img src={this.state.board[6][0].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[6][1].highlight)} onClick={()=>this.movePiece([6,1])}><img src={this.state.board[6][1].occupied}/></td>
-                              <td style={this.state.board[6][2].highlight} onClick={()=>this.movePiece([6,2])}><img src={this.state.board[6][2].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[6][3].highlight)} onClick={()=>this.movePiece([6,3])}><img src={this.state.board[6][3].occupied}/></td>
-                              <td style={this.state.board[6][4].highlight} onClick={()=>this.movePiece([6,4])}><img src={this.state.board[6][4].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[6][5].highlight)} onClick={()=>this.movePiece([6,5])}><img src={this.state.board[6][5].occupied}/></td>
-                              <td style={this.state.board[6][6].highlight} onClick={()=>this.movePiece([6,6])}><img src={this.state.board[6][6].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[6][7].highlight)} onClick={()=>this.movePiece([6,7])}><img src={this.state.board[6][7].occupied}/></td>
-                            </tr>
-                            <tr className="row8">
-                              <td style={Object.assign({}, squareColor, this.state.board[7][0].highlight)} onClick={()=>this.movePiece([7,0])}><img src={this.state.board[7][0].occupied}/></td>
-                              <td style={this.state.board[7][1].highlight} onClick={()=>this.movePiece([7,1])}><img src={this.state.board[7][1].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[7][2].highlight)} onClick={()=>this.movePiece([7,2])}><img src={this.state.board[7][2].occupied}/></td>
-                              <td style={this.state.board[7][3].highlight} onClick={()=>this.movePiece([7,3])}><img src={this.state.board[7][3].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[7][4].highlight)} onClick={()=>this.movePiece([7,4])}><img src={this.state.board[7][4].occupied}/></td>
-                              <td style={this.state.board[7][5].highlight} onClick={()=>this.movePiece([7,5])}><img src={this.state.board[7][5].occupied}/></td>
-                              <td style={Object.assign({}, squareColor, this.state.board[7][6].highlight)} onClick={()=>this.movePiece([7,6])}><img src={this.state.board[7][6].occupied}/></td>
-                              <td style={this.state.board[7][7].highlight} onClick={()=>this.movePiece([7,7])}><img src={this.state.board[7][7].occupied}/></td>
-                            </tr>
-                          </tbody>
-                        </table>
+                      <td style={this.state.board[0][0].highlight} onClick={()=>this.movePiece([0,0])}><img src={this.state.board[0][0].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[0][1].highlight)} onClick={()=>this.movePiece([0,1])}><img src={this.state.board[0][1].occupied}/></td>
+                      <td style={this.state.board[0][2].highlight} onClick={()=>this.movePiece([0,2])}><img src={this.state.board[0][2].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[0][3].highlight)} onClick={()=>this.movePiece([0,3])}><img src={this.state.board[0][3].occupied}/></td>
+                      <td style={this.state.board[0][4].highlight} onClick={()=>this.movePiece([0,4])}><img src={this.state.board[0][4].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[0][5].highlight)} onClick={()=>this.movePiece([0,5])}><img src={this.state.board[0][5].occupied}/></td>
+                      <td style={this.state.board[0][6].highlight} onClick={()=>this.movePiece([0,6])}><img src={this.state.board[0][6].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[0][7].highlight)} onClick={()=>this.movePiece([0,7])}><img src={this.state.board[0][7].occupied}/></td>
+                      </tr>
+                      <tr className="row2">
+                      <td style={Object.assign({}, squareColor, this.state.board[1][0].highlight)} onClick={()=>this.movePiece([1,0])}><img src={this.state.board[1][0].occupied}/></td>
+                      <td style={this.state.board[1][1].highlight} onClick={()=>this.movePiece([1,1])}><img src={this.state.board[1][1].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[1][2].highlight)} onClick={()=>this.movePiece([1,2])}><img src={this.state.board[1][2].occupied}/></td>
+                      <td style={this.state.board[1][3].highlight} onClick={()=>this.movePiece([1,3])}><img src={this.state.board[1][3].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[1][4].highlight)} onClick={()=>this.movePiece([1,4])}><img src={this.state.board[1][4].occupied}/></td>
+                      <td style={this.state.board[1][5].highlight} onClick={()=>this.movePiece([1,5])}><img src={this.state.board[1][5].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[1][6].highlight)} onClick={()=>this.movePiece([1,6])}><img src={this.state.board[1][6].occupied}/></td>
+                      <td style={this.state.board[1][7].highlight} onClick={()=>this.movePiece([1,7])}><img src={this.state.board[1][7].occupied}/></td>
+                      </tr>
+                      <tr className="row3">
+                      <td style={this.state.board[2][0].highlight} onClick={()=>this.movePiece([2,0])}><img src={this.state.board[2][0].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[2][1].highlight)} onClick={()=>this.movePiece([2,1])}><img src={this.state.board[2][1].occupied}/></td>
+                      <td style={this.state.board[2][2].highlight} onClick={()=>this.movePiece([2,2])}><img src={this.state.board[2][2].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[2][3].highlight)} onClick={()=>this.movePiece([2,3])}><img src={this.state.board[2][3].occupied}/></td>
+                      <td style={this.state.board[2][4].highlight} onClick={()=>this.movePiece([2,4])}><img src={this.state.board[2][4].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[2][5].highlight)} onClick={()=>this.movePiece([2,5])}><img src={this.state.board[2][5].occupied}/></td>
+                      <td style={this.state.board[2][6].highlight} onClick={()=>this.movePiece([2,6])}><img src={this.state.board[2][6].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[2][7].highlight)} onClick={()=>this.movePiece([2,7])}><img src={this.state.board[2][7].occupied}/></td>
+                      </tr>
+                      <tr className="row4">
+                      <td style={Object.assign({}, squareColor, this.state.board[3][0].highlight)} onClick={()=>this.movePiece([3,0])}><img src={this.state.board[3][0].occupied}/></td>
+                      <td style={this.state.board[3][1].highlight} onClick={()=>this.movePiece([3,1])}><img src={this.state.board[3][1].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[3][2].highlight)} onClick={()=>this.movePiece([3,2])}><img src={this.state.board[3][2].occupied}/></td>
+                      <td style={this.state.board[3][3].highlight} onClick={()=>this.movePiece([3,3])}><img src={this.state.board[3][3].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[3][4].highlight)} onClick={()=>this.movePiece([3,4])}><img src={this.state.board[3][4].occupied}/></td>
+                      <td style={this.state.board[3][5].highlight} onClick={()=>this.movePiece([3,5])}><img src={this.state.board[3][5].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[3][6].highlight)} onClick={()=>this.movePiece([3,6])}><img src={this.state.board[3][6].occupied}/></td>
+                      <td style={this.state.board[3][7].highlight} onClick={()=>this.movePiece([3,7])}><img src={this.state.board[3][7].occupied}/></td>
+                      </tr>
+                      <tr className="row5">
+                      <td style={this.state.board[4][0].highlight} onClick={()=>this.movePiece([4,0])}><img src={this.state.board[4][0].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[4][1].highlight)} onClick={()=>this.movePiece([4,1])}><img src={this.state.board[4][1].occupied}/></td>
+                      <td style={this.state.board[4][2].highlight} onClick={()=>this.movePiece([4,2])}><img src={this.state.board[4][2].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[4][3].highlight)} onClick={()=>this.movePiece([4,3])}><img src={this.state.board[4][3].occupied}/></td>
+                      <td style={this.state.board[4][4].highlight} onClick={()=>this.movePiece([4,4])}><img src={this.state.board[4][4].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[4][5].highlight)} onClick={()=>this.movePiece([4,5])}><img src={this.state.board[4][5].occupied}/></td>
+                      <td style={this.state.board[4][6].highlight} onClick={()=>this.movePiece([4,6])}><img src={this.state.board[4][6].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[4][7].highlight)} onClick={()=>this.movePiece([4,7])}><img src={this.state.board[4][7].occupied}/></td>
+                      </tr>
+                      <tr className="row6">
+                      <td style={Object.assign({}, squareColor, this.state.board[5][0].highlight)} onClick={()=>this.movePiece([5,0])}><img src={this.state.board[5][0].occupied}/></td>
+                      <td style={this.state.board[5][1].highlight} onClick={()=>this.movePiece([5,1])}><img src={this.state.board[5][1].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[5][2].highlight)} onClick={()=>this.movePiece([5,2])}><img src={this.state.board[5][2].occupied}/></td>
+                      <td style={this.state.board[5][3].highlight} onClick={()=>this.movePiece([5,3])}><img src={this.state.board[5][3].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[5][4].highlight)} onClick={()=>this.movePiece([5,4])}><img src={this.state.board[5][4].occupied}/></td>
+                      <td style={this.state.board[5][5].highlight} onClick={()=>this.movePiece([5,5])}><img src={this.state.board[5][5].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[5][6].highlight)} onClick={()=>this.movePiece([5,6])}><img src={this.state.board[5][6].occupied}/></td>
+                      <td style={this.state.board[5][7].highlight} onClick={()=>this.movePiece([5,7])}><img src={this.state.board[5][7].occupied}/></td>
+                      </tr>
+                      <tr className="row7">
+                      <td style={this.state.board[6][0].highlight} onClick={()=>this.movePiece([6,0])}><img src={this.state.board[6][0].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[6][1].highlight)} onClick={()=>this.movePiece([6,1])}><img src={this.state.board[6][1].occupied}/></td>
+                      <td style={this.state.board[6][2].highlight} onClick={()=>this.movePiece([6,2])}><img src={this.state.board[6][2].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[6][3].highlight)} onClick={()=>this.movePiece([6,3])}><img src={this.state.board[6][3].occupied}/></td>
+                      <td style={this.state.board[6][4].highlight} onClick={()=>this.movePiece([6,4])}><img src={this.state.board[6][4].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[6][5].highlight)} onClick={()=>this.movePiece([6,5])}><img src={this.state.board[6][5].occupied}/></td>
+                      <td style={this.state.board[6][6].highlight} onClick={()=>this.movePiece([6,6])}><img src={this.state.board[6][6].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[6][7].highlight)} onClick={()=>this.movePiece([6,7])}><img src={this.state.board[6][7].occupied}/></td>
+                      </tr>
+                      <tr className="row8">
+                      <td style={Object.assign({}, squareColor, this.state.board[7][0].highlight)} onClick={()=>this.movePiece([7,0])}><img src={this.state.board[7][0].occupied}/></td>
+                      <td style={this.state.board[7][1].highlight} onClick={()=>this.movePiece([7,1])}><img src={this.state.board[7][1].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[7][2].highlight)} onClick={()=>this.movePiece([7,2])}><img src={this.state.board[7][2].occupied}/></td>
+                      <td style={this.state.board[7][3].highlight} onClick={()=>this.movePiece([7,3])}><img src={this.state.board[7][3].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[7][4].highlight)} onClick={()=>this.movePiece([7,4])}><img src={this.state.board[7][4].occupied}/></td>
+                      <td style={this.state.board[7][5].highlight} onClick={()=>this.movePiece([7,5])}><img src={this.state.board[7][5].occupied}/></td>
+                      <td style={Object.assign({}, squareColor, this.state.board[7][6].highlight)} onClick={()=>this.movePiece([7,6])}><img src={this.state.board[7][6].occupied}/></td>
+                      <td style={this.state.board[7][7].highlight} onClick={()=>this.movePiece([7,7])}><img src={this.state.board[7][7].occupied}/></td>
+                      </tr>
+                      </tbody>
+                      </table>
                       </div>;
                       return chessBoard;
                     }
 
                     render(){
+                      let whitePieces = [];
+                      let blackPieces = [];
+                      for (let i=0; i <this.state.takenPiecesWhite.length; i ++) {
+                        whitePieces.push(<img onClick={()=>this.selectTakenPiece(i)} src={this.state.takenPiecesWhite[i].occupied} key={i}/>)
+                      }
+                      for (let i=0; i <this.state.takenPiecesBlack.length; i ++) {
+                        blackPieces.push(<img onClick={()=>this.selectTakenPiece(i)} src={this.state.takenPiecesBlack[i].occupied} key={i}/>)
+                      }
+
                       return (
                         <div>
-                          <p>dsgfdghghghfg</p>
-                          {this.testRender()}
-                          <p onClick={this.populateBoard}>Push</p>
+                        {this.testRender()}
+                        <p>White: {whitePieces}</p>
+                        <p>Black: {blackPieces}</p>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
                         </div>
                       );
                     }
