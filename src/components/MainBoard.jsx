@@ -19,8 +19,6 @@ import wp from '../assets/img/WP.png';
 import wq from '../assets/img/WQ.png';
 import wr from '../assets/img/WR.png';
 
-
-
 class MainBoard extends React.Component {
 
   constructor(props) {
@@ -43,11 +41,17 @@ class MainBoard extends React.Component {
       //////
       whiteKingPos: [7,4],
       blackKingPos: [0,4],
+      test: "hello",
+
+      blockCheckmateRook: "false",
+      rookQueenPosition: [],
+
       check: null,
-      showPieceSelectionModal: false
+      showPieceSelectionModal: false,
+      rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}
     };
     this.populateBoard = this.populateBoard.bind(this);
-  //  this.renderBoard = this.renderBoard.bind(this);
+    //  this.renderBoard = this.renderBoard.bind(this);
     this.movePiece = this.movePiece.bind(this);
     this.movePawn = this.movePawn.bind(this);
     this.moveKight = this.moveKight.bind(this);
@@ -60,27 +64,34 @@ class MainBoard extends React.Component {
     this.selectTakenPiece = this.selectTakenPiece.bind(this);
   }
 
-  checkByRook(pos,color){
+  checkByRook(pos,color,isKing,piecesPos1,piecePos2,arr){
+    //this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
+
+    let newRookPositions = {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []};
+    let newBlockCheckmateRook = "";
+
     let kingPieceColor;
     let rookPieceColor;
     let queenPieceColor;
     let colorOfKing;
     let kingPosY;
     let kingPosX;
+    let runCheckmateTest = false;
+
     if (color === 1) {
       kingPieceColor = wk;
       rookPieceColor = br;
       queenPieceColor = bq;
       colorOfKing = " White";
-      kingPosY = this.state.whiteKingPos[0];
-      kingPosX = this.state.whiteKingPos[1];
+      kingPosY = piecesPos1;
+      kingPosX = piecePos2;
     } else if (color === 2) {
       kingPieceColor = bk;
       rookPieceColor = wr;
       queenPieceColor = wq;
       colorOfKing = " Black";
-      kingPosY = this.state.blackKingPos[0];
-      kingPosX = this.state.blackKingPos[1];
+      kingPosY = piecesPos1;
+      kingPosX = piecePos2;
     }
     let rookUp = false, rookDown = false, rookLeft = false, rookRight = false;
     let distanceToKingUp = [], distanceToKingDown = [], distanceToKingLeft = [], distanceToKingRight = [];
@@ -91,64 +102,99 @@ class MainBoard extends React.Component {
     //
 
     //allows king to move out of check
-    if (this.state.board[pos[0]][pos[1]].occupied === colorOfKing) {
+    if (this.state.board[pos[0]][pos[1]].occupied === kingPieceColor) {
       this.setState({check: null});
     } else {
-
-      for (let i=1; i < 8-kingPosY; i++) {
-        if (this.state.board[kingPosY+i][kingPosX].occupied === rookPieceColor || this.state.board[kingPosY+i][kingPosX].occupied === queenPieceColor) {
-          rookUp = true;
-          console.log("up");
-          distanceToKingUp.push(i);
-        }
-      }
-      //rook down
+      //rook up
       for (let i=1; i < kingPosY+1; i++) {
         if (this.state.board[kingPosY-i][kingPosX].occupied === rookPieceColor || this.state.board[kingPosY-i][kingPosX].occupied === queenPieceColor) {
+          rookUp = true;
+          distanceToKingUp.push(i);
+          newRookPositions.distanceTop = distanceToKingUp;
+          this.setState({rookPositions: newRookPositions});
+        }
+      }
+    //rook down
+      for (let i=1; i < 8-kingPosY; i++) {
+        if (this.state.board[kingPosY+i][kingPosX].occupied === rookPieceColor || this.state.board[kingPosY+i][kingPosX].occupied === queenPieceColor) {
           rookDown = true;
-          console.log("down");
           distanceToKingDown.push(i);
+          newRookPositions.distanceBottom = distanceToKingDown;
+          this.setState({rookPositions: newRookPositions});
         }
       }
       //rook left
       for (let i=1; i < kingPosX+1; i++) {
         if (this.state.board[kingPosY][kingPosX-i].occupied === rookPieceColor || this.state.board[kingPosY][kingPosX-i].occupied === queenPieceColor) {
           rookLeft = true;
-          console.log("left");
           distanceToKingLeft.push(i);
+          newRookPositions.distanceLeft = distanceToKingLeft;
+          this.setState({rookPositions: newRookPositions});
         }
       }
       //rook right
       for (let i=1; i < 8 - kingPosX; i++) {
         if (this.state.board[kingPosY][kingPosX+i].occupied === rookPieceColor || this.state.board[kingPosY][kingPosX+i].occupied === queenPieceColor) {
           rookRight = true;
-          console.log("right")
           distanceToKingRight.push(i);
+          newRookPositions.distanceRight = distanceToKingRight
+          this.setState({rookPositions: newRookPositions});
         }
       }
       //////////////////
-      //rookUp
+      //rook up
       if (rookUp === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingUp[0]; i++) {
-          if (this.state.board[kingPosY+i][kingPosX].occupied !== null) {
+          if (this.state.board[kingPosY-i][kingPosX].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          newRookPositions.top = true;
+          if (isKing) {
+            this.setState({check: colorOfKing + " king is in Check" });
+            runCheckmateTest = true;
+          } else {
+
+      //      this.setState({blockCheckmateRook: "true up"});
+      newBlockCheckmateRook = "true up";
+      arr.push(newBlockCheckmateRook);
+      //          alert("block up "+this.state.blockCheckmateRook);
+          }
+
+        } else {
+            newBlockCheckmateRook = "false";
+        //  this.setState({blockCheckmateRook: "false"});
+      //    newRookPositions.top = [];
+        //  this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
         }
       }
       //rook down
       if (rookDown === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingDown[0]; i++) {
-          if (this.state.board[kingPosY-i][kingPosX].occupied !== null) {
+          if (this.state.board[kingPosY+i][kingPosX].occupied !== null) {
             pieceBlocking += 1;
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          newRookPositions.bottom = true;
+        if (isKing) {
+            this.setState({check: colorOfKing + " king is in Check" });
+            runCheckmateTest = true;
+          } else {
+
+      //      this.setState({blockCheckmateRook: "true down"});
+      newBlockCheckmateRook = "true down";
+      arr.push(newBlockCheckmateRook);
+           //alert("block Down " + color + " " + this.state.blockCheckmateRook);
+          }
+        } else {
+            newBlockCheckmateRook = "false";
+      //    this.setState({blockCheckmateRook: "false"});
+      //    newRookPositions.bottom = [];
+        //  this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
         }
       }
       //rook left
@@ -160,7 +206,22 @@ class MainBoard extends React.Component {
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          newRookPositions.left = true;
+          if (isKing) {
+            this.setState({check: colorOfKing + " king is in Check" });
+            runCheckmateTest = true;
+          } else {
+
+        //    this.setState({blockCheckmateRook: "true left"});
+        newBlockCheckmateRook = "true left";
+        arr.push(newBlockCheckmateRook);
+      //          alert("block left " + this.state.blockCheckmateRook);
+          }
+        } else {
+            newBlockCheckmateRook = "false";
+        //  this.setState({blockCheckmateRook: "false"});
+    //      newRookPositions.left = [];
+        //  this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
         }
       }
       //rook right
@@ -172,14 +233,47 @@ class MainBoard extends React.Component {
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          newRookPositions.right = true;
+          if (isKing === true) {
+            this.setState({check: colorOfKing + " king is in Check" });
+            runCheckmateTest = true;
+          } else {
+
+          //  this.setState({blockCheckmateRook: "true right"});
+          newBlockCheckmateRook = "true right";
+          arr.push(newBlockCheckmateRook);
+      //          alert("Block right " + this.state.blockCheckmateRook);
+          }
+        } else {
+          newBlockCheckmateRook = "false";
+        //  this.setState({blockCheckmateRook: "false"});
+    //      newRookPositions.right = [];
+        //  this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
         }
       }
 
     }
+
+    this.setState({rookPositions: newRookPositions});
+    this.setState({blockCheckmateRook: newBlockCheckmateRook});
+
+    if (isKing && runCheckmateTest) {
+  // this.checkByRook(pos,1,false,pos[0],pos[1]);
+this.checkmate(pos,newRookPositions.top,newRookPositions.bottom,newRookPositions.left,newRookPositions.right,newRookPositions.distanceTop[0],newRookPositions.distanceBottom[0],newRookPositions.distanceLeft[0],newRookPositions.distanceRight[0]);
+} else {
+      console.log(pos,newRookPositions.top,newRookPositions.bottom,newRookPositions.left,newRookPositions.right,newRookPositions.distanceTop[0],newRookPositions.distanceBottom[0],newRookPositions.distanceLeft[0],newRookPositions.distanceRight[0]);
+}
+let test;
+if (runCheckmateTest && (!newRookPositions.top && !newRookPositions.bottom && !newRookPositions.left && !newRookPositions.right)) {
+  test = "not checkmate";
+  this.setState({check: "checkmate"});
+}
+
+
+
   }
 
-  checkByBishop(pos, color) {
+  checkByBishop(pos,color,isKing,piecesPos1,piecePos2) {
     let kingPieceColor;
     let bishopPieceColor;
     let queenPieceColor;
@@ -191,15 +285,15 @@ class MainBoard extends React.Component {
       bishopPieceColor = bb;
       queenPieceColor = bq;
       colorOfKing = " White";
-      kingPosY = this.state.whiteKingPos[0];
-      kingPosX = this.state.whiteKingPos[1];
+      kingPosY = piecesPos1
+      kingPosX = piecePos2
     } else if (color === 2) {
       kingPieceColor = bk;
       bishopPieceColor = wb;
       queenPieceColor = wq;
       colorOfKing = " Black";
-      kingPosY = this.state.blackKingPos[0];
-      kingPosX = this.state.blackKingPos[1];
+      kingPosY = piecesPos1;
+      kingPosX = piecePos2;
     }
     let tl, tr, bl, br;
     let bishopTopLeft = false, bishopTopRight = false, bishopBottomLeft = false, bishopBottomRight = false;
@@ -235,7 +329,7 @@ class MainBoard extends React.Component {
         if (this.state.board[kingPosY-i][kingPosX+i].occupied === bishopPieceColor || this.state.board[kingPosY-i][kingPosX+i].occupied === queenPieceColor) {
           bishopTopRight = true;
           console.log("topRight " + tr);
-            console.log("EDDIE " + tr);
+          console.log("EDDIE " + tr);
           distanceTopRight.push(i);
         }
       }
@@ -260,8 +354,8 @@ class MainBoard extends React.Component {
         br = 8-kingPosY;
       }
       for (let i=1; i < br; i++) {
-      if (this.state.board[kingPosY+i][kingPosX+i].occupied === bishopPieceColor || this.state.board[kingPosY+i][kingPosX+i].occupied === queenPieceColor) {
-          bishopTopRight = true;
+        if (this.state.board[kingPosY+i][kingPosX+i].occupied === bishopPieceColor || this.state.board[kingPosY+i][kingPosX+i].occupied === queenPieceColor) {
+          bishopBottomRight = true;
           console.log("bottomRight");
           console.log("EDDIE " + br);
           distanceBottomRight.push(i);
@@ -277,7 +371,11 @@ class MainBoard extends React.Component {
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          if (isKing === true) {
+            this.setState({check: colorOfKing + " king is in Check TL" });
+          } else {
+            this.setState({blockCheckmate: true});
+          }
         }
       }
       //bishop top right
@@ -289,7 +387,11 @@ class MainBoard extends React.Component {
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          if (isKing === true) {
+            this.setState({check: colorOfKing + " king is in Check TR" });
+          } else {
+            this.setState({blockCheckmate: true});
+          }
         }
       }
       //bishop bottom left
@@ -301,7 +403,11 @@ class MainBoard extends React.Component {
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          if (isKing === true) {
+            this.setState({check: colorOfKing + " king is in Check BL" });
+          } else {
+            this.setState({blockCheckmate: true});
+          }
         }
       }
       //bishop bottom right
@@ -313,60 +419,121 @@ class MainBoard extends React.Component {
           }
         }
         if (pieceBlocking === 0) {
-          this.setState({check: colorOfKing + " king is in Check" });
+          if (isKing === true) {
+            this.setState({check: colorOfKing + " king is in Check BR" });
+          } else {
+            this.setState({blockCheckmate: true});
+          }
         }
       }
     }
   }
+  checkByKnight(pos,color,isKing,piecePos1,piecePos2){
+    let kingPieceColor;
+    let knightPieceColor;
+    let colorOfKing;
 
-  inCheck(pos) {
+    if (color === 1) {
+      kingPieceColor = wk;
+      knightPieceColor = bkn;
+      colorOfKing = " White";
+    } else if (color === 2) {
+      kingPieceColor = bk;
+      knightPieceColor = wkn;
+      colorOfKing = " Black";
+    }
+    if (
+      (piecePos1-2 === pos[0] && piecePos2-1 === pos[1] && this.state.board[piecePos1-2][piecePos2-1].occupied === knightPieceColor)
+      || (piecePos1-2 === pos[0] && piecePos2+1 === pos[1] && this.state.board[piecePos1-2][piecePos2+1].occupied === knightPieceColor)
+      || (piecePos1-1 === pos[0] && piecePos2-2 === pos[1] && this.state.board[piecePos1-1][piecePos2-2].occupied === knightPieceColor)
+      || (piecePos1-1 === pos[0] && piecePos2+2 === pos[1] && this.state.board[piecePos1-1][piecePos2+2].occupied === knightPieceColor)
+      || (piecePos1+1 === pos[0] && piecePos2-2 === pos[1] && this.state.board[piecePos1+1][piecePos2-2].occupied === knightPieceColor)
+      || (piecePos1+1 === pos[0] && piecePos2+2 === pos[1] && this.state.board[piecePos1+1][piecePos2+2].occupied === knightPieceColor)
+      || (piecePos1+2 === pos[0] && piecePos2-1 === pos[1] && this.state.board[piecePos1+2][piecePos2-1].occupied === knightPieceColor)
+      || (piecePos1+2 === pos[0] && piecePos2+1 === pos[1] && this.state.board[piecePos1+2][piecePos2+1].occupied === knightPieceColor)
+    ) {
+      this.setState({check: colorOfKing + " king is in Check" });
+      //black knight
+    }
+  }
+  checkByPawn(pos,color,isKing,whitePiecePos1,whitePiecePos2,blackPiecePos1,blackPiecePos2){
+    if (whitePiecePos1-1 === pos[0]
+      && (whitePiecePos2-1 === pos[1] || whitePiecePos2+1 === pos[1])
+      && ((whitePiecePos2 !== 0 && this.state.board[whitePiecePos1-1][whitePiecePos2-1].occupied) === bp || (whitePiecePos2 !== 7 && this.state.board[whitePiecePos1-1][whitePiecePos2+1].occupied === bp))) {
+        this.setState({check: " White king is in Check" });
+      } else if (blackPiecePos1+1 === pos[0]
+        && (blackPiecePos2-1 === pos[1] || blackPiecePos2+1 === pos[1])
+        && ((blackPiecePos2 !== 0 && this.state.board[blackPiecePos1+1][blackPiecePos2-1].occupied) === wp || (blackPiecePos2 !== 7 && this.state.board[blackPiecePos1+1][blackPiecePos2+1].occupied === wp))) {
+          this.setState({check: " Black king is in Check" });
+        } else {
+          this.setState({check: null,blockCheckmate: false});
+        }
+      }
 
-    if (this.state.click === 1) {
-      //black pawn
-      if (this.state.whiteKingPos[0]-1 === pos[0]
-        && (this.state.whiteKingPos[1]-1 === pos[1] || this.state.whiteKingPos[1]+1 === pos[1])
-        && ((this.state.whiteKingPos[1] !== 0 && this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]-1].occupied) === bp || (this.state.whiteKingPos[1] !== 7 && this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]+1].occupied === bp))) {
-          this.setState({check: " White king is in Check" });
-          //white pawn
-        } else if (this.state.blackKingPos[0]+1 === pos[0]
-          && (this.state.blackKingPos[1]-1 === pos[1] || this.state.blackKingPos[1]+1 === pos[1])
-          && ((this.state.blackKingPos[1] !== 0 && this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]-1].occupied) === wp || (this.state.blackKingPos[1] !== 7 && this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]+1].occupied === wp))) {
-            this.setState({check: " Black king is in Check" });
-            //  white Kight
-          }
-          else if (
-            (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1] && this.state.board[this.state.whiteKingPos[0]-2][this.state.whiteKingPos[1]-1].occupied === bkn)
-            || (this.state.whiteKingPos[0]-2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1] && this.state.board[this.state.whiteKingPos[0]-2][this.state.whiteKingPos[1]+1].occupied === bkn)
-            || (this.state.whiteKingPos[0]-1 === pos[0] && this.state.whiteKingPos[1]-2 === pos[1] && this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]-2].occupied === bkn)
-            || (this.state.whiteKingPos[0]-1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1] && this.state.board[this.state.whiteKingPos[0]-1][this.state.whiteKingPos[1]+2].occupied === bkn)
-            || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]-2 === pos[1] && this.state.board[this.state.whiteKingPos[0]+1][this.state.whiteKingPos[1]-2].occupied === bkn)
-            || (this.state.whiteKingPos[0]+1 === pos[0] && this.state.whiteKingPos[1]+2 === pos[1] && this.state.board[this.state.whiteKingPos[0]+1][this.state.whiteKingPos[1]+2].occupied === bkn)
-            || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]-1 === pos[1] && this.state.board[this.state.whiteKingPos[0]+2][this.state.whiteKingPos[1]-1].occupied === bkn)
-            || (this.state.whiteKingPos[0]+2 === pos[0] && this.state.whiteKingPos[1]+1 === pos[1] && this.state.board[this.state.whiteKingPos[0]+2][this.state.whiteKingPos[1]+1].occupied === bkn)
-          ){
-            this.setState({check: " White king is in Check" });
-            //black knight
-          } else if (
-            (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1] && this.state.board[this.state.blackKingPos[0]-2][this.state.blackKingPos[1]-1].occupied === wkn)
-            || (this.state.blackKingPos[0]-2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1] && this.state.board[this.state.blackKingPos[0]-2][this.state.blackKingPos[1]+1].occupied === wkn)
-            || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1] && this.state.board[this.state.blackKingPos[0]-1][this.state.blackKingPos[1]-2].occupied === wkn)
-            || (this.state.blackKingPos[0]-1 === pos[0] && this.state.blackKingPos[1]+2 === pos[1] && this.state.board[this.state.blackKingPos[0]-1][this.state.blackKingPos[1]+2].occupied === wkn)
-            || (this.state.blackKingPos[0]+1 === pos[0] && this.state.blackKingPos[1]-2 === pos[1] && this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]-2].occupied === wkn)
-            || (this.state.blackKingPos[0]+1 === pos[0] && this.state.blackKingPos[1]+2 === pos[1] && this.state.board[this.state.blackKingPos[0]+1][this.state.blackKingPos[1]+2].occupied === wkn)
-            || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]-1 === pos[1] && this.state.board[this.state.blackKingPos[0]+2][this.state.blackKingPos[1]-1].occupied === wkn)
-            || (this.state.blackKingPos[0]+2 === pos[0] && this.state.blackKingPos[1]+1 === pos[1] && this.state.board[this.state.blackKingPos[0]+2][this.state.blackKingPos[1]+1].occupied === wkn)
-          ) {
-            this.setState({check: " Black king is in Check" });
-          } else {
-            this.setState({check: null});
-          }
+      inCheck(pos) {
+        if (this.state.click === 1) {
+      //   this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
 
-          this.checkByRook(pos,1);
-          this.checkByRook(pos,2);
-          this.checkByBishop(pos,1);
-          this.checkByBishop(pos,2);
+          this.checkByPawn(pos,1,'no',this.state.whiteKingPos[0],this.state.whiteKingPos[1],this.state.blackKingPos[0],this.state.blackKingPos[1]);
+          this.checkByRook(pos,1,true,this.state.whiteKingPos[0],this.state.whiteKingPos[1]);
+          this.checkByRook(pos,2,true,this.state.blackKingPos[0],this.state.blackKingPos[1]);
+          this.checkByBishop(pos,1,true,this.state.whiteKingPos[0],this.state.whiteKingPos[1]);
+          this.checkByBishop(pos,2,true,this.state.blackKingPos[0],this.state.blackKingPos[1]);
+          this.checkByKnight(pos,1,false,this.state.whiteKingPos[0],this.state.whiteKingPos[1]);
+          this.checkByKnight(pos,2,false,this.state.blackKingPos[0],this.state.blackKingPos[1]);
 
         }
+      }
+
+      checkmate(pos,top,bottom,left,right,distTop,distBottom,distLeft,distRight) {
+
+      //  this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
+
+        let arrCheckmate = [];
+        this.setState({blockCheckmateRook: "false"});
+        //rook ---Checking piece
+        if (top) {
+      //      alert(distTop + " Top");
+          for (let i=0; i < distTop-1; i++) {
+            console.log(i + " top")
+            this.checkByRook(pos,1,false,pos[0]+i,pos[1],arrCheckmate);
+    //        this.checkByRook(pos,2,false,pos[0],pos[1]);
+      //    alert("checkmate up " + this.state.blockCheckmateRook);
+          }
+        }
+        if (bottom) {
+        //  alert(distBottom + " Bottom");
+          for (let i=0; i < distBottom; i++) {
+            console.log(i + " bottom");
+            this.checkByRook(pos,1,false,pos[0]-i,pos[1],arrCheckmate);
+        //    this.checkByRook(pos,2,false,pos[0],pos[1]);
+        //    alert("checkmate down " + this.state.blockCheckmateRook);
+          }
+        }
+        if (left) {
+        //  alert("left - " + distLeft);
+          for (let i=0; i < distLeft; i++) {
+          //  alert(distRight + " Left");
+          console.log(i + " right");
+            this.checkByRook(pos,1,false,pos[0],pos[1]+i,arrCheckmate);
+        //    this.checkByRook(pos,2,false,pos[0],pos[1]);
+      //    alert("checkmate left " + this.state.blockCheckmateRook);
+          }
+        }
+        if (right) {
+      //    alert("right");
+          for (let i=0; i < distRight; i++) {
+            console.log(i + " left");
+        //    alert(distLeft + " Right");
+            this.checkByRook(pos,1,false,pos[0],pos[1]-i,arrCheckmate);
+        //    this.checkByRook(pos,2,false,pos[0],pos[1]);
+        //    alert("checkmate right " + this.state.blockCheckmateRook);
+          }
+        }
+        if (arrCheckmate.length === 0) {
+          //  alert("checkmate");
+        }
+
       }
 
 
@@ -386,6 +553,8 @@ class MainBoard extends React.Component {
             this.setState({takenPiecesBlack: newTakenPiecesBlack});
           }
         }
+        newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].positionY;
+        newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].positionX;
         newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
         newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
         newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
@@ -426,12 +595,12 @@ class MainBoard extends React.Component {
         if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'black') {
           this.updateBoard(pos);
           if (pos[0] === 0 || pos[0] === 7) {
-              this.setState({showPieceSelectionModal: true});
+            this.setState({showPieceSelectionModal: true});
           }
         } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'white') {
           this.updateBoard(pos);
           if (pos[0] === 0 || pos[0] === 7) {
-              this.setState({showPieceSelectionModal: true});
+            this.setState({showPieceSelectionModal: true});
           }
           //first move. two spaces up
         } else if (this.state.moveFrom[0] === 6 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1] && this.state.board[this.state.moveFrom[0]-1][this.state.moveFrom[1]].occupied === null && this.state.board[pos[0]][pos[1]].color !== 'black') {
@@ -444,18 +613,18 @@ class MainBoard extends React.Component {
         || (this.state.moveFrom[0]-1 === pos[0] && this.state.moveFrom[1]+1 === pos[1]))) {
           this.updateBoard(pos);
           if (pos[0] === 0 || pos[0] === 7) {
-              this.setState({showPieceSelectionModal: true});
+            this.setState({showPieceSelectionModal: true});
           }
         } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black'
         && this.state.board[pos[0]][pos[1]].color === 'white' && ((this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
         || (this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]+1 === pos[1]))) {
           if (pos[0] === 0 || pos[0] === 7) {
-              this.setState({showPieceSelectionModal: true});
+            this.setState({showPieceSelectionModal: true});
           }
           this.updateBoard(pos);
         }
         if (pos[0] === 0 || pos[0] === 7) {
-            this.setState({switchPawn: [pos[0],pos[1]]});
+          this.setState({switchPawn: [pos[0],pos[1]]});
         }
       }
       moveKight(pos) {
@@ -711,7 +880,6 @@ class MainBoard extends React.Component {
                       if (newBoard[0][0].firstMove === true) {
                         newBoard[0][3].firstMove = false;
                       }
-
                       this.setState({blackKingMove: true, blackKingPos: pos});
                       this.updateBoard(pos);
 
@@ -725,7 +893,7 @@ class MainBoard extends React.Component {
                     let newSelectPieceBlack = this.state.selectPieceBlack.slice();
                     let y,x;
 
-                    let piecesToPopulateBoard = [{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bp, piece: this.movePawn}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wp, piece: this.movePawn},{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: br, piece: this.moveRook},{positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wr, piece: this.moveRook},{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bkn, piece: this.moveKight},{positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wkn, piece: this.moveKight},{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bb, piece: this.moveBishop},{positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wb, piece: this.moveBishop},{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bq, piece: this.moveQueen},{positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wq, piece: this.moveQueen},{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bk, piece: this.moveKing},{positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wk, piece: this.moveKing}]
+                    let piecesToPopulateBoard = [{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bp, piece: this.movePawn}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wp, piece: this.movePawn}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: br, piece: this.moveRook}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wr, piece: this.moveRook}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bkn, piece: this.moveKight}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wkn, piece: this.moveKight}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bb, piece: this.moveBishop}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wb, piece: this.moveBishop}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bq, piece: this.moveQueen}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wq, piece: this.moveQueen}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bk, piece: this.moveKing}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wk, piece: this.moveKing}]
 
                     let objectArr = [];
 
@@ -797,6 +965,7 @@ class MainBoard extends React.Component {
                   }
 
                   movePiece(pos){
+
                     let newBoard = this.state.board.slice();
                     /////////////
                     //  this.inCheck(pos); //////////
@@ -817,7 +986,7 @@ class MainBoard extends React.Component {
 
                         console.log(newBoard);
                         //   this.setState({board: newBoard, click: 0})
-                      } else {
+                      } else if (!newBoard[pos[0]][pos[1]].highlight) {
 
                         newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
                         newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
@@ -830,31 +999,42 @@ class MainBoard extends React.Component {
                     //    this.setState({board: newBoard})
                     console.log(this.state.board);
                     this.inCheck(pos);
+              //      this.checkByRook(pos,1,false,pos[0],pos[1]);
+                    //  if (this.state.check) {
+                  //  this.checkmate(pos);
+              //     }
+
+                      // this.setState({rookPositions: {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: []}});
                   }
 
-                    render(){
+                  render(){
+                    const main = {
+                      width: 600,
+                      padding: 15,
+                      marginRight: 'auto',
+                      marginLeft: 'auto'
 
-                      return (
-                        <div>
-
-                        <ChessBoard movePiece={this.movePiece} check={this.state.check} board={this.state.board}/>
-                        <PiecesTaken takenPiecesWhite={this.state.takenPiecesWhite} takenPiecesBlack={this.state.takenPiecesBlack}/>
-
-                        <PiecesToSelect selectTakenPiece={this.selectTakenPiece} selectPieceWhite={this.state.selectPieceWhite} selectPieceBlack={this.state.selectPieceBlack}
-                        switchPawn={this.state.switchPawn} showPieceSelectionModal={this.state.showPieceSelectionModal}/>
-
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-                        <br/>
-
-                        </div>
-                      );
                     }
-                  }
-                  // App.propTypes = {
-                  //   populateBoard: PropTypes.func
-                  // };
+                    return (
+                      <div style={main}>
+                      <ChessBoard movePiece={this.movePiece} check={this.state.check} board={this.state.board}/>
+                      <PiecesTaken takenPiecesWhite={this.state.takenPiecesWhite} takenPiecesBlack={this.state.takenPiecesBlack}/>
 
-                  export default MainBoard;
+                      <PiecesToSelect selectTakenPiece={this.selectTakenPiece} selectPieceWhite={this.state.selectPieceWhite} selectPieceBlack={this.state.selectPieceBlack}
+                      switchPawn={this.state.switchPawn} showPieceSelectionModal={this.state.showPieceSelectionModal}/>
+
+                      <br/>
+                      <br/>
+                      <br/>
+                      <br/>
+                      <br/>
+
+                      </div>
+                    );
+                  }
+                }
+                // App.propTypes = {
+                //   populateBoard: PropTypes.func
+                // };
+
+                export default MainBoard;

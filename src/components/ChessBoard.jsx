@@ -30,7 +30,7 @@ function ChessBoard(props){
       }
       `}</style>
 
-      <p style={showCheck}> In Check {props.check}</p>
+      <p style={showCheck}>Check: {props.check}</p>
       <table>
       <tbody>
       <tr className="row1">
