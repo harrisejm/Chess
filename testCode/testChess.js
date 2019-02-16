@@ -114,3 +114,61 @@ document.getElementById("test2").innerHTML = pawn1.positionX;
 document.getElementById("test3").innerHTML = arr;
 document.getElementById("test4").innerHTML = arrTest[0][0].occupied;
 document.getElementById("test5").innerHTML = hello;
+
+
+
+//////
+
+checkByPawn(pos,color,isKing,whitePiecePos1,whitePiecePos2,blackPiecePos1,blackPiecePos2,arr){
+  let whitePawnPositionOne = null;
+  let whitePawnPositionTwo = null;
+
+  let blackPawnPositionOne = null;
+  let blackPawnPositionTwo = null;
+
+  if (whitePiecePos1-1 >= 0 && whitePiecePos2-1 >= 0) {
+    whitePawnPositionOne = this.state.board[whitePiecePos1-1][whitePiecePos2-1].occupied;
+  }
+ if (whitePiecePos1-1 >= 0 && whitePiecePos2+1 <=7) {
+    whitePawnPositionTwo = this.state.board[whitePiecePos1-1][whitePiecePos2+1].occupied;
+  }
+
+  if (blackPiecePos1 <= 7 && blackPiecePos2 >= 0) {
+    blackPawnPositionOne = this.state.board[blackPiecePos1+1][blackPiecePos2-1].occupied;
+  }
+  if (blackPiecePos1 <=7 && blackPiecePos2 <= 7) {
+    blackPawnPositionTwo = this.state.board[blackPiecePos1+1][blackPiecePos2+1].occupied;
+  }
+
+  if (whitePiecePos1-1 === pos[0]
+    && (whitePiecePos2-1 === pos[1] || whitePiecePos2+1 === pos[1])
+    && ((whitePawnPositionOne === bp) || (whitePawnPositionTwo === bp))) {
+      this.setState({check: " White king is in Check1111" });
+
+      if (whitePawnPositionOne === bp) {
+        this.checkmatePawn(pos,whitePiecePos1-1,whitePiecePos2-1,1,arr);
+      }
+     if (whitePawnPositionTwo === bp) {
+        alert(pos + " - " + (whitePiecePos1-1) + " - " + (whitePiecePos2+1) + " - " + 1 + " - " + arr);
+        this.checkmatePawn(pos,whitePiecePos1-1,whitePiecePos2+1,1,arr);
+      }
+
+    } else if (blackPiecePos1+1 === pos[0]
+      && (blackPiecePos2-1 === pos[1] || blackPiecePos2+1 === pos[1])
+      && ((blackPawnPositionOne === wp) || (blackPawnPositionTwo === wp))) {
+        this.setState({check: " Black king is in Check22e" });
+        if (blackPawnPositionOne === wp) {
+          this.checkmatePawn(pos,blackPiecePos1+1,blackPiecePos2-1,2,arr);
+  //          alert("right");
+        }
+         if (blackPawnPositionTwo === wp) {
+          this.checkmatePawn(pos,blackPiecePos1+1,blackPiecePos2+1,2,arr);
+//            alert("left");
+        }
+
+      //  alert(pos,blackPiecePos1,blackPiecePos2,2,arr)
+      }
+       else {
+        this.setState({check: null,blockCheckmate: false});
+      }
+ }
