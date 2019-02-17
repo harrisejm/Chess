@@ -121,7 +121,7 @@ class MainBoard extends React.Component {
           rookUp = true;
           distanceToKingUp.push(i);
           newRookPositions.distanceTop = distanceToKingUp;
-          newRookPositions.positionTop = [kingPosY-i,kingPosX];
+          newRookPositions.positionTop.push([kingPosY-i,kingPosX]);
         }
       }
       //rook down
@@ -130,7 +130,7 @@ class MainBoard extends React.Component {
           rookDown = true;
           distanceToKingDown.push(i);
           newRookPositions.distanceBottom = distanceToKingDown;
-          newRookPositions.positionBottom = [kingPosY+i,kingPosX];
+          newRookPositions.positionBottom.push([kingPosY+i,kingPosX]);
         }
       }
       //rook left
@@ -139,7 +139,7 @@ class MainBoard extends React.Component {
           rookLeft = true;
           distanceToKingLeft.push(i);
           newRookPositions.distanceLeft = distanceToKingLeft;
-          newRookPositions.positionLeft = [kingPosY,kingPosX-i];
+          newRookPositions.positionLeft.push([kingPosY,kingPosX-i]);
         }
       }
       //rook right
@@ -148,7 +148,7 @@ class MainBoard extends React.Component {
           rookRight = true;
           distanceToKingRight.push(i);
           newRookPositions.distanceRight = distanceToKingRight;
-          newRookPositions.positionRight = [kingPosY,kingPosX+i];
+          newRookPositions.positionRight.push([kingPosY,kingPosX+i]);
         }
       }
       //////////////////
@@ -230,7 +230,7 @@ class MainBoard extends React.Component {
       }
     }
     if (isKing && runCheckmateTest) {
-      this.checkmateRookQueen(pos,newRookPositions.top,newRookPositions.bottom,newRookPositions.left,newRookPositions.right,newRookPositions.distanceTop[0],newRookPositions.distanceBottom[0],newRookPositions.distanceLeft[0],newRookPositions.distanceRight[0],newRookPositions.positionTop,newRookPositions.positionBottom,newRookPositions.positionLeft,newRookPositions.positionRight,color,arr);
+      this.checkmateRookQueen(pos,newRookPositions.top,newRookPositions.bottom,newRookPositions.left,newRookPositions.right,newRookPositions.distanceTop[0],newRookPositions.distanceBottom[0],newRookPositions.distanceLeft[0],newRookPositions.distanceRight[0],newRookPositions.positionTop[0],newRookPositions.positionBottom[0],newRookPositions.positionLeft[0],newRookPositions.positionRight[0],color,arr);
     }
 
     else {
@@ -240,9 +240,9 @@ class MainBoard extends React.Component {
 
   checkByBishop(pos,color,isKing,piecePos1,piecePos2,arr,checkingPiece) {
     let newBishopQueenPositions = {topLeft: false, topRight: false, bottomLeft: false, bottomRight: false, distanceTopLeft: [], distanceTopRight: [], distanceBottomLeft: [], distanceBottomRight: [], positionTopLeft: [], positionTopRight: [], positionBottomLeft: [], positionBottomRight: []};
-    if (isKing === 0) {
-      alert("dsggshhh");
-    }
+    // if (isKing === 0) {
+    //   alert("dsggshhh");
+    // }
     let kingPieceColor;
     let bishopPieceColor;
     let queenPieceColor;
@@ -286,7 +286,7 @@ class MainBoard extends React.Component {
           bishopTopLeft = true;
           distanceTopLeft.push(i);
           newBishopQueenPositions.distanceTopLeft = distanceTopLeft;
-          newBishopQueenPositions.positionTopLeft = [kingPosY-i,kingPosX-i];
+          newBishopQueenPositions.positionTopLeft.push([kingPosY-i,kingPosX-i]);
         }
       }
       //bishop top right
@@ -300,7 +300,7 @@ class MainBoard extends React.Component {
           bishopTopRight = true;
           distanceTopRight.push(i);
           newBishopQueenPositions.distanceTopRight = distanceTopRight;
-          newBishopQueenPositions.positionTopRight = [kingPosY-i,kingPosX+i];
+          newBishopQueenPositions.positionTopRight.push([kingPosY-i,kingPosX+i]);
         }
       }
       //bishop bottom left
@@ -314,7 +314,7 @@ class MainBoard extends React.Component {
           bishopBottomLeft = true;
           distanceBottomLeft.push(i);
           newBishopQueenPositions.distanceBottomLeft = distanceBottomLeft;
-          newBishopQueenPositions.positionBottomLeft = [kingPosY+i,kingPosX-i];
+          newBishopQueenPositions.positionBottomLeft.push([kingPosY+i,kingPosX-i]);
         }
       }
       //bishop bottom right
@@ -328,7 +328,7 @@ class MainBoard extends React.Component {
           bishopBottomRight = true;
           distanceBottomRight.push(i);
           newBishopQueenPositions.distanceBottomRight = distanceBottomRight;
-          newBishopQueenPositions.positionBottomRight = [kingPosY+i,kingPosX+i];
+          newBishopQueenPositions.positionBottomRight.push([kingPosY+i,kingPosX+i]);
         }
       }
       //////////////////
@@ -345,6 +345,7 @@ class MainBoard extends React.Component {
           if (isKing) {
             this.setState({check: colorOfKing + " king is in Check TL" });
             runCheckmateTest = true;
+            checkingPiece[0] = [kingPosY,kingPosX];
           } else {
             arr.push(true);
             //    alert("!!!isKing TL");
@@ -361,11 +362,13 @@ class MainBoard extends React.Component {
             pieceBlocking += 1;
           }
         }
+
         if (pieceBlocking === 0) {
           newBishopQueenPositions.topRight = true;
           if (isKing) {
-            this.setState({check: colorOfKing + " king is in Check TR" });
+            this.setState({check: colorOfKing + " king is in Check TRr" });
             runCheckmateTest = true;
+            checkingPiece[1] = [kingPosY,kingPosX];
           } else {
             arr.push(true);
             //      alert("!!!isKing TR");
@@ -385,6 +388,7 @@ class MainBoard extends React.Component {
           if (isKing) {
             this.setState({check: colorOfKing + " king is in Check BL" });
             runCheckmateTest = true;
+            checkingPiece[2] = [kingPosY,kingPosX];
           } else {
             arr.push(true);
             //      alert("!!!isKing BL");
@@ -404,6 +408,7 @@ class MainBoard extends React.Component {
           if (isKing) {
             this.setState({check: colorOfKing + " king is in Check BR" });
             runCheckmateTest = true;
+            checkingPiece[3] = [kingPosY,kingPosX];
           } else {
             arr.push(true);
           }
@@ -411,7 +416,7 @@ class MainBoard extends React.Component {
       }
     }
     if (isKing && runCheckmateTest) {
-      this.checkmateBishopQueen(pos,newBishopQueenPositions.topLeft,newBishopQueenPositions.topRight,newBishopQueenPositions.bottomLeft,newBishopQueenPositions.bottomRight,newBishopQueenPositions.distanceTopLeft[0],newBishopQueenPositions.distanceTopRight[0],newBishopQueenPositions.distanceBottomLeft[0],newBishopQueenPositions.distanceBottomRight[0],newBishopQueenPositions.positionTopLeft,newBishopQueenPositions.positionTopRight,newBishopQueenPositions.positionBottomLeft,newBishopQueenPositions.positionBottomRight,color,arr);
+      this.checkmateBishopQueen(pos,newBishopQueenPositions.topLeft,newBishopQueenPositions.topRight,newBishopQueenPositions.bottomLeft,newBishopQueenPositions.bottomRight,newBishopQueenPositions.distanceTopLeft[0],newBishopQueenPositions.distanceTopRight[0],newBishopQueenPositions.distanceBottomLeft[0],newBishopQueenPositions.distanceBottomRight[0],newBishopQueenPositions.positionTopLeft[0],newBishopQueenPositions.positionTopRight[0],newBishopQueenPositions.positionBottomLeft[0],newBishopQueenPositions.positionBottomRight[0],color,arr);
     }
   }
   checkByKnight(pos,color,isKing,piecePos1,piecePos2,arr){
@@ -495,11 +500,11 @@ class MainBoard extends React.Component {
           && ((blackPawnPositionOne === wp) || (blackPawnPositionTwo === wp))) {
             this.setState({check: " Black king is in Check22e" });
             if (blackPawnPositionOne === wp) {
-              alert("1 pawn");
+      //        alert("1 pawn");
               this.checkmatePawn(pos,blackPiecePos1+1,blackPiecePos2-1,2,arr);
             }
             if (blackPawnPositionTwo === wp) {
-              alert("2 pawn");
+      //        alert("2 pawn");
               this.checkmatePawn(pos,blackPiecePos1+1,blackPiecePos2+1,2,arr);
             }
           } else {
@@ -511,7 +516,7 @@ class MainBoard extends React.Component {
         if (color === 1) {
           if (piecePos1 === 3 && this.state.board[piecePos1-1][piecePos2].occupied === null && this.state.board[piecePos1-2][piecePos2].occupied === bp) {
             arr.push(true);
-          } else if (piecePos1-1 >=0 && this.state.board[piecePos1-1][piecePos2].occupied === bp) {
+          } else if (piecePos1 === 3 && piecePos1-1 >=0 && this.state.board[piecePos1-1][piecePos2].occupied === bp) {
             arr.push(true);
           }
         } else {
@@ -553,20 +558,28 @@ class MainBoard extends React.Component {
           this.checkByBishop(pos,2,true,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOver,checkingPiece);
           this.checkByKnight(pos,1,false,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOver);
           this.checkByKnight(pos,2,false,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOver);
-          this.moveOutOfCheckmate(pos,1,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOverCanKingMove,checkingPiece);
+      //    this.moveOutOfCheckmate(pos,1,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOverCanKingMove,checkingPiece);
     //alert(checkingPiece);
-      //  this.moveOutOfCheckmate(pos,2,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOverCanKingMove,checkingPiece,checkingPiece);
+        this.moveOutOfCheckmate(pos,2,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOverCanKingMove,checkingPiece);
         }
       }
       moveOutOfCheckmate(pos,color,piecePos1,piecePos2,isGameOverCanKingMove,checkingPiece){
-        checkingPiece = [];
+        //checkingPiece = [];
         let spacesAroundKing = [[piecePos1-1,piecePos2-1],[piecePos1-1,piecePos2],[piecePos1-1,piecePos2+1],[piecePos1,piecePos2-1],[piecePos1,piecePos2+1],[piecePos1+1,piecePos2-1],[piecePos1+1,piecePos2],[piecePos1+1,piecePos2+1]];
         let arrCheckmate = [];
         let test = [];
         let moveKingOutOfCheck = [];
+        let newColor;
+        if (color === 1) {
+          newColor = "black";
+        } else {
+          newColor = "white";
+        }
+
         for (let i=0; i< spacesAroundKing.length; i++) {
           if ((spacesAroundKing[i][0] >= 0 && spacesAroundKing[i][0] <= 7) && (spacesAroundKing[i][1] >= 0 && spacesAroundKing[i][1] <= 7)) {
-            if (!this.state.board[spacesAroundKing[i][0]][spacesAroundKing[i][1]].occupied) {
+            if (this.state.board[spacesAroundKing[i][0]][spacesAroundKing[i][1]].color === newColor || !this.state.board[spacesAroundKing[i][0]][spacesAroundKing[i][1]].occupied) {
+
               if (checkingPiece[0] === spacesAroundKing[i][1]){
                 arrCheckmate.push(true);
               }
@@ -579,6 +592,22 @@ class MainBoard extends React.Component {
               if (checkingPiece[3] === spacesAroundKing[i][0]) {
                 arrCheckmate.push(true);
               }
+
+              if (checkingPiece[0][0]-checkingPiece[0][1] === spacesAroundKing[i][0]-spacesAroundKing[i][1]) {
+                arrCheckmate.push(true);
+              }
+              if (checkingPiece[1][0]-checkingPiece[1][1] === spacesAroundKing[i][0]-spacesAroundKing[i][1]) {
+                arrCheckmate.push(true);
+              }
+              if (checkingPiece[2][0]-checkingPiece[2][1] === spacesAroundKing[i][0]-spacesAroundKing[i][1]) {
+                arrCheckmate.push(true);
+              }
+              if (checkingPiece[3][0]-checkingPiece[3][1] === spacesAroundKing[i][0]-spacesAroundKing[i][1]) {
+                arrCheckmate.push(true);
+              }
+
+
+
 
               this.checkByRook(pos,color,false,spacesAroundKing[i][0],spacesAroundKing[i][1],arrCheckmate);
               this.checkByBishop(pos,color,false,spacesAroundKing[i][0],spacesAroundKing[i][1],arrCheckmate);
@@ -595,7 +624,7 @@ class MainBoard extends React.Component {
             }
           }
         }
-        alert(test);
+    //    alert(test);
         if (moveKingOutOfCheck.length > 0) {
           //alert("works");
           isGameOverCanKingMove.push(true);
@@ -623,20 +652,22 @@ class MainBoard extends React.Component {
               }
             }
           }
-          if (arrCheckmate.length === 0 && distTop-1===0) {
-            alert("bottom");
+          if (distTop-1===0 && arrCheckmate.length === 0) {
+    //        alert("bottom");
             this.checkByRook(pos,color,false,posTop[0],posTop[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posTop[0],posTop[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posTop[0],posTop[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posTop[0],posTop[1],isPieceProtected);
-            alert("IsWhiteprotected : " + isPieceProtected);
+    //        alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
-              alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              isPieceProtected.length = 0;
+      //        alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
-          } else if (arrCheckmate.length === 0 && (distTop-1 !== 0)) {
+          }
+          if (arrCheckmate.length === 0 && distTop-1 !== 0) {
             isGameOver.push(true);
-            alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+      //      alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
         }
         if (bottom) {
@@ -649,20 +680,22 @@ class MainBoard extends React.Component {
               this.checkmateTakeWithPawn(newColor,posBottom[0]-i,posBottom[1],arrCheckmate);
             }
           }
-          if (arrCheckmate.length === 0 && distBottom-1===0) {
-            alert("bottom");
+          if (distBottom-1===0 && arrCheckmate.length === 0) {
+        //    alert("bottom");
             this.checkByRook(pos,color,false,posBottom[0],posBottom[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posBottom[0],posBottom[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posBottom[0],posBottom[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posBottom[0],posBottom[1],isPieceProtected);
-            alert("IsWhiteprotected : " + isPieceProtected);
+    //        alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
-              alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              isPieceProtected.length = 0;
+    //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
-          } else if (arrCheckmate.length === 0 && (distBottom-1 !== 0)) {
+          }
+          if (arrCheckmate.length === 0 && distBottom-1 !== 0) {
             isGameOver.push(true);
-            alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+    //        alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
         }
 
@@ -677,20 +710,22 @@ class MainBoard extends React.Component {
               this.checkmateBlockWithPawn(newColor,posLeft[0],posLeft[1]+i,arrCheckmate);
             }
           }
-          if (arrCheckmate.length === 0 && distLeft-1===0) {
-            alert("hiiii");
+          if (distLeft-1===0 && arrCheckmate.length === 0) {
+      //      alert("hiiii");
             this.checkByRook(pos,color,false,posLeft[0],posLeft[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posLeft[0],posLeft[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posLeft[0],posLeft[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posLeft[0],posLeft[1],isPieceProtected);
-            alert("IsWhiteprotected : " + isPieceProtected);
+    //        alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
-              alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              isPieceProtected.length = 0;
+    //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
-          } else if (arrCheckmate.length === 0 && (distLeft-1 !== 0)) {
+          }
+          if (arrCheckmate.length === 0 && distLeft-1 !== 0) {
             isGameOver.push(true);
-            alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+        //    alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
 
         }
@@ -706,20 +741,22 @@ class MainBoard extends React.Component {
               this.checkmateBlockWithPawn(newColor,posRight[0],posRight[1]-i,arrCheckmate);
             }
           }
-          if (arrCheckmate.length === 0 && distRight-1===0) {
-            alert("hiiii");
+          if (distRight-1===0 && arrCheckmate.length === 0) {
+          //  alert("hiiii");
             this.checkByRook(pos,color,false,posRight[0],posRight[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posRight[0],posRight[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posRight[0],posRight[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posRight[0],posRight[1],isPieceProtected);
-            alert("IsWhiteprotected : " + isPieceProtected);
+      //      alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
-              alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              isPieceProtected.length = 0;
+    //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
-          } else if (arrCheckmate.length === 0 && (distRight-1 !== 0)) {
+          }
+          if (arrCheckmate.length === 0 && distRight-1 !== 0) {
             isGameOver.push(true);
-            alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+      //      alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
 
         }
@@ -747,26 +784,28 @@ class MainBoard extends React.Component {
               this.checkmateBlockWithPawn(newColor,posTopLeft[0]+i,posTopLeft[1]+i,arrCheckmate)
             }
           }
-          alert("inner");
-          if (arrCheckmate.length < 0 && distTopLeft-1===0) {
+    //      alert("inner");
+          if (distTopLeft-1===0 && arrCheckmate.length === 0) {
 
             this.checkByRook(pos,color,false,posTopLeft[0],posTopLeft[1],isPieceProtected);
             this.checkByBishop(pos,color,0,posTopLeft[0],posTopLeft[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posTopLeft[0],posTopLeft[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posTopLeft[0],posTopLeft[1],isPieceProtected);
             //    alert("IsWhiteprotected : " + isPieceProtected);
-            if (isPieceProtected.length > 0) {
+            if (arrCheckmate.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-              alert("checkmate TLLLL");
+          //    alert("checkmate TLLLL");
             }
-          } else if (arrCheckmate.length === 0 && distTopLeft-1 !== 0) {
+          }
+          if (arrCheckmate.length === 0 && distTopLeft-1 !== 0) {
             isGameOver.push(true);
-            alert("checkmate TL");
+        //    alert("checkmate TL");
           }
         }
         if (topRight) {
           for (let i=0; i < distTopRight; i++) {
+
             this.checkByRook(pos,newColor,false,posTopRight[0]+i,posTopRight[1]-i,arrCheckmate);
             this.checkByBishop(pos,newColor,false,posTopRight[0]+i,posTopRight[1]-i,arrCheckmate);
             this.checkByKnight(pos,newColor,false,posTopRight[0]+i,posTopRight[1]-i,arrCheckmate);
@@ -776,7 +815,8 @@ class MainBoard extends React.Component {
               this.checkmateBlockWithPawn(newColor,posTopRight[0]+i,posTopRight[1]-i,arrCheckmate)
             }
           }
-          if (arrCheckmate.length === 0 && distTopRight-1===0) {
+          if (distTopRight-1===0 && arrCheckmate.length === 0) {
+          //  alert(posTopRight[0] + " - " + posTopRight[1]);
             this.checkByRook(pos,color,false,posTopRight[0],posTopRight[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posTopRight[0],posTopRight[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posTopRight[0],posTopRight[1],isPieceProtected);
@@ -785,11 +825,12 @@ class MainBoard extends React.Component {
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-              alert("checkmate TR");
+        //      alert("checkmate TRrr");
             }
-          } else if (arrCheckmate.length === 0 && distTopRight-1 !== 0) {
+          }
+           if (arrCheckmate.length === 0 && distTopRight-1 !== 0) {
             isGameOver.push(true);
-                  alert("checkmate TR");
+      //      alert("checkmate TRRRRR");
           }
         }
         if (bottomLeft) {  ///////
@@ -804,7 +845,7 @@ class MainBoard extends React.Component {
               this.checkmateBlockWithPawn(newColor,posBottomLeft[0]-i,posBottomLeft[1]+i,arrCheckmate)
             }
           }
-          if (arrCheckmate.length === 0 && distBottomLeft-1===0) {
+          if (distBottomLeft-1===0 && arrCheckmate.length === 0) {
             //        alert("bl");
             this.checkByRook(pos,color,false,posBottomLeft[0],posBottomLeft[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posBottomLeft[0],posBottomLeft[1],isPieceProtected);
@@ -814,11 +855,12 @@ class MainBoard extends React.Component {
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-              alert("checkmate BL");
+    //                alert("checkmate BL");
             }
-          } else if (arrCheckmate.length === 0 && (distBottomLeft-1 !== 0)) {
+          }
+          if (arrCheckmate.length === 0 && distBottomLeft-1 !== 0) {
             isGameOver.push(true);
-                      alert("checkmate BL");
+        //              alert("checkmate BL");
           }
         }
         if (bottomRight) {
@@ -833,7 +875,7 @@ class MainBoard extends React.Component {
               this.checkmateBlockWithPawn(newColor,posBottomRight[0]-i,posBottomRight[1]+i,arrCheckmate);
             }
           }
-          if (arrCheckmate.length === 0 && distBottomRight-1===0) {
+          if (distBottomRight-1===0 && arrCheckmate.length === 0) {
             //      alert("bottom");
             this.checkByRook(pos,color,false,posBottomRight[0],posBottomRight[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posBottomRight[0],posBottomRight[1],isPieceProtected);
@@ -843,16 +885,25 @@ class MainBoard extends React.Component {
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-              alert("checkmate BR");
+        //      alert("checkmate BRRRRRR");
             }
-          } else if (arrCheckmate.length === 0 && (distBottomRight-1 !== 0)) {
+          }
+
+          if (arrCheckmate.length === 0 && distBottomRight-1 !== 0) {
             isGameOver.push(true);
-            alert("checkmate BR");
+      //      alert("checkmate BRR");
           }
         }
 
         console.log(pos,topLeft,topRight,bottomLeft,bottomRight,distTopLeft,distTopRight,distBottomLeft,distBottomRight,posTopLeft,posTopRight,posBottomLeft,posBottomRight);
       }
+      checkmateRook(pos,piecePos1,piecePos2,color,isGameOver){
+        this.checkByRook(pos,color,false,piecePos1,piecePos2,arrCheckmateWhite);
+        this.checkByBishop(pos,color,false,piecePos1,piecePos2,arrCheckmateWhite);
+        this.checkByKnight(pos,color,false,piecePos1,piecePos2,arrCheckmateWhite);
+        this.checkmateTakeWithPawn(color,piecePos1,piecePos2,arrCheckmateWhite);
+      }
+
       checkmatePawn(pos,piecePos1,piecePos2,color,isGameOver) {
         let arrCheckmateWhite = [];
         let arrCheckmateBlack = [];
@@ -876,7 +927,7 @@ class MainBoard extends React.Component {
           this.checkmateTakeWithPawn(1,piecePos1,piecePos2,isBlackPieceProtected);
           if (isBlackPieceProtected.length > 0) {
             isGameOver.push(true);
-            alert("checkmate One Pawn - " + isBlackPieceProtected);
+    //        alert("checkmate One Pawn - " + isBlackPieceProtected);
           }
         }
         if (color === 2 && arrCheckmateBlack.length === 0) {
@@ -886,7 +937,7 @@ class MainBoard extends React.Component {
           this.checkmateTakeWithPawn(2,piecePos1,piecePos2,isWhitePieceProtected);
           if (isWhitePieceProtected.length > 0) {
             isGameOver.push(true);
-            alert("checkmate Two Pawn - " + isWhitePieceProtected);
+      //      alert("checkmate Two Pawn - " + isWhitePieceProtected);
           }
         }
       }
@@ -1347,7 +1398,7 @@ class MainBoard extends React.Component {
                     console.log(this.state.board);
                     this.inCheck(pos,isGameOver,isGameOverCanKingMove);
                     if (isGameOver.length > 0 && isGameOverCanKingMove.length === 0) {
-                      alert("is game over : " + isGameOver);
+                //      alert("is game over : " + isGameOver);
                     }
                   }
 
