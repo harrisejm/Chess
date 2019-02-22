@@ -24,16 +24,7 @@ class MainBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      board: [
-        // [[],[],[],[],[],[],[],[]],
-        // [[],[],[],[],[],[],[],[]],
-        // [[],[],[],[],[],[],[],[]],
-        // [[],[],[],[],[],[],[],[]],
-        // [[],[],[],[],[],[],[],[]],
-        // [[],[],[],[],[],[],[],[]],
-        // [[],[],[],[],[],[],[],[]],
-        // [[],[],[],[],[],[],[],[]]
-      ],
+      board: [],
       takenPiecesWhite: [],
       takenPiecesBlack: [],
       selectPieceWhite: [],
@@ -76,10 +67,16 @@ class MainBoard extends React.Component {
     //  this.checkmatePawn = this.this.checkmatePawn.bind(this);
   }
 
-  checkByRook(pos,color,isKing,piecesPos1,piecePos2,arr,checkingPiece){
-
+  checkByRook(pos,color,isKing,piecesPos1,piecePos2,arr,checkingPiece,testBoardLegalMove){
     let newRookPositions = {top: false, bottom: false, left: false, right: false, distanceTop: [], distanceBottom: [], distanceLeft: [], distanceRight: [], positionTop: [], positionBottom: [], positionLeft: [], positionRight: []};
-
+    let newBoard;
+    if (testBoardLegalMove) {
+  //    console.log("HELLLLLLOOOO")
+      newBoard = testBoardLegalMove;
+    } else {
+    newBoard = this.state.board.slice();
+    }
+//    console.log("test NewBoard", newBoard)
     let kingPieceColor;
     let rookPieceColor;
     let queenPieceColor;
@@ -87,6 +84,7 @@ class MainBoard extends React.Component {
     let kingPosY;
     let kingPosX;
     let runCheckmateTest = false;
+
 
     if (color === 1) {
       kingPieceColor = wk;
@@ -112,12 +110,12 @@ class MainBoard extends React.Component {
     //
 
     //allows king to move out of check
-    if (this.state.board[pos[0]][pos[1]].occupied === kingPieceColor) {
+    if (newBoard[pos[0]][pos[1]].occupied === kingPieceColor && !testBoardLegalMove && isKing) {
       this.setState({check: null});
     } else {
       //rook up
       for (let i=1; i < kingPosY+1; i++) {
-        if (this.state.board[kingPosY-i][kingPosX].occupied === rookPieceColor || this.state.board[kingPosY-i][kingPosX].occupied === queenPieceColor) {
+        if (newBoard[kingPosY-i][kingPosX].occupied === rookPieceColor || newBoard[kingPosY-i][kingPosX].occupied === queenPieceColor) {
           rookUp = true;
           distanceToKingUp.push(i);
           newRookPositions.distanceTop = distanceToKingUp;
@@ -126,7 +124,7 @@ class MainBoard extends React.Component {
       }
       //rook down
       for (let i=1; i < 8-kingPosY; i++) {
-        if (this.state.board[kingPosY+i][kingPosX].occupied === rookPieceColor || this.state.board[kingPosY+i][kingPosX].occupied === queenPieceColor) {
+        if (newBoard[kingPosY+i][kingPosX].occupied === rookPieceColor || newBoard[kingPosY+i][kingPosX].occupied === queenPieceColor) {
           rookDown = true;
           distanceToKingDown.push(i);
           newRookPositions.distanceBottom = distanceToKingDown;
@@ -135,7 +133,7 @@ class MainBoard extends React.Component {
       }
       //rook left
       for (let i=1; i < kingPosX+1; i++) {
-        if (this.state.board[kingPosY][kingPosX-i].occupied === rookPieceColor || this.state.board[kingPosY][kingPosX-i].occupied === queenPieceColor) {
+        if (newBoard[kingPosY][kingPosX-i].occupied === rookPieceColor || newBoard[kingPosY][kingPosX-i].occupied === queenPieceColor) {
           rookLeft = true;
           distanceToKingLeft.push(i);
           newRookPositions.distanceLeft = distanceToKingLeft;
@@ -144,7 +142,7 @@ class MainBoard extends React.Component {
       }
       //rook right
       for (let i=1; i < 8 - kingPosX; i++) {
-        if (this.state.board[kingPosY][kingPosX+i].occupied === rookPieceColor || this.state.board[kingPosY][kingPosX+i].occupied === queenPieceColor) {
+        if (newBoard[kingPosY][kingPosX+i].occupied === rookPieceColor || newBoard[kingPosY][kingPosX+i].occupied === queenPieceColor) {
           rookRight = true;
           distanceToKingRight.push(i);
           newRookPositions.distanceRight = distanceToKingRight;
@@ -156,7 +154,7 @@ class MainBoard extends React.Component {
       if (rookUp === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingUp[0]; i++) {
-          if (this.state.board[kingPosY-i][kingPosX].occupied !== null) {
+          if (newBoard[kingPosY-i][kingPosX].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -167,7 +165,7 @@ class MainBoard extends React.Component {
             runCheckmateTest = true;
             checkingPiece[0] = kingPosX;
           } else {
-            arr.push(true);
+            arr.push("up");
           }
         }
       }
@@ -175,7 +173,7 @@ class MainBoard extends React.Component {
       if (rookDown === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingDown[0]; i++) {
-          if (this.state.board[kingPosY+i][kingPosX].occupied !== null) {
+          if (newBoard[kingPosY+i][kingPosX].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -186,7 +184,7 @@ class MainBoard extends React.Component {
             runCheckmateTest = true;
             checkingPiece[1] = kingPosX;
           } else {
-            arr.push(true);
+            arr.push(kingPosY + " , " + kingPosX);
           }
         }
       }
@@ -194,7 +192,7 @@ class MainBoard extends React.Component {
       if (rookLeft === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingLeft[0]; i++) {
-          if (this.state.board[kingPosY][kingPosX-i].occupied !== null) {
+          if (newBoard[kingPosY][kingPosX-i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -205,7 +203,7 @@ class MainBoard extends React.Component {
             runCheckmateTest = true;
             checkingPiece[2] = kingPosY;
           } else {
-            arr.push(true);
+            arr.push("left");
           }
         }
       }
@@ -213,7 +211,7 @@ class MainBoard extends React.Component {
       if (rookRight === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceToKingRight[0]; i++) {
-          if (this.state.board[kingPosY][kingPosX+i].occupied !== null) {
+          if (newBoard[kingPosY][kingPosX+i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -224,12 +222,12 @@ class MainBoard extends React.Component {
             runCheckmateTest = true;
             checkingPiece[3] = kingPosY;
           } else {
-            arr.push(true);
+            arr.push("right");
           }
         }
       }
     }
-    if (isKing && runCheckmateTest) {
+    if (isKing && runCheckmateTest && !testBoardLegalMove) {
       this.checkmateRookQueen(pos,newRookPositions.top,newRookPositions.bottom,newRookPositions.left,newRookPositions.right,newRookPositions.distanceTop[0],newRookPositions.distanceBottom[0],newRookPositions.distanceLeft[0],newRookPositions.distanceRight[0],newRookPositions.positionTop[0],newRookPositions.positionBottom[0],newRookPositions.positionLeft[0],newRookPositions.positionRight[0],color,arr);
     }
 
@@ -238,11 +236,16 @@ class MainBoard extends React.Component {
     }
   }
 
-  checkByBishop(pos,color,isKing,piecePos1,piecePos2,arr,checkingPiece) {
+  checkByBishop(pos,color,isKing,piecePos1,piecePos2,arr,checkingPiece,testBoardLegalMove) {
     let newBishopQueenPositions = {topLeft: false, topRight: false, bottomLeft: false, bottomRight: false, distanceTopLeft: [], distanceTopRight: [], distanceBottomLeft: [], distanceBottomRight: [], positionTopLeft: [], positionTopRight: [], positionBottomLeft: [], positionBottomRight: []};
-    // if (isKing === 0) {
-    //   alert("dsggshhh");
-    // }
+    let newBoard;
+    if (testBoardLegalMove) {
+      newBoard = testBoardLegalMove;
+    } else {
+      newBoard = this.state.board.slice();
+    }
+    // alert(newBoard[0][0].occupied);
+
     let kingPieceColor;
     let bishopPieceColor;
     let queenPieceColor;
@@ -271,7 +274,7 @@ class MainBoard extends React.Component {
     let distanceTopLeft = [], distanceTopRight = [], distanceBottomLeft = [], distanceBottomRight = [];
 
     //allows king to move out of check
-    if (this.state.board[pos[0]][pos[1]].occupied === kingPieceColor) {
+    if (newBoard[pos[0]][pos[1]].occupied === kingPieceColor && !testBoardLegalMove && isKing) {
       this.setState({check: null});
     } else {
       //bishop Top left
@@ -282,7 +285,7 @@ class MainBoard extends React.Component {
       }
 
       for (let i=1; i < tl; i++) {
-        if (this.state.board[kingPosY-i][kingPosX-i].occupied === bishopPieceColor || this.state.board[kingPosY-i][kingPosX-i].occupied === queenPieceColor) {
+        if (newBoard[kingPosY-i][kingPosX-i].occupied === bishopPieceColor || newBoard[kingPosY-i][kingPosX-i].occupied === queenPieceColor) {
           bishopTopLeft = true;
           distanceTopLeft.push(i);
           newBishopQueenPositions.distanceTopLeft = distanceTopLeft;
@@ -296,7 +299,7 @@ class MainBoard extends React.Component {
         tr = kingPosY+1;
       }
       for (let i=1; i < tr; i++) {
-        if (this.state.board[kingPosY-i][kingPosX+i].occupied === bishopPieceColor || this.state.board[kingPosY-i][kingPosX+i].occupied === queenPieceColor) {
+        if (newBoard[kingPosY-i][kingPosX+i].occupied === bishopPieceColor || newBoard[kingPosY-i][kingPosX+i].occupied === queenPieceColor) {
           bishopTopRight = true;
           distanceTopRight.push(i);
           newBishopQueenPositions.distanceTopRight = distanceTopRight;
@@ -310,7 +313,7 @@ class MainBoard extends React.Component {
         bl = 8-kingPosY;
       }
       for (let i=1; i < bl; i++) {
-        if (this.state.board[kingPosY+i][kingPosX-i].occupied === bishopPieceColor || this.state.board[kingPosY+i][kingPosX-i].occupied === queenPieceColor) {
+        if (newBoard[kingPosY+i][kingPosX-i].occupied === bishopPieceColor || newBoard[kingPosY+i][kingPosX-i].occupied === queenPieceColor) {
           bishopBottomLeft = true;
           distanceBottomLeft.push(i);
           newBishopQueenPositions.distanceBottomLeft = distanceBottomLeft;
@@ -324,7 +327,7 @@ class MainBoard extends React.Component {
         br = 8-kingPosY;
       }
       for (let i=1; i < br; i++) {
-        if (this.state.board[kingPosY+i][kingPosX+i].occupied === bishopPieceColor || this.state.board[kingPosY+i][kingPosX+i].occupied === queenPieceColor) {
+        if (newBoard[kingPosY+i][kingPosX+i].occupied === bishopPieceColor || newBoard[kingPosY+i][kingPosX+i].occupied === queenPieceColor) {
           bishopBottomRight = true;
           distanceBottomRight.push(i);
           newBishopQueenPositions.distanceBottomRight = distanceBottomRight;
@@ -336,7 +339,7 @@ class MainBoard extends React.Component {
       if (bishopTopLeft === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceTopLeft[0]; i++) {
-          if (this.state.board[kingPosY-i][kingPosX-i].occupied !== null) {
+          if (newBoard[kingPosY-i][kingPosX-i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -347,7 +350,7 @@ class MainBoard extends React.Component {
             runCheckmateTest = true;
             checkingPiece[0] = [kingPosY,kingPosX];
           } else {
-            arr.push(true);
+            arr.push("TL");
             //    alert("!!!isKing TL");
             //  this.setState({blockCheckmate: true});
           }
@@ -358,7 +361,7 @@ class MainBoard extends React.Component {
       if (bishopTopRight === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceTopRight[0]; i++) {
-          if (this.state.board[kingPosY-i][kingPosX+i].occupied !== null) {
+          if (newBoard[kingPosY-i][kingPosX+i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -370,7 +373,7 @@ class MainBoard extends React.Component {
             runCheckmateTest = true;
             checkingPiece[1] = [kingPosY,kingPosX];
           } else {
-            arr.push(true);
+            arr.push("tr");
             //      alert("!!!isKing TR");
           }
         }
@@ -379,7 +382,7 @@ class MainBoard extends React.Component {
       if (bishopBottomLeft === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceBottomLeft[0]; i++) {
-          if (this.state.board[kingPosY+i][kingPosX-i].occupied !== null) {
+          if (newBoard[kingPosY+i][kingPosX-i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -390,7 +393,7 @@ class MainBoard extends React.Component {
             runCheckmateTest = true;
             checkingPiece[2] = [kingPosY,kingPosX];
           } else {
-            arr.push(true);
+            arr.push("BL");
             //      alert("!!!isKing BL");
           }
         }
@@ -399,7 +402,7 @@ class MainBoard extends React.Component {
       if (bishopBottomRight === true) {
         let pieceBlocking = 0;
         for (let i=1; i < distanceBottomRight[0]; i++) {
-          if (this.state.board[kingPosY+i][kingPosX+i].occupied !== null) {
+          if (newBoard[kingPosY+i][kingPosX+i].occupied !== null) {
             pieceBlocking += 1;
           }
         }
@@ -415,15 +418,21 @@ class MainBoard extends React.Component {
         }
       }
     }
-    if (isKing && runCheckmateTest) {
+    if (isKing && runCheckmateTest && !testBoardLegalMove) {
       this.checkmateBishopQueen(pos,newBishopQueenPositions.topLeft,newBishopQueenPositions.topRight,newBishopQueenPositions.bottomLeft,newBishopQueenPositions.bottomRight,newBishopQueenPositions.distanceTopLeft[0],newBishopQueenPositions.distanceTopRight[0],newBishopQueenPositions.distanceBottomLeft[0],newBishopQueenPositions.distanceBottomRight[0],newBishopQueenPositions.positionTopLeft[0],newBishopQueenPositions.positionTopRight[0],newBishopQueenPositions.positionBottomLeft[0],newBishopQueenPositions.positionBottomRight[0],color,arr);
     }
   }
-  checkByKnight(pos,color,isKing,piecePos1,piecePos2,arr){
+  checkByKnight(pos,color,isKing,piecePos1,piecePos2,arr,newTestBoard){
     let kingPieceColor;
     let knightPieceColor;
     let colorOfKing;
     let runCheckmateTest = false;
+    let newBoard;
+    if (newTestBoard) {
+      newBoard = newTestBoard;
+    } else {
+      newBoard = this.state.board.slice();
+    }
 
     if (color === 1) {
       kingPieceColor = wk;
@@ -434,32 +443,36 @@ class MainBoard extends React.Component {
       knightPieceColor = wkn;
       colorOfKing = " Black";
     }
-    if (isKing &&
-      (piecePos1-2 === pos[0] && piecePos2-1 === pos[1] && this.state.board[piecePos1-2][piecePos2-1].occupied === knightPieceColor)
-      || (piecePos1-2 === pos[0] && piecePos2+1 === pos[1] && this.state.board[piecePos1-2][piecePos2+1].occupied === knightPieceColor)
-      || (piecePos1-1 === pos[0] && piecePos2-2 === pos[1] && this.state.board[piecePos1-1][piecePos2-2].occupied === knightPieceColor)
-      || (piecePos1-1 === pos[0] && piecePos2+2 === pos[1] && this.state.board[piecePos1-1][piecePos2+2].occupied === knightPieceColor)
-      || (piecePos1+1 === pos[0] && piecePos2-2 === pos[1] && this.state.board[piecePos1+1][piecePos2-2].occupied === knightPieceColor)
-      || (piecePos1+1 === pos[0] && piecePos2+2 === pos[1] && this.state.board[piecePos1+1][piecePos2+2].occupied === knightPieceColor)
-      || (piecePos1+2 === pos[0] && piecePos2-1 === pos[1] && this.state.board[piecePos1+2][piecePos2-1].occupied === knightPieceColor)
-      || (piecePos1+2 === pos[0] && piecePos2+1 === pos[1] && this.state.board[piecePos1+2][piecePos2+1].occupied === knightPieceColor)
-    ) {
-      runCheckmateTest = true;
-      this.setState({check: colorOfKing + " king is in Check" });
-      //black knight
+    if (isKing) {
+      if (
+        (piecePos1-2 === pos[0] && piecePos2-1 === pos[1] && this.state.board[piecePos1-2][piecePos2-1].occupied === knightPieceColor)
+        || (piecePos1-2 === pos[0] && piecePos2+1 === pos[1] && this.state.board[piecePos1-2][piecePos2+1].occupied === knightPieceColor)
+        || (piecePos1-1 === pos[0] && piecePos2-2 === pos[1] && this.state.board[piecePos1-1][piecePos2-2].occupied === knightPieceColor)
+        || (piecePos1-1 === pos[0] && piecePos2+2 === pos[1] && this.state.board[piecePos1-1][piecePos2+2].occupied === knightPieceColor)
+        || (piecePos1+1 === pos[0] && piecePos2-2 === pos[1] && this.state.board[piecePos1+1][piecePos2-2].occupied === knightPieceColor)
+        || (piecePos1+1 === pos[0] && piecePos2+2 === pos[1] && this.state.board[piecePos1+1][piecePos2+2].occupied === knightPieceColor)
+        || (piecePos1+2 === pos[0] && piecePos2-1 === pos[1] && this.state.board[piecePos1+2][piecePos2-1].occupied === knightPieceColor)
+        || (piecePos1+2 === pos[0] && piecePos2+1 === pos[1] && this.state.board[piecePos1+2][piecePos2+1].occupied === knightPieceColor)
+      ) {
+        runCheckmateTest = true;
+        this.setState({check: colorOfKing + " king is in Checkkkk - " + piecePos1 + "," + piecePos2});
+        this.checkmateKnight(pos,piecePos1,piecePos2,color,arr);
+        //black knight
+      }
     }
-
-    if (!isKing &&
-      (piecePos1-2 >=0 && piecePos2-1 >=0 && this.state.board[piecePos1-2][piecePos2-1].occupied === knightPieceColor)
-      || (piecePos1-2 >=0 && piecePos2+1 <=7 && this.state.board[piecePos1-2][piecePos2+1].occupied === knightPieceColor)
-      || (piecePos1-1 >=0 && piecePos2-2 >=0 && this.state.board[piecePos1-1][piecePos2-2].occupied === knightPieceColor)
-      || (piecePos1-1 >=0 && piecePos2+2 <=7 && this.state.board[piecePos1-1][piecePos2+2].occupied === knightPieceColor)
-      || (piecePos1+1 <=7 && piecePos2-2 >=0 && this.state.board[piecePos1+1][piecePos2-2].occupied === knightPieceColor)
-      || (piecePos1+1 <=7 && piecePos2+2 <=7 && this.state.board[piecePos1+1][piecePos2+2].occupied === knightPieceColor)
-      || (piecePos1+2 <=7 && piecePos2-1 >=0 && this.state.board[piecePos1+2][piecePos2-1].occupied === knightPieceColor)
-      || (piecePos1+2 <=7 && piecePos2+1 <=7 && this.state.board[piecePos1+2][piecePos2+1].occupied === knightPieceColor)
-    ) {
-      arr.push(true);
+    if (!isKing) {
+      if (
+        (piecePos1-2 >=0 && piecePos2-1 >=0 && this.state.board[piecePos1-2][piecePos2-1].occupied === knightPieceColor)
+        || (piecePos1-2 >=0 && piecePos2+1 <=7 && this.state.board[piecePos1-2][piecePos2+1].occupied === knightPieceColor)
+        || (piecePos1-1 >=0 && piecePos2-2 >=0 && this.state.board[piecePos1-1][piecePos2-2].occupied === knightPieceColor)
+        || (piecePos1-1 >=0 && piecePos2+2 <=7 && this.state.board[piecePos1-1][piecePos2+2].occupied === knightPieceColor)
+        || (piecePos1+1 <=7 && piecePos2-2 >=0 && this.state.board[piecePos1+1][piecePos2-2].occupied === knightPieceColor)
+        || (piecePos1+1 <=7 && piecePos2+2 <=7 && this.state.board[piecePos1+1][piecePos2+2].occupied === knightPieceColor)
+        || (piecePos1+2 <=7 && piecePos2-1 >=0 && this.state.board[piecePos1+2][piecePos2-1].occupied === knightPieceColor)
+        || (piecePos1+2 <=7 && piecePos2+1 <=7 && this.state.board[piecePos1+2][piecePos2+1].occupied === knightPieceColor)
+      ) {
+        arr.push(true);
+      }
     }
   }
   checkByPawn(pos,color,isKing,whitePiecePos1,whitePiecePos2,blackPiecePos1,blackPiecePos2,arr){
@@ -477,12 +490,12 @@ class MainBoard extends React.Component {
       if (whitePiecePos1-1 === pos[0]
         && (whitePiecePos2-1 === pos[1] || whitePiecePos2+1 === pos[1])
         && ((whitePawnPositionOne === bp) || (whitePawnPositionTwo === bp))) {
-          this.setState({check: " White king is in Check1111" });
+          this.setState({check: " White king is in Check" });
           if (whitePawnPositionOne === bp) {
             this.checkmatePawn(pos,whitePiecePos1-1,whitePiecePos2-1,1,arr);
           }
           if (whitePawnPositionTwo === bp) {
-            alert(pos + " - " + (whitePiecePos1-1) + " - " + (whitePiecePos2+1) + " - " + 1 + " - " + arr);
+            //      alert(pos + " - " + (whitePiecePos1-1) + " - " + (whitePiecePos2+1) + " - " + 1 + " - " + arr);
             this.checkmatePawn(pos,whitePiecePos1-1,whitePiecePos2+1,1,arr);
           }
         } else {
@@ -498,13 +511,13 @@ class MainBoard extends React.Component {
         if (blackPiecePos1+1 === pos[0]
           && (blackPiecePos2-1 === pos[1] || blackPiecePos2+1 === pos[1])
           && ((blackPawnPositionOne === wp) || (blackPawnPositionTwo === wp))) {
-            this.setState({check: " Black king is in Check22e" });
+            this.setState({check: " Black king is in Check" });
             if (blackPawnPositionOne === wp) {
-      //        alert("1 pawn");
+              //        alert("1 pawn");
               this.checkmatePawn(pos,blackPiecePos1+1,blackPiecePos2-1,2,arr);
             }
             if (blackPawnPositionTwo === wp) {
-      //        alert("2 pawn");
+              //        alert("2 pawn");
               this.checkmatePawn(pos,blackPiecePos1+1,blackPiecePos2+1,2,arr);
             }
           } else {
@@ -513,10 +526,12 @@ class MainBoard extends React.Component {
         }
       }
       checkmateBlockWithPawn(color,piecePos1,piecePos2,arr) {
+        //    alert(piecePos1 + " - " + piecePos2)
         if (color === 1) {
           if (piecePos1 === 3 && this.state.board[piecePos1-1][piecePos2].occupied === null && this.state.board[piecePos1-2][piecePos2].occupied === bp) {
             arr.push(true);
-          } else if (piecePos1 === 3 && piecePos1-1 >=0 && this.state.board[piecePos1-1][piecePos2].occupied === bp) {
+          }
+          if (piecePos1-1 >=0 && this.state.board[piecePos1-1][piecePos2].occupied === bp) {
             arr.push(true);
           }
         } else {
@@ -528,21 +543,27 @@ class MainBoard extends React.Component {
           }
         }
       }
-      checkmateTakeWithPawn(color,piecePos1,piecePos2,arr){
-
+      checkmateTakeWithPawn(color,piecePos1,piecePos2,arr,testBoardLegalMove){
+        let newBoard;
+        if (testBoardLegalMove) {
+          newBoard = testBoardLegalMove;
+        } else {
+          newBoard = this.state.board.slice();
+        }
+        //      console.log(newBoard);
         if (color === 1) {
-          if (piecePos1-1 >=0 && piecePos2-1 >=0 && this.state.board[piecePos1-1][piecePos2-1].occupied === bp) {
+          if (piecePos1-1 >=0 && piecePos2-1 >=0 && newBoard[piecePos1-1][piecePos2-1].occupied === bp) {
             arr.push(true);
-          } else if (piecePos1-1 >=0 && piecePos2+1 <=7 && this.state.board[piecePos1-1][piecePos2+1].occupied === bp) {
+          } else if (piecePos1-1 >=0 && piecePos2+1 <=7 && newBoard[piecePos1-1][piecePos2+1].occupied === bp) {
             arr.push(true);
           }
         } else {
-          if (piecePos1+1 <=7 && piecePos2-1 >=0 && this.state.board[piecePos1+1][piecePos2-1].occupied === wp) {
+          if (piecePos1+1 <=7 && piecePos2-1 >=0 && newBoard[piecePos1+1][piecePos2-1].occupied === wp) {
             arr.push(true);
-      //      alert("first path");
-          } else if (piecePos1+1 <=7 && piecePos2+1 <=7 && this.state.board[piecePos1+1][piecePos2+1].occupied === wp) {
+            //      alert("first path");
+          } else if (piecePos1+1 <=7 && piecePos2+1 <=7 && newBoard[piecePos1+1][piecePos2+1].occupied === wp) {
             arr.push(true);
-      //      alert("second path");
+            //      alert("second path");
           }
         }
       }
@@ -556,11 +577,11 @@ class MainBoard extends React.Component {
           this.checkByRook(pos,2,true,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOver,checkingPiece);
           this.checkByBishop(pos,1,true,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOver,checkingPiece);
           this.checkByBishop(pos,2,true,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOver,checkingPiece);
-          this.checkByKnight(pos,1,false,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOver);
-          this.checkByKnight(pos,2,false,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOver);
-      //    this.moveOutOfCheckmate(pos,1,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOverCanKingMove,checkingPiece);
-    //alert(checkingPiece);
-        this.moveOutOfCheckmate(pos,2,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOverCanKingMove,checkingPiece);
+          this.checkByKnight(pos,1,true,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOver);
+          this.checkByKnight(pos,2,true,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOver);
+          //    this.moveOutOfCheckmate(pos,1,this.state.whiteKingPos[0],this.state.whiteKingPos[1],isGameOverCanKingMove,checkingPiece);
+          //alert(checkingPiece);
+          this.moveOutOfCheckmate(pos,2,this.state.blackKingPos[0],this.state.blackKingPos[1],isGameOverCanKingMove,checkingPiece);
         }
       }
       moveOutOfCheckmate(pos,color,piecePos1,piecePos2,isGameOverCanKingMove,checkingPiece){
@@ -616,7 +637,7 @@ class MainBoard extends React.Component {
               test.push(" [ " + spacesAroundKing[i] + " ] " + " : " + arrCheckmate);
 
               if (arrCheckmate.length === 0) {
-              //  alert("arrCheckmate")
+                //  alert("arrCheckmate")
                 moveKingOutOfCheck.push(true);
               } else {
                 arrCheckmate.length = 0;
@@ -624,7 +645,7 @@ class MainBoard extends React.Component {
             }
           }
         }
-    //    alert(test);
+        //    alert(test);
         if (moveKingOutOfCheck.length > 0) {
           //alert("works");
           isGameOverCanKingMove.push(true);
@@ -653,21 +674,21 @@ class MainBoard extends React.Component {
             }
           }
           if (distTop-1===0 && arrCheckmate.length === 0) {
-    //        alert("bottom");
+            //        alert("bottom");
             this.checkByRook(pos,color,false,posTop[0],posTop[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posTop[0],posTop[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posTop[0],posTop[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posTop[0],posTop[1],isPieceProtected);
-    //        alert("IsWhiteprotected : " + isPieceProtected);
+            //        alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-      //        alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              //        alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
           }
           if (arrCheckmate.length === 0 && distTop-1 !== 0) {
             isGameOver.push(true);
-      //      alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+            //      alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
         }
         if (bottom) {
@@ -681,21 +702,21 @@ class MainBoard extends React.Component {
             }
           }
           if (distBottom-1===0 && arrCheckmate.length === 0) {
-        //    alert("bottom");
+            //    alert("bottom");
             this.checkByRook(pos,color,false,posBottom[0],posBottom[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posBottom[0],posBottom[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posBottom[0],posBottom[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posBottom[0],posBottom[1],isPieceProtected);
-    //        alert("IsWhiteprotected : " + isPieceProtected);
+            //        alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-    //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
           }
           if (arrCheckmate.length === 0 && distBottom-1 !== 0) {
             isGameOver.push(true);
-    //        alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+            //        alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
         }
 
@@ -711,21 +732,21 @@ class MainBoard extends React.Component {
             }
           }
           if (distLeft-1===0 && arrCheckmate.length === 0) {
-      //      alert("hiiii");
+            //      alert("hiiii");
             this.checkByRook(pos,color,false,posLeft[0],posLeft[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posLeft[0],posLeft[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posLeft[0],posLeft[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posLeft[0],posLeft[1],isPieceProtected);
-    //        alert("IsWhiteprotected : " + isPieceProtected);
+            //        alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-    //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
           }
           if (arrCheckmate.length === 0 && distLeft-1 !== 0) {
             isGameOver.push(true);
-        //    alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+            //    alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
 
         }
@@ -742,21 +763,21 @@ class MainBoard extends React.Component {
             }
           }
           if (distRight-1===0 && arrCheckmate.length === 0) {
-          //  alert("hiiii");
+            //  alert("hiiii");
             this.checkByRook(pos,color,false,posRight[0],posRight[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posRight[0],posRight[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posRight[0],posRight[1],isPieceProtected);
             this.checkmateTakeWithPawn(color,posRight[0],posRight[1],isPieceProtected);
-      //      alert("IsWhiteprotected : " + isPieceProtected);
+            //      alert("IsWhiteprotected : " + isPieceProtected);
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-    //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+              //          alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
             }
           }
           if (arrCheckmate.length === 0 && distRight-1 !== 0) {
             isGameOver.push(true);
-      //      alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
+            //      alert("checkmate 1" + top + " " + bottom + " " + left + " " + right);
           }
 
         }
@@ -784,7 +805,7 @@ class MainBoard extends React.Component {
               this.checkmateBlockWithPawn(newColor,posTopLeft[0]+i,posTopLeft[1]+i,arrCheckmate)
             }
           }
-    //      alert("inner");
+          //      alert("inner");
           if (distTopLeft-1===0 && arrCheckmate.length === 0) {
 
             this.checkByRook(pos,color,false,posTopLeft[0],posTopLeft[1],isPieceProtected);
@@ -795,12 +816,12 @@ class MainBoard extends React.Component {
             if (arrCheckmate.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-          //    alert("checkmate TLLLL");
+              //    alert("checkmate TLLLL");
             }
           }
           if (arrCheckmate.length === 0 && distTopLeft-1 !== 0) {
             isGameOver.push(true);
-        //    alert("checkmate TL");
+            //    alert("checkmate TL");
           }
         }
         if (topRight) {
@@ -816,7 +837,7 @@ class MainBoard extends React.Component {
             }
           }
           if (distTopRight-1===0 && arrCheckmate.length === 0) {
-          //  alert(posTopRight[0] + " - " + posTopRight[1]);
+            //  alert(posTopRight[0] + " - " + posTopRight[1]);
             this.checkByRook(pos,color,false,posTopRight[0],posTopRight[1],isPieceProtected);
             this.checkByBishop(pos,color,false,posTopRight[0],posTopRight[1],isPieceProtected);
             this.checkByKnight(pos,color,false,posTopRight[0],posTopRight[1],isPieceProtected);
@@ -825,12 +846,12 @@ class MainBoard extends React.Component {
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-        //      alert("checkmate TRrr");
+              //      alert("checkmate TRrr");
             }
           }
-           if (arrCheckmate.length === 0 && distTopRight-1 !== 0) {
+          if (arrCheckmate.length === 0 && distTopRight-1 !== 0) {
             isGameOver.push(true);
-      //      alert("checkmate TRRRRR");
+            //      alert("checkmate TRRRRR");
           }
         }
         if (bottomLeft) {  ///////
@@ -855,12 +876,12 @@ class MainBoard extends React.Component {
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-    //                alert("checkmate BL");
+              //                alert("checkmate BL");
             }
           }
           if (arrCheckmate.length === 0 && distBottomLeft-1 !== 0) {
             isGameOver.push(true);
-        //              alert("checkmate BL");
+            //              alert("checkmate BL");
           }
         }
         if (bottomRight) {
@@ -870,9 +891,9 @@ class MainBoard extends React.Component {
             this.checkByBishop(pos,newColor,false,posBottomRight[0]-i,posBottomRight[1]-i,arrCheckmate);
             this.checkByKnight(pos,newColor,false,posBottomRight[0]-i,posBottomRight[1]-i,arrCheckmate);
             if (posBottomRight[0]-i >= 0 && posBottomRight[1]-i >=0 && i===0) {
-              this.checkmateTakeWithPawn(newColor,posBottomRight[0]-i,posBottomRight[1]+i,arrCheckmate);
+              this.checkmateTakeWithPawn(newColor,posBottomRight[0]-i,posBottomRight[1]-i,arrCheckmate);
             } else {
-              this.checkmateBlockWithPawn(newColor,posBottomRight[0]-i,posBottomRight[1]+i,arrCheckmate);
+              this.checkmateBlockWithPawn(newColor,posBottomRight[0]-i,posBottomRight[1]-i,arrCheckmate);
             }
           }
           if (distBottomRight-1===0 && arrCheckmate.length === 0) {
@@ -885,23 +906,37 @@ class MainBoard extends React.Component {
             if (isPieceProtected.length > 0) {
               isGameOver.push(true);
               isPieceProtected.length = 0;
-        //      alert("checkmate BRRRRRR");
+              //      alert("checkmate BRRRRRR");
             }
           }
 
           if (arrCheckmate.length === 0 && distBottomRight-1 !== 0) {
             isGameOver.push(true);
-      //      alert("checkmate BRR");
+            //      alert("checkmate BRR");
           }
         }
 
         console.log(pos,topLeft,topRight,bottomLeft,bottomRight,distTopLeft,distTopRight,distBottomLeft,distBottomRight,posTopLeft,posTopRight,posBottomLeft,posBottomRight);
       }
-      checkmateRook(pos,piecePos1,piecePos2,color,isGameOver){
-        this.checkByRook(pos,color,false,piecePos1,piecePos2,arrCheckmateWhite);
-        this.checkByBishop(pos,color,false,piecePos1,piecePos2,arrCheckmateWhite);
-        this.checkByKnight(pos,color,false,piecePos1,piecePos2,arrCheckmateWhite);
-        this.checkmateTakeWithPawn(color,piecePos1,piecePos2,arrCheckmateWhite);
+      checkmateKnight(pos,piecePos1,piecePos2,color,isGameOver){
+        let arrCheckmate = []
+        if (color === 1) {
+          this.checkByRook(pos,2,false,piecePos1,piecePos2,arrCheckmate);
+          this.checkByBishop(pos,2,false,piecePos1,piecePos2,arrCheckmate);
+          this.checkByKnight(pos,2,false,piecePos1,piecePos2,arrCheckmate);
+          this.checkmateTakeWithPawn(2,piecePos1,piecePos2,arrCheckmate);
+        } else {
+          this.checkByRook(pos,1,false,piecePos1,piecePos2,arrCheckmate);
+          this.checkByBishop(pos,1,false,piecePos1,piecePos2,arrCheckmate);
+          this.checkByKnight(pos,1,false,piecePos1,piecePos2,arrCheckmate);
+          this.checkmateTakeWithPawn(1,piecePos1,piecePos2,arrCheckmate);
+        }
+        if (arrCheckmate.length === 0) {
+          isGameOver.push(true);
+        }
+
+
+
       }
 
       checkmatePawn(pos,piecePos1,piecePos2,color,isGameOver) {
@@ -927,7 +962,7 @@ class MainBoard extends React.Component {
           this.checkmateTakeWithPawn(1,piecePos1,piecePos2,isBlackPieceProtected);
           if (isBlackPieceProtected.length > 0) {
             isGameOver.push(true);
-    //        alert("checkmate One Pawn - " + isBlackPieceProtected);
+            //        alert("checkmate One Pawn - " + isBlackPieceProtected);
           }
         }
         if (color === 2 && arrCheckmateBlack.length === 0) {
@@ -937,17 +972,22 @@ class MainBoard extends React.Component {
           this.checkmateTakeWithPawn(2,piecePos1,piecePos2,isWhitePieceProtected);
           if (isWhitePieceProtected.length > 0) {
             isGameOver.push(true);
-      //      alert("checkmate Two Pawn - " + isWhitePieceProtected);
+            //      alert("checkmate Two Pawn - " + isWhitePieceProtected);
           }
         }
       }
 
 
-      updateBoard(pos) {
-        let newBoard = this.state.board.slice();
+      updateBoard(pos,testCheckBoard) {
+        let newBoard;
+        if (testCheckBoard) {
+          newBoard = testCheckBoard;
+        } else {
+          newBoard = this.state.board.slice();
+        }
         let newTakenPiecesWhite = this.state.takenPiecesWhite.slice();
         let newTakenPiecesBlack = this.state.takenPiecesBlack.slice();
-        if (this.state.board[pos[0]][pos[1]].occupied !== null) {
+        if (this.state.board[pos[0]][pos[1]].occupied !== null && !testCheckBoard) {
           let takenPiece = Object.assign({positionY: this.state.board[pos[0]][pos[1]].positionY, positionX: this.state.board[pos[0]][pos[1]].positionX, color: this.state.board[pos[0]][pos[1]].color, highlight: null, firstMove: this.state.board[pos[0]][pos[1]].firstMove, occupied: this.state.board[pos[0]][pos[1]].occupied, piece: this.state.board[pos[0]][pos[1]].piece}, {});
           if (this.state.board[pos[0]][pos[1]].color === 'white') {
             newTakenPiecesWhite.push(takenPiece);
@@ -966,7 +1006,9 @@ class MainBoard extends React.Component {
         if (newBoard[pos[0]][pos[1]].firstMove === true) {
           newBoard[pos[0]][pos[1]].firstMove = false;
         }
-        this.setState({board: newBoard, click: 0});
+        if (!testCheckBoard) {
+          this.setState({board: newBoard, click: 0});
+        }
       }
 
       selectTakenPiece(piece) {
@@ -984,48 +1026,59 @@ class MainBoard extends React.Component {
         this.setState({switchPawn: [], showPieceSelectionModal: false});
       }
 
-      movePawn(pos) {
-        console.log('Pawn');
-        let newBoard = this.state.board.slice();
+      movePawn(pos,testCheckBoard) {
 
-        if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'black') {
-          this.updateBoard(pos);
-          if (pos[0] === 0 || pos[0] === 7) {
+        console.log('Pawn');
+        let newBoard;
+        if (testCheckBoard) {
+          newBoard = testCheckBoard;
+        } else {
+          newBoard = this.state.board.slice();
+        }
+
+        if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1] && newBoard[pos[0]][pos[1]].color !== 'black') {
+          this.updateBoard(pos,testCheckBoard);
+          if ((pos[0] === 0 || pos[0] === 7) && !testCheckBoard) {
             this.setState({showPieceSelectionModal: true});
           }
-        } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1] && this.state.board[pos[0]][pos[1]].color !== 'white') {
-          this.updateBoard(pos);
-          if (pos[0] === 0 || pos[0] === 7) {
+        } else if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1] && newBoard[pos[0]][pos[1]].color !== 'white') {
+          this.updateBoard(pos,testCheckBoard);
+          if ((pos[0] === 0 || pos[0] === 7) && !testCheckBoard) {
             this.setState({showPieceSelectionModal: true});
           }
           //first move. two spaces up
-        } else if (this.state.moveFrom[0] === 6 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1] && this.state.board[this.state.moveFrom[0]-1][this.state.moveFrom[1]].occupied === null && this.state.board[pos[0]][pos[1]].color !== 'black') {
-          this.updateBoard(pos);
-        } else if (this.state.moveFrom[0] === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+2 && pos[1] === this.state.moveFrom[1] && this.state.board[this.state.moveFrom[0]+1][this.state.moveFrom[1]].occupied === null && this.state.board[pos[0]][pos[1]].color !== 'white') {
-          this.updateBoard(pos);
+        } else if (this.state.moveFrom[0] === 6 && newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white' && pos[0] === this.state.moveFrom[0]-2 && pos[1] === this.state.moveFrom[1] && newBoard[this.state.moveFrom[0]-1][this.state.moveFrom[1]].occupied === null && newBoard[pos[0]][pos[1]].color !== 'black') {
+          this.updateBoard(pos,testCheckBoard);
+        } else if (this.state.moveFrom[0] === 1 && newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black' && pos[0] === this.state.moveFrom[0]+2 && pos[1] === this.state.moveFrom[1] && newBoard[this.state.moveFrom[0]+1][this.state.moveFrom[1]].occupied === null && newBoard[pos[0]][pos[1]].color !== 'white') {
+          this.updateBoard(pos,testCheckBoard);
           //piece detection.  can't take a piece moving forward
-        } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white'
-        && this.state.board[pos[0]][pos[1]].color === 'black' && ((this.state.moveFrom[0]-1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
+        } else if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white'
+        && newBoard[pos[0]][pos[1]].color === 'black' && ((this.state.moveFrom[0]-1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
         || (this.state.moveFrom[0]-1 === pos[0] && this.state.moveFrom[1]+1 === pos[1]))) {
-          this.updateBoard(pos);
-          if (pos[0] === 0 || pos[0] === 7) {
+          this.updateBoard(pos,testCheckBoard);
+          if ((pos[0] === 0 || pos[0] === 7) && !testCheckBoard) {
             this.setState({showPieceSelectionModal: true});
           }
-        } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black'
-        && this.state.board[pos[0]][pos[1]].color === 'white' && ((this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
+        } else if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black'
+        && newBoard[pos[0]][pos[1]].color === 'white' && ((this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]-1 === pos[1])
         || (this.state.moveFrom[0]+1 === pos[0] && this.state.moveFrom[1]+1 === pos[1]))) {
-          if (pos[0] === 0 || pos[0] === 7) {
+          if ((pos[0] === 0 || pos[0] === 7) && !testCheckBoard) {
             this.setState({showPieceSelectionModal: true});
           }
-          this.updateBoard(pos);
+          this.updateBoard(pos,testCheckBoard);
         }
-        if (pos[0] === 0 || pos[0] === 7) {
+        if ((pos[0] === 0 || pos[0] === 7) && !testCheckBoard) {
           this.setState({switchPawn: [pos[0],pos[1]]});
         }
       }
-      moveKight(pos) {
+      moveKight(pos,testCheckBoard) {
         console.log('knight');
-        let newBoard = this.state.board.slice();
+        // let newBoard;
+        // if (testCheckBoard) {
+        //   newBoard = testCheckBoard;
+        // } else {
+        //   newBoard = this.state.board.slice();
+        // }
         if ((pos[0] === this.state.moveFrom[0]-2 && pos[1]+1 === this.state.moveFrom[1])
         || (pos[0] === this.state.moveFrom[0]-2 && pos[1]-1 === this.state.moveFrom[1])
         || (pos[0] === this.state.moveFrom[0]-1 && pos[1]-2 === this.state.moveFrom[1])
@@ -1035,44 +1088,49 @@ class MainBoard extends React.Component {
         || (pos[0] === this.state.moveFrom[0]+2 && pos[1]-1 === this.state.moveFrom[1])
         || (pos[0] === this.state.moveFrom[0]+2 && pos[1]+1 === this.state.moveFrom[1])) {
 
-          this.updateBoard(pos);
+          this.updateBoard(pos,testCheckBoard);
         }
       }
 
-      moveRook(pos) {
+      moveRook(pos,testCheckBoard) {
         console.log('Rook');
-        let newBoard = this.state.board.slice();
+        let newBoard;
+        if (testCheckBoard) {
+          newBoard = testCheckBoard;
+        } else {
+          newBoard = this.state.board.slice();
+        }
+
         if (pos[0] === this.state.moveFrom[0] || pos[1] === this.state.moveFrom[1]) {
           let pieceBlocking = 0;
 
           if (pos[0] - this.state.moveFrom[0] > 0) {
             for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-              if (this.state.board[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
+              if (newBoard[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
                 pieceBlocking += 1;
               }
             }
           } else if (pos[0] - this.state.moveFrom[0] < 0) {
             for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-              if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
+              if (newBoard[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
                 pieceBlocking += 1;
               }
             }
           } else if (pos[1] - this.state.moveFrom[1] > 0) {
             for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
-              if (this.state.board[pos[0]][this.state.moveFrom[1]+i].occupied !== null) {
+              if (newBoard[pos[0]][this.state.moveFrom[1]+i].occupied !== null) {
                 pieceBlocking += 1;
               }
             }
           } else if (pos[1] - this.state.moveFrom[1] < 0) {
             for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
-              if (this.state.board[pos[0]][this.state.moveFrom[1]-i].occupied !== null) {
+              if (newBoard[pos[0]][this.state.moveFrom[1]-i].occupied !== null) {
                 pieceBlocking += 1;
               }
             }
           }
-          console.log(pieceBlocking);
           if (pieceBlocking === 0) {
-            this.updateBoard(pos);
+            this.updateBoard(pos,testCheckBoard);
             console.log('inner');
             console.log(pieceBlocking);
           } else {
@@ -1082,39 +1140,44 @@ class MainBoard extends React.Component {
         }
       }
 
-      moveBishop(pos) {
+      moveBishop(pos,testCheckBoard) {
         console.log('Bishop');
-        let newBoard = this.state.board.slice();
+        let newBoard;
+        if (testCheckBoard) {
+          newBoard = testCheckBoard;
+        } else {
+          newBoard = this.state.board.slice();
+        }
         let pieceBlocking = 0;
         if (pos[0] - this.state.moveFrom[0] === pos[1] - this.state.moveFrom[1]
           || pos[0] - this.state.moveFrom[0] === this.state.moveFrom[1]-pos[1]) {
             if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] < 0) {
               for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null) {
+                if (newBoard[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null) {
                   pieceBlocking += 1;
                 }
               }
             } else if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] > 0) {
               for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
+                if (newBoard[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
                   pieceBlocking += 1;
                 }
               }
             } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] < 0) {
               for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                if (this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null) {
+                if (newBoard[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null) {
                   pieceBlocking += 1;
                 }
               }
             } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] > 0) {
               for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                if (this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]+i].occupied !== null) {
+                if (newBoard[this.state.moveFrom[0]+i][this.state.moveFrom[1]+i].occupied !== null) {
                   pieceBlocking += 1;
                 }
               }
             }
             if (pieceBlocking === 0) {
-              this.updateBoard(pos);
+              this.updateBoard(pos,testCheckBoard);
               console.log('inner');
             } else {
               pieceBlocking = 0;
@@ -1122,9 +1185,14 @@ class MainBoard extends React.Component {
           }
         }
 
-        moveQueen(pos) {
+        moveQueen(pos,testCheckBoard) {
           console.log('Queen');
-          let newBoard = this.state.board.slice();
+          let newBoard;
+          if (testCheckBoard) {
+            newBoard = testCheckBoard;
+          } else {
+            newBoard = this.state.board.slice();
+          }
           let pieceBlocking = 0;
           if (pos[0] === this.state.moveFrom[0]
             || pos[1] === this.state.moveFrom[1]
@@ -1133,55 +1201,55 @@ class MainBoard extends React.Component {
 
               if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] < 0) {
                 for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                  if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null) {
+                  if (newBoard[this.state.moveFrom[0]-i][this.state.moveFrom[1]-i].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               } else if (pos[0] - this.state.moveFrom[0] < 0 && pos[1] - this.state.moveFrom[1] > 0) {
                 for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                  if (this.state.board[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
+                  if (newBoard[this.state.moveFrom[0]-i][this.state.moveFrom[1]+i].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] < 0) {
                 for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                  if (this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null) {
+                  if (newBoard[this.state.moveFrom[0]+i][this.state.moveFrom[1]-i].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               } else if (pos[0] - this.state.moveFrom[0] > 0 && pos[1] - this.state.moveFrom[1] > 0) {
                 for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                  if (this.state.board[this.state.moveFrom[0]+i][this.state.moveFrom[1]+i].occupied !== null) {
+                  if (newBoard[this.state.moveFrom[0]+i][this.state.moveFrom[1]+i].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               } else if (pos[0] - this.state.moveFrom[0] > 0) {
                 for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                  if (this.state.board[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
+                  if (newBoard[this.state.moveFrom[0]+i][pos[1]].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               } else if (pos[0] - this.state.moveFrom[0] < 0) {
                 for (let i=1; i < Math.abs(pos[0]-this.state.moveFrom[0]); i++) {
-                  if (this.state.board[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
+                  if (newBoard[this.state.moveFrom[0]-i][pos[1]].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               } else if (pos[1] - this.state.moveFrom[1] > 0) {
                 for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
-                  if (this.state.board[pos[0]][this.state.moveFrom[1]+i].occupied !== null) {
+                  if (newBoard[pos[0]][this.state.moveFrom[1]+i].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               } else if (pos[1] - this.state.moveFrom[1] < 0) {
                 for (let i=1; i < Math.abs(pos[1]-this.state.moveFrom[1]); i++) {
-                  if (this.state.board[pos[0]][this.state.moveFrom[1]-i].occupied !== null) {
+                  if (newBoard[pos[0]][this.state.moveFrom[1]-i].occupied !== null) {
                     pieceBlocking += 1;
                   }
                 }
               }
               if (pieceBlocking === 0) {
-                this.updateBoard(pos);
+                this.updateBoard(pos,testCheckBoard);
                 console.log('inner');
               } else {
                 pieceBlocking = 0;
@@ -1189,9 +1257,15 @@ class MainBoard extends React.Component {
             }
           }
 
-          moveKing(pos) {
+          moveKing(pos,testCheckBoard) {
             console.log('King');
-            let newBoard = this.state.board.slice();
+            let newBoard;
+            if (testCheckBoard) {
+              newBoard = testCheckBoard;
+            } else {
+              newBoard = this.state.board.slice();
+            }
+
             if ((pos[0] === this.state.moveFrom[0]+1 && pos[1]-1 === this.state.moveFrom[1])
             || (pos[0] === this.state.moveFrom[0]+1 && pos[1] === this.state.moveFrom[1])
             || (pos[0] === this.state.moveFrom[0]+1 && pos[1]+1 === this.state.moveFrom[1])
@@ -1202,17 +1276,21 @@ class MainBoard extends React.Component {
             || (pos[0] === this.state.moveFrom[0]-1 && pos[1]-1 === this.state.moveFrom[1])
             || (pos[0] === this.state.moveFrom[0]-1 && pos[1] === this.state.moveFrom[1])
             || (pos[0] === this.state.moveFrom[0]-1 && pos[1]+1 === this.state.moveFrom[1])) {
-              if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white') {
-                this.setState({whiteKingMove: true, whiteKingPos: pos});
-              } else if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black') {
-                this.setState({blackKingMove: true, blackKingPos: pos});
+              if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white') {
+                if (!testCheckBoard) {
+                  this.setState({whiteKingMove: true, whiteKingPos: pos});
+                }
+              } else if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black') {
+                if (!testCheckBoard) {
+                  this.setState({blackKingMove: true, blackKingPos: pos});
+                }
               }
-              this.updateBoard(pos);
+              this.updateBoard(pos,testCheckBoard);
             }
             else if (this.state.whiteKingMove === false && pos[0] === this.state.moveFrom[0]
               && pos[1]-2 === this.state.moveFrom[1]
-              && this.state.board[pos[0]][pos[1]-1].occupied === null
-              && this.state.board[7][7].firstMove === true && this.state.board[pos[0]][pos[1]-2].color === 'white') {
+              && newBoard[pos[0]][pos[1]-1].occupied === null
+              && newBoard[7][7].firstMove === true && newBoard[pos[0]][pos[1]-2].color === 'white') {
 
                 newBoard[7][5].occupied = newBoard[7][7].occupied;
                 newBoard[7][5].color = newBoard[7][7].color;
@@ -1223,12 +1301,14 @@ class MainBoard extends React.Component {
                 if (newBoard[7][7].firstMove === true) {
                   newBoard[7][5].firstMove = false;
                 }
-                this.setState({whiteKingMove: true, whiteKingPos: pos});
-                this.updateBoard(pos);
+                if (!testCheckBoard) {
+                  this.setState({whiteKingMove: true, whiteKingPos: pos});
+                }
+                this.updateBoard(pos,testCheckBoard);
               } else if (this.state.whiteKingMove === false && pos[0] === this.state.moveFrom[0]
                 && pos[1]+2 === this.state.moveFrom[1]
-                && this.state.board[pos[0]][pos[1]+1].occupied === null
-                && this.state.board[7][0].firstMove === true && this.state.board[pos[0]][pos[1]-2].color === 'white') {
+                && newBoard[pos[0]][pos[1]+1].occupied === null
+                && newBoard[7][0].firstMove === true && newBoard[pos[0]][pos[1]-2].color === 'white') {
 
                   newBoard[7][3].occupied = newBoard[7][0].occupied;
                   newBoard[7][3].color = newBoard[7][0].color;
@@ -1239,15 +1319,16 @@ class MainBoard extends React.Component {
                   if (newBoard[7][0].firstMove === true) {
                     newBoard[7][3].firstMove = false;
                   }
-
-                  this.setState({whiteKingMove: true, whiteKingPos: pos});
-                  this.updateBoard(pos);
+                  if (!testCheckBoard) {
+                    this.setState({whiteKingMove: true, whiteKingPos: pos});
+                  }
+                  this.updateBoard(pos,testCheckBoard);
                 }
                 //// black
                 else if (this.state.blackKingMove === false && pos[0] === this.state.moveFrom[0]
                   && pos[1]-2 === this.state.moveFrom[1]
-                  && this.state.board[pos[0]][pos[1]-1].occupied === null
-                  && this.state.board[0][7].firstMove === true && this.state.board[pos[0]][pos[1]-2].color === 'black') {
+                  && newBoard[pos[0]][pos[1]-1].occupied === null
+                  && newBoard[0][7].firstMove === true && newBoard[pos[0]][pos[1]-2].color === 'black') {
 
                     newBoard[0][5].occupied = newBoard[0][7].occupied;
                     newBoard[0][5].color = newBoard[0][7].color;
@@ -1258,14 +1339,16 @@ class MainBoard extends React.Component {
                     if (newBoard[0][7].firstMove === true) {
                       newBoard[0][5].firstMove = false;
                     }
-                    this.setState({blackKingMove: true, blackKingPos: pos});
-                    this.updateBoard(pos);
+                    if (!testCheckBoard) {
+                      this.setState({blackKingMove: true, blackKingPos: pos});
+                    }
+                    this.updateBoard(pos,testCheckBoard);
                   } else if (this.state.blackKingMove === false && pos[0] === this.state.moveFrom[0]
-                    && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === bk
+                    && newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === bk
                     && pos[1]+2 === this.state.moveFrom[1]
-                    && this.state.board[pos[0]][pos[1]-1].occupied === null
-                    && this.state.board[pos[0]][pos[1]+1].occupied === null
-                    && this.state.board[0][0].firstMove === true && this.state.board[pos[0]][pos[1]+2].color === 'black') {
+                    && newBoard[pos[0]][pos[1]-1].occupied === null
+                    && newBoard[pos[0]][pos[1]+1].occupied === null
+                    && newBoard[0][0].firstMove === true && newBoard[pos[0]][pos[1]+2].color === 'black') {
 
                       newBoard[0][3].occupied = newBoard[0][0].occupied;
                       newBoard[0][3].color = newBoard[0][0].color;
@@ -1276,8 +1359,10 @@ class MainBoard extends React.Component {
                       if (newBoard[0][0].firstMove === true) {
                         newBoard[0][3].firstMove = false;
                       }
-                      this.setState({blackKingMove: true, blackKingPos: pos});
-                      this.updateBoard(pos);
+                      if (!testCheckBoard) {
+                        this.setState({blackKingMove: true, blackKingPos: pos});
+                      }
+                      this.updateBoard(pos,testCheckBoard);
                     }
                   }
 
@@ -1359,16 +1444,11 @@ class MainBoard extends React.Component {
                     this.populateBoard();
                   }
 
-
-                  movePiece(pos){
+                  movePiece(pos,testCheckBoard){
                     let isGameOver = [];
                     let isGameOverCanKingMove = [];
-                    //  this.setState({test: "new"});
                     let newBoard = this.state.board.slice();
-                    /////////////
-                    //  this.inCheck(pos); //////////
                     if (this.state.click === 0) {
-
                       if (this.state.board[pos[0]][pos[1]].occupied !== null) {
                         let newBoard = this.state.board.slice();
                         newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid', borderWidth: 'thick', borderColor: 'green'}, {});
@@ -1377,18 +1457,17 @@ class MainBoard extends React.Component {
                       }
                     }
                     if (this.state.moveFrom.length !== 0 && this.state.click === 1) {
-
                       if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color !== this.state.board[pos[0]][pos[1]].color) {
-
-                        this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos);
-
-                        console.log(newBoard);
+                        let testCheckBoard =[];
+                        this.mustMoveOutOfCheck(pos,testCheckBoard);
+                        if (testCheckBoard.length === 0) {
+                          this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos);
+                        }
+                        //  alert(testCheckBoard);
                         //   this.setState({board: newBoard, click: 0})
                       } else if (!newBoard[pos[0]][pos[1]].highlight) {
-
                         newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
                         newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
-
                         this.setState({moveFrom: [pos[0],pos[1]]});
                         this.setState({board: newBoard});
 
@@ -1398,8 +1477,76 @@ class MainBoard extends React.Component {
                     console.log(this.state.board);
                     this.inCheck(pos,isGameOver,isGameOverCanKingMove);
                     if (isGameOver.length > 0 && isGameOverCanKingMove.length === 0) {
-                //      alert("is game over : " + isGameOver);
+                      alert("is game over : " + isGameOver);
                     }
+
+                  }
+                  mustMoveOutOfCheck(pos,testCheckBoard) {
+                    //  let arrCheckmate = [];
+                    // create clone of this.state.board
+                    let newBoard = [];
+                    let objectArr = [];
+                    for (let i = 0; i < 8; i++) {
+                      for (let a = 0; a < 8; a++) {
+                        if (this.state.board[i][a].occupied) {
+                          objectArr.push(Object.assign({},this.state.board[i][a]));
+                        } else {
+                          let test2 = Object.assign({positionY: i, positionX: a, color: null, highlight: null, firstMove: true, occupied: null, piece: null});
+                          objectArr.push(test2);
+                        }
+                        if (a === 7) {
+                          newBoard.push(objectArr);
+                          objectArr = [];
+                        }
+                      }
+                    }
+                    let color;
+                    let king;
+                    // let blackKingPosY = this.state.blackKingPos[0];
+                    // let blackKingPosX = this.state.blackKingPos[1];
+                    // let whiteKingPosY = this.state.whiteKingPos[0];
+                    // let whiteKingPosX = this.state.whiteKingPos[1];
+                    let kingPosY;
+                    let kingPosX;
+                    if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === "black") {
+                      color = 2;
+                      king = bk;
+                    } else if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color === "white") {
+                      color = 1;
+                      king = wk;
+                    }
+
+                    if (newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied === king) {
+                      //alert("bk");
+                      kingPosY = pos[0];
+                      kingPosX = pos[1];
+                    } else {
+                      if (color === 2) {
+                        kingPosY = this.state.blackKingPos[0];
+                        kingPosX = this.state.blackKingPos[1];
+                      } else {
+                        kingPosY = this.state.whiteKingPos[0];
+                        kingPosX= this.state.whiteKingPos[1];
+                      }
+                    }
+                  //    alert(kingPosY + " , " + kingPosX);
+                  //    alert(color + " " + this.state.moveFrom[0] + " " + this.state.moveFrom[1]);
+                  //    alert(newBoard[3][3].color);
+                    newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos,newBoard);
+                    newBoard[0][0].color = 'blue';
+                //    alert(newBoard[3][3].color);
+                    console.log("second",newBoard);
+                    console.log(this.state.board);
+                    console.log("CHECK 1 -- " + testCheckBoard);
+                    this.checkmateTakeWithPawn(color,kingPosY,kingPosX,testCheckBoard,newBoard);
+                    this.checkByKnight(pos,color,false,kingPosY,kingPosX,testCheckBoard,newBoard);
+                    this.checkByBishop(pos,color,false,kingPosY,kingPosX,testCheckBoard,null,newBoard);
+                    this.checkByRook(pos,color,false,kingPosY,kingPosX,testCheckBoard,null,newBoard);
+
+
+
+                    console.log("CHECK 2 -- " + testCheckBoard);
+                  //    alert(testCheckBoard);
                   }
 
                   render(){
