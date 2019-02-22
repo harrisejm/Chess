@@ -25,6 +25,9 @@ class MainBoard extends React.Component {
     super(props);
     this.state = {
       board: [],
+      emptyBoardPositionObj: {positionY: null, positionX: null, color: null, highlight: null, firstMove: true, occupied: null, piece: null},
+      whitePiecesStaleMate: [],
+      blackPiecesStaleMate: [],
       takenPiecesWhite: [],
       takenPiecesBlack: [],
       selectPieceWhite: [],
@@ -909,13 +912,11 @@ class MainBoard extends React.Component {
               //      alert("checkmate BRRRRRR");
             }
           }
-
           if (arrCheckmate.length === 0 && distBottomRight-1 !== 0) {
             isGameOver.push(true);
             //      alert("checkmate BRR");
           }
         }
-
         console.log(pos,topLeft,topRight,bottomLeft,bottomRight,distTopLeft,distTopRight,distBottomLeft,distBottomRight,posTopLeft,posTopRight,posBottomLeft,posBottomRight);
       }
       checkmateKnight(pos,piecePos1,piecePos2,color,isGameOver){
@@ -934,9 +935,6 @@ class MainBoard extends React.Component {
         if (arrCheckmate.length === 0) {
           isGameOver.push(true);
         }
-
-
-
       }
 
       checkmatePawn(pos,piecePos1,piecePos2,color,isGameOver) {
@@ -976,8 +974,6 @@ class MainBoard extends React.Component {
           }
         }
       }
-
-
       updateBoard(pos,testCheckBoard) {
         let newBoard;
         if (testCheckBoard) {
@@ -997,12 +993,21 @@ class MainBoard extends React.Component {
             this.setState({takenPiecesBlack: newTakenPiecesBlack});
           }
         }
-        newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
-        newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
-        newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
-        newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
-        newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
-        newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
+         newBoard[pos[0]][pos[1]] = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]];
+         newBoard[pos[0]][pos[1]].positionY = pos[0];
+         newBoard[pos[0]][pos[1]].positionX = pos[1];
+         newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
+         newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]] = Object.assign({},this.state.emptyBoardPositionObj);
+         newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].positionY = this.state.moveFrom[0];
+         newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].positionX = this.state.moveFrom[1];
+         // newBoard[pos[0]][pos[1]].occupied = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied;
+         // newBoard[pos[0]][pos[1]].color = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color;
+         // newBoard[pos[0]][pos[1]].piece = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
+        // newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].occupied = null;
+        // newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color = null;
+    //     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
+
+
         if (newBoard[pos[0]][pos[1]].firstMove === true) {
           newBoard[pos[0]][pos[1]].firstMove = false;
         }
@@ -1141,7 +1146,7 @@ class MainBoard extends React.Component {
       }
 
       moveBishop(pos,testCheckBoard) {
-        console.log('Bishop');
+    //    console.log('Bishop');
         let newBoard;
         if (testCheckBoard) {
           newBoard = testCheckBoard;
@@ -1178,15 +1183,15 @@ class MainBoard extends React.Component {
             }
             if (pieceBlocking === 0) {
               this.updateBoard(pos,testCheckBoard);
-              console.log('inner');
+        //      console.log('inner');
             } else {
               pieceBlocking = 0;
             }
           }
-        }
+      }
 
-        moveQueen(pos,testCheckBoard) {
-          console.log('Queen');
+      moveQueen(pos,testCheckBoard) {
+    //      console.log('Queen');
           let newBoard;
           if (testCheckBoard) {
             newBoard = testCheckBoard;
@@ -1250,7 +1255,7 @@ class MainBoard extends React.Component {
               }
               if (pieceBlocking === 0) {
                 this.updateBoard(pos,testCheckBoard);
-                console.log('inner');
+          //      console.log('inner');
               } else {
                 pieceBlocking = 0;
               }
@@ -1258,7 +1263,7 @@ class MainBoard extends React.Component {
           }
 
           moveKing(pos,testCheckBoard) {
-            console.log('King');
+        //    console.log('King');
             let newBoard;
             if (testCheckBoard) {
               newBoard = testCheckBoard;
@@ -1368,75 +1373,89 @@ class MainBoard extends React.Component {
 
                   populateBoard() {
                     let newBoard = this.state.board.slice();
+                    let newWhitePiecesStaleMate = this.state.whitePiecesStaleMate.slice();
+                    let newBlackPiecesStaleMate = this.state.blackPiecesStaleMate.slice();
                     let newSelectPieceWhite = this.state.selectPieceWhite.slice();
                     let newSelectPieceBlack = this.state.selectPieceBlack.slice();
                     let y,x;
 
-                    let piecesToPopulateBoard = [{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bp, piece: this.movePawn}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wp, piece: this.movePawn}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: br, piece: this.moveRook}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wr, piece: this.moveRook}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bkn, piece: this.moveKight}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wkn, piece: this.moveKight}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bb, piece: this.moveBishop}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wb, piece: this.moveBishop}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bq, piece: this.moveQueen}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wq, piece: this.moveQueen}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bk, piece: this.moveKing}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wk, piece: this.moveKing}]
+                     let piecesToPopulateBoard = [{positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bp, piece: this.movePawn}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wp, piece: this.movePawn}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: br, piece: this.moveRook}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wr, piece: this.moveRook}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bkn, piece: this.moveKight}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wkn, piece: this.moveKight}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bb, piece: this.moveBishop}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wb, piece: this.moveBishop}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bq, piece: this.moveQueen}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wq, piece: this.moveQueen}, {positionY: y, positionX: x, color: 'black', highlight: null, firstMove: true, occupied: bk, piece: this.moveKing}, {positionY: y, positionX: x, color: 'white', highlight: null, firstMove: true, occupied: wk, piece: this.moveKing}];
 
                     let objectArr = [];
 
                     for (let i = 0; i < 8; i++) {
                       for (let a = 0; a < 8; a++) {
-                        y = i;
-                        x = a;
+                        // y = i;
+                        // x = a;
                         if (i === 1) {
-                          //black pawn
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[0]));
-                        } else if (i === 6) {
-                          // white pawn
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[1]));
 
-                        } else if ((i === 0 && a === 0) || (i === 0 && a === 7)) {
-                          // black rook
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[2]));
-                        } else if ((i === 7 && a === 0) || (i === 7 && a === 7)) {
-                          // white rook
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[3]));
+                            let test1 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, firstMove: true, occupied: bp, piece: this.movePawn}, {});
+                            objectArr.push(test1);
+                            newBlackPiecesStaleMate.push(test1); //for determining stalemte
+                          } else if (i === 6) {
+                            let test1 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, firstMove: true, occupied: wp, piece: this.movePawn}, {});
+                            objectArr.push(test1);
+                            newWhitePiecesStaleMate.push(test1);
 
-                        } else if ((i === 0 && a === 1) || (i === 0 && a === 6)) {
-                          // black knight
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[4]));
-                        } else if ((i === 7 && a === 1) || (i === 7 && a === 6)) {
-                          // white knight
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[5]));
+                          } else if ((i === 0 && a === 0) || (i === 0 && a === 7)) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, firstMove: true, occupied: br, piece: this.moveRook}, {});
+                            objectArr.push(test2);
+                            newBlackPiecesStaleMate.push(test2)
+                          } else if ((i === 7 && a === 0) || (i === 7 && a === 7)) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, firstMove: true, occupied: wr, piece: this.moveRook}, {});
+                            objectArr.push(test2);
+                            newWhitePiecesStaleMate.push(test2);
 
-                        } else if ((i === 0 && a === 2) || (i === 0 && a === 5)) {
-                          // black bishop
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[6]));
-                        } else if ((i === 7 && a === 2) || (i === 7 && a === 5)) {
-                          // white bishop
-                          objectArr.push(Object.assign({},piecesToPopulateBoard[7]));
+                          } else if ((i === 0 && a === 1) || (i === 0 && a === 6)) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, firstMove: true, occupied: bkn, piece: this.moveKight}, {});
+                            objectArr.push(test2);
+                            newBlackPiecesStaleMate.push(test2);
+                          } else if ((i === 7 && a === 1) || (i === 7 && a === 6)) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, firstMove: true, occupied: wkn, piece: this.moveKight}, {});
+                            objectArr.push(test2);
+                            newWhitePiecesStaleMate.push(test2);
 
-                        } else if (i === 0 && a === 3) {
-                          // black queen
-                          objectArr.push(piecesToPopulateBoard[8]);
-                        } else if (i === 7 && a === 3) {
-                          // white queen
-                          objectArr.push(piecesToPopulateBoard[9]);
+                          } else if ((i === 0 && a === 2) || (i === 0 && a === 5)) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, firstMove: true, occupied: bb, piece: this.moveBishop}, {});
+                            objectArr.push(test2);
+                            newBlackPiecesStaleMate.push(test2);
+                          } else if ((i === 7 && a === 2) || (i === 7 && a === 5)) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, firstMove: true, occupied: wb, piece: this.moveBishop}, {});
+                            objectArr.push(test2);
+                            newWhitePiecesStaleMate.push(test2);
 
-                        } else if (i === 0 && a === 4) {
-                          // black king
-                          objectArr.push(piecesToPopulateBoard[10]);
-                        } else if (i === 7 && a === 4) {
-                          // white king
-                          objectArr.push(piecesToPopulateBoard[11]);
+                          } else if (i === 0 && a === 3) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, firstMove: true, occupied: bq, piece: this.moveQueen}, {});
+                            objectArr.push(test2);
+                            newBlackPiecesStaleMate.push(test2);
+                          } else if (i === 7 && a === 3) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, firstMove: true, occupied: wq, piece: this.moveQueen}, {});
+                            objectArr.push(test2);
+                            newWhitePiecesStaleMate.push(test2);
 
-                        } else {
-                          let test2 = Object.assign({positionY: i, positionX: a, color: null, highlight: null, firstMove: true, occupied: null, piece: null});
-                          objectArr.push(test2);
+                          } else if (i === 0 && a === 4) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'black', highlight: null, firstMove: true, occupied: bk, piece: this.moveKing}, {});
+                            objectArr.push(test2);
+                            newBlackPiecesStaleMate.push(test2);
+                          } else if (i === 7 && a === 4) {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, firstMove: true, occupied: wk, piece: this.moveKing}, {});
+                            objectArr.push(test2);
+                            newWhitePiecesStaleMate.push(test2);
+
+                          } else {
+                            let test2 = Object.assign({positionY: i, positionX: a, color: null, highlight: null, firstMove: true, occupied: null, piece: null}, {});
+                            objectArr.push(test2);
+                          }
+                          if (a === 7) {
+                            newBoard.push(objectArr);
+                            objectArr = [];
+                          }
                         }
-                        if (a === 7) {
-                          newBoard.push(objectArr);
-                          objectArr = [];
-                        }
-
                       }
-                    }
                     newSelectPieceWhite.push(Object.assign({},piecesToPopulateBoard[3]),Object.assign({},piecesToPopulateBoard[5]),Object.assign({},piecesToPopulateBoard[7]),Object.assign({},piecesToPopulateBoard[9]));
                     newSelectPieceBlack.push(Object.assign({},piecesToPopulateBoard[2]),Object.assign({},piecesToPopulateBoard[4]),Object.assign({},piecesToPopulateBoard[6]),Object.assign({},piecesToPopulateBoard[8]));
-                    this.setState({board: newBoard,selectPieceWhite: newSelectPieceWhite,selectPieceBlack: newSelectPieceBlack});
-                    console.log(this.state.board.length);
+                    this.setState({board: newBoard,selectPieceWhite: newSelectPieceWhite,selectPieceBlack: newSelectPieceBlack,whitePiecesStaleMate: newWhitePiecesStaleMate,blackPiecesStaleMate: newBlackPiecesStaleMate});
+                //    console.log(this.state.board.length);
                   }
 
 
@@ -1531,10 +1550,7 @@ class MainBoard extends React.Component {
                     }
                   //    alert(kingPosY + " , " + kingPosX);
                   //    alert(color + " " + this.state.moveFrom[0] + " " + this.state.moveFrom[1]);
-                  //    alert(newBoard[3][3].color);
                     newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos,newBoard);
-                    newBoard[0][0].color = 'blue';
-                //    alert(newBoard[3][3].color);
                     console.log("second",newBoard);
                     console.log(this.state.board);
                     console.log("CHECK 1 -- " + testCheckBoard);
@@ -1546,6 +1562,8 @@ class MainBoard extends React.Component {
 
 
                     console.log("CHECK 2 -- " + testCheckBoard);
+                    console.log(this.state.whitePiecesStaleMate);
+                    console.log(this.state.blackPiecesStaleMate);
                   //    alert(testCheckBoard);
                   }
 
