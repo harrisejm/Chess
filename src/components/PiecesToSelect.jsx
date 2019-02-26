@@ -52,7 +52,9 @@ class PiecesToSelect extends React.Component {
       borderRadius: 5,
       maxWidth: 400,
       minHeight: 200,
-      margin: '0 auto',
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      marginTop: 200,
       padding: 30
     };
     const movePieces = {

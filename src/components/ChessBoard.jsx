@@ -29,8 +29,9 @@ function ChessBoard(props){
         height: 70px;
       }
       `}</style>
-
+      <p style={showCheck}>Turn: {props.playerTurn}</p> 
       <p style={showCheck}>Check: {props.check}</p>
+
       <table>
       <tbody>
       <tr className="row1">
