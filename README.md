@@ -1,32 +1,25 @@
-# Online Chess App
+# Chess App
 
 #### By Eddie Harris
 
+Live site: https://chess-eddie-harris.firebaseapp.com
 
 ## Project Description
 
-Project: Online Chess
+Chess created in React
 
-##This project is still being worked on
-
-Features added (Finished):
+Features:
 - All pieces can only make legal moves.
-- All pieces can take an opponent's piece if it is a legal move.
+- All pieces can take an opponent's piece if the move is a legal move.
 - Both Kings can castle to the right or left. Can only castle if it is a legal move (i.e not in check).
 - If a pawn reaches the opponent's back rank, a modal will open and prompt the player to select a bishop, knight, rook or queen to switch out with the pawn.
-- 
-
-- THE GAME IS NOT CURRENTLY TURN BASED. BOTH WHITE AND BLACK PIECES CAN MOVE OUT OF TURN. This allows for quicker and easier testing of whether a feature is working correctly.
-
-Features to be added:
-
-Allow two users to play chess against each other on two different computers.
-
-- Each move and chess piece position will be saved to a database. The board will populate based on the database.
-- A chess clock that limits the amount of time each player can take between moves. If the clock expires, the player resigns the game.
-- A chat feature that allows players to post to a chat board during the game.
-- A live feed that lists each players previous moves.
-- Allow users to play multiple games at once.
+- Determines when a player is in check.
+- Players are prevented from moving into check, can only make legal moves.
+- If a player is in check, the next move must result in taking them out of check.
+- Determines when a player is in checkmate.
+  - Assess if a player can take the checking piece, block the checking piece, or move the king directly out of check. If all three condition are not met, the player is in checkmate.
+- Determines when the game has ended in a stalemate.
+  - Assess if there are any legal moves available while the king in NOT in check.
 
 ## Technologies Used
 - JavaScript
@@ -35,13 +28,6 @@ Allow two users to play chess against each other on two different computers.
 - bootstrap
 - React
 - firebase
-
-## Specifications
-
-- 1.)..
-
-
-
 
 ## Setup
 

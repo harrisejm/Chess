@@ -6,10 +6,10 @@ function PiecesTaken(props){
   let blackPiecesTaken = [];
 
   for (let i=0; i < props.takenPiecesWhite.length; i ++) {
-    whitePiecesTaken.push(<img src={props.takenPiecesWhite[i].occupied} key={i}/>)
+    whitePiecesTaken.push(<img src={props.takenPiecesWhite[i].occupied} key={i}/>);
   }
   for (let i=0; i < props.takenPiecesBlack.length; i ++) {
-    blackPiecesTaken.push(<img src={props.takenPiecesBlack[i].occupied} key={i}/>)
+    blackPiecesTaken.push(<img src={props.takenPiecesBlack[i].occupied} key={i}/>);
   }
 
   return(

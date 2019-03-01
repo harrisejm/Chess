@@ -10,10 +10,10 @@ class PiecesToSelect extends React.Component {
     let allPieces = [];
 
     for (let i=0; i <props.selectPieceWhite.length; i ++) {
-      selectW.push(<img onClick={()=>props.selectTakenPiece(i)} src={props.selectPieceWhite[i].occupied} key={i}/>)
+      selectW.push(<img onClick={()=>props.selectTakenPiece(i)} src={props.selectPieceWhite[i].occupied} key={i}/>);
     }
     for (let i=0; i <props.selectPieceBlack.length; i ++) {
-      selectB.push(<img onClick={()=>props.selectTakenPiece(i)} src={props.selectPieceBlack[i].occupied} key={i}/>)
+      selectB.push(<img onClick={()=>props.selectTakenPiece(i)} src={props.selectPieceBlack[i].occupied} key={i}/>);
     }
     allPieces.push(selectW,selectB);
     return allPieces;

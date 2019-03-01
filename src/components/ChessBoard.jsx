@@ -18,7 +18,7 @@ function ChessBoard(props){
   const showCheck = {
     fontSize: '30px',
     color: 'red'
-  }
+  };
 
   return(
     <div>
