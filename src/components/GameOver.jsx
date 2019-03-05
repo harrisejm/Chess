@@ -18,7 +18,7 @@ class GameOver extends React.Component {
     const modalStyle = {
       // backgroundColor: '#fff',
       // borderRadius: 5,
-      maxWidth: 550,
+      maxWidth: 600,
       minHeight: 200,
       marginLeft: 'auto',
       marginRight: 'auto',

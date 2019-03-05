@@ -25,6 +25,7 @@
     "react-image": "^1.4.1",
     "react-modal": "^3.6.1",
     "react-router-dom": "^4.0.0",
+    "redux-firestore": "^0.7.0",
     "styled-jsx": "^3.0.2",
     "uuid": "^3.2.1"
   },
