@@ -9,13 +9,9 @@ class App extends React.Component {
 
   render(){
     return (
-      <div>
-      <Link to={"/test"}>Single player</Link>
-      <br/>
-       <Link to={"/playerOne"}>Player 1</Link>
-       <br/>
-       <Link to={"/playerTwo"}>Player 2</Link>
 
+
+  <div>
         <div>
           <div>
             <Switch>

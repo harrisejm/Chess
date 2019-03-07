@@ -6,6 +6,12 @@ class GameOver extends React.Component {
     if (this.props.showGameOverModal === false) {
       return null;
     }
+    let restartButton;
+    if (this.props.handle === 'playerOne' || this.props.handle === 'playerTwo') {
+      restartButton = <button onClick={()=>this.props.firebaseBoard()}>Start New Game</button>
+    } else {
+      restartButton = <button onClick={()=>this.props.populateBoard()}>Start New Game</button>
+    }
     const backdropStyle = {
       position: 'fixed',
       top: 0,
@@ -35,7 +41,7 @@ return(
   <div style={backdropStyle}>
   <div style={modalStyle}>
     <p style={endOfGameMessage}>Game Over: {this.props.gameOverBy}</p>
-    <button onClick={()=>this.props.populateBoard()}>Start New Game</button>
+    {restartButton}
   </div>
   </div>
 
