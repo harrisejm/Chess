@@ -6,6 +6,7 @@ import PiecesToSelect from './PiecesToSelect';
 import ChessBoard from './ChessBoard';
 import GameOver from './GameOver';
 import HowToPlay from './HowToPlay';
+import OnlinePlayModal from './OnlinePlayModal';
 
 import bb from '../assets/img/BB.png';
 import bk from '../assets/img/BK.png';
@@ -48,11 +49,12 @@ class MainBoard extends React.Component {
       //////
       whiteKingPos: [7,4],
       blackKingPos: [0,4],
-      playerTurn: 'white',
+      playerTurn: 'Player 1 (White)',
       check: null,
       showPieceSelectionModal: false,
       showGameOverModal: false,
       howToPlayModal: false,
+      onlinePlayModal: false,
       gameOverBy: '',
     };
     this.populateBoard = this.populateBoard.bind(this);
@@ -69,6 +71,8 @@ class MainBoard extends React.Component {
     this.firebaseBoard = this.firebaseBoard.bind(this);
     this.closeHowToPlayModal = this.closeHowToPlayModal.bind(this);
     this.openHowToPlayModal = this.openHowToPlayModal.bind(this);
+    this.closeOnlinePlayModal = this.closeOnlinePlayModal.bind(this);
+    this.openOnlinePlayModal = this.openOnlinePlayModal.bind(this);
     this.updateStateFromDatabase = this.updateStateFromDatabase.bind(this);
 
     if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
@@ -1724,6 +1728,7 @@ class MainBoard extends React.Component {
                     document.title = 'Chess';
                   }
   firebaseBoard(){
+    this.populateBoard()
     console.log(this.props.match.params);
     let dbCheck = firebase.database().ref('check');
     dbCheck.set({check: ''});
@@ -2118,13 +2123,20 @@ updateDatabase(pos) {
   }
 
   closeHowToPlayModal(){
-    if (1 === 1) {
     this.setState({howToPlayModal: false});
-  }
   }
   openHowToPlayModal(){
     this.setState({howToPlayModal: true});
   }
+
+  closeOnlinePlayModal(){
+    this.setState({onlinePlayModal: false})
+  }
+
+  openOnlinePlayModal(){
+    this.setState({onlinePlayModal: true})
+  }
+
                   render(){
                     const main = {
                       width: 600,
@@ -2135,11 +2147,9 @@ updateDatabase(pos) {
                     };
                     return (
                       <div style={main}>
-                      <button onClick={()=>this.firebaseBoard()}>data</button>
-                      <img src={this.state.words}/>
-                      <button onClick={()=>this.populateBoard()}>Start New Game</button>
-                      <ChessBoard movePiece={this.movePiece} check={this.state.check} board={this.state.board} playerTurn={this.state.playerTurn} handle={this.props.match.params.handle} handle={this.props.match.params.handle} populateBoard={this.populateBoard} howToPlayModal={this.state.howToPlayModal} openHowToPlayModal={this.openHowToPlayModal}
-                      updateStateFromDatabase={this.updateStateFromDatabase}/>
+                      <ChessBoard movePiece={this.movePiece} check={this.state.check} board={this.state.board} playerTurn={this.state.playerTurn} handle={this.props.match.params.handle} handle={this.props.match.params.handle} populateBoard={this.populateBoard}
+                      firebaseBoard={this.firebaseBoard} howToPlayModal={this.state.howToPlayModal} openHowToPlayModal={this.openHowToPlayModal}
+                      updateStateFromDatabase={this.updateStateFromDatabase} openOnlinePlayModal={this.openOnlinePlayModal} handle={this.props.match.params.handle}/>
 
                       <PiecesTaken takenPiecesWhite={this.state.takenPiecesWhite} takenPiecesBlack={this.state.takenPiecesBlack} handle={this.props.match.params.handle}/>
 
@@ -2148,6 +2158,10 @@ updateDatabase(pos) {
                       <GameOver showGameOverModal={this.state.showGameOverModal} populateBoard={this.populateBoard} firebaseBoard={this.firebaseBoard} gameOverBy={this.state.gameOverBy} handle={this.props.match.params.handle}/>
 
                       <HowToPlay closeHowToPlayModal={this.closeHowToPlayModal} howToPlayModal={this.state.howToPlayModal}/>
+
+                      <OnlinePlayModal onlinePlayModal={this.state.onlinePlayModal} closeOnlinePlayModal={this.closeOnlinePlayModal}
+                      updateStateFromDatabase={this.updateStateFromDatabase}/>
+
 
                       <br/>
                       <br/>

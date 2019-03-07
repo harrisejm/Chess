@@ -16,7 +16,7 @@ class App extends React.Component {
           <div>
             <Switch>
               <Route exact path='/:handle' component={MainBoard}/>
-              <Route exact path='/test' component={MainBoard}/>
+              <Route exact path='/' component={MainBoard}/>
 
             </Switch>
           </div>

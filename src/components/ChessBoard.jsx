@@ -1,19 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import HowToPlay from './HowToPlay';
 
 function ChessBoard(props){
 
   const squareColor = {
     backgroundColor: '#ADD8E6'
   };
-
   const showCheck = {
-    fontSize: '30px',
-    color: 'red'
+    fontSize: '30px'
+  //  color: 'red'
   };
-
   let rotateImages;
     if (props.handle === 'playerTwo') {
       rotateImages = {
@@ -25,15 +22,40 @@ function ChessBoard(props){
       rotateImages = null;
 
     }
-
     let mainNavbar = {
       borderStyle: 'solid'
     }
     let buttons = {
-      width: '95%',
+    //  width: '95%',
       marginLeft: 'auto',
       marginRight: 'auto',
       borderStyle: 'solid'
+    }
+
+    let player;
+    if (props.handle === 'playerOne') {
+      player = "Player 1"
+    } else if (props.handle === 'playerTwo') {
+      player = "Player 2"
+    } else {
+      player = "Local Play"
+    }
+
+    let restartButton;
+    let navButtons;
+    let onlinePlay;
+    if (props.handle === 'playerOne' || props.handle === 'playerTwo') {
+      restartButton = <button style={navButtons} onClick={()=>props.firebaseBoard()}>Start New Online Play</button>
+      navButtons = {
+        width: '22.95%'
+      }
+      onlinePlay = "Online Play";
+    } else {
+      restartButton = <button style={navButtons} onClick={()=>props.populateBoard()}>Start New Local Play</button>
+      navButtons = {
+        width: '23.45%'
+      }
+      onlinePlay = null
     }
 
 
@@ -51,15 +73,24 @@ function ChessBoard(props){
         margin-right: auto;
         width: 92%;
       }
+      h1 {
+        font-size: 60px;
+      }
+      span {
+        float: right;
+      }
 
       `}</style>
+      <div>
+      <h1>{player} <span>{onlinePlay}</span></h1>
+      </div>
+
       <div style={mainNavbar}>
       <div style={buttons}>
-      <button onClick={()=>props.openHowToPlayModal()}>How To Play</button>
-      <Link to={"/test"} onClick={()=>props.populateBoard()}><button>Single player</button></Link>
-      <Link to={"/playerOne"} onClick={()=>props.updateStateFromDatabase()}><button>Player 1</button></Link>
-      <Link to={"/playerTwo"} onClick={()=>props.updateStateFromDatabase()}><button>Player 2</button></Link>
-
+      <button style={navButtons} onClick={()=>props.openHowToPlayModal()}>How To Play</button>
+      <Link to={"/"} onClick={()=>props.populateBoard()}><button style={navButtons}>Local Play</button></Link>
+      <button style={navButtons} onClick={()=>props.openOnlinePlayModal()}>Online Play</button>
+      <span>{restartButton}</span>
       </div>
       </div>
       <p style={showCheck}>Turn: {props.playerTurn}</p>

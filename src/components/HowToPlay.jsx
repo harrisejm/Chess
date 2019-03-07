@@ -49,12 +49,14 @@ return(
     `}</style>
   <div style={modalStyle}>
     <p style={endOfGameMessage}></p>
-    <p>There are two game modes available. Two plays can play against each other on one screen, or play against each other on two different devices</p>
-    <h4>One Screen Mode</h4>
-    <p>Two players can play on one screen and alternate moves until the game is complete. To play in one screen mode, click the "....." button in the navigation bar at the top of the screen. If you navigate away from the </p>
-    <h4>Two Device Mode</h4>
-    <p>Two players can play against each other on two different devices. To begin, click the "Player 1" or "Player 2" button in navigation bar at the top of the screen. Your opponent must then navigate to this website and click the opposite "Player" button.</p>
-    <p><i><b>This site currently does not support the ability to allow more than one game in Two Device Mode to be played. If more than one game (in Two Device Mode) is being played, player's moves would interfear with each other. This website only supports two players at a time</b></i></p>
+    <p>There are two game modes available. Two plays can play against each other locally on one screen, or play against each other online on two different devices.</p>
+    <h4> Local Play (One Screen Mode)</h4>
+    <p>Two players can play on one screen and alternate moves until the game is complete. To play in one screen mode, click the "Local Play" button in the navigation bar at the top of the screen. If you navigate away from the "Local Play", your "Local Play" game will reset.</p>
+    <h4>Online Play (Two Device Mode)</h4>
+    <p>Two players can play against each other on two different devices. To begin, click the "Online Play" button  button in navigation bar at the top of the screen. You will then be prompted to select either "Player 1" or "Player 2". Your opponent must then navigate to this website and select the opposite player.</p>
+    <br/>
+<p><i><b>This site currently does not support the ability for more than one online game to played at a time. Game data is synced with only one database.</b></i></p>
+<br/>
 <button onClick={()=>this.props.closeHowToPlayModal()}>Close</button>
   </div>
   </div>
