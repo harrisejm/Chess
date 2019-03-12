@@ -28,7 +28,6 @@ class MainBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      words: [],
       board: [],
       emptyBoardPositionObj: {positionY: null, positionX: null, color: null, highlight: null, firstMove: true, occupied: null, piece: null},
       whitePiecesStaleMate: [],
@@ -77,6 +76,7 @@ class MainBoard extends React.Component {
 
     if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
       this.updateStateFromDatabase();
+
     // let dbSwitchPiece = firebase.database().ref('piecesTakenWhite');
     // dbSwitchPiece.on('value',(snapshot)=> {
     // let takenPiecesObj = [];
@@ -147,6 +147,28 @@ class MainBoard extends React.Component {
   let gameOver = snapshot.val();
   this.setState({gameOverBy: gameOver.gameOver});
   });
+
+  // let dbstalemateWhite = firebase.database().ref('stalemateWhite');
+  // dbstalemateWhite.on('value',(snapshot)=> {
+  // let stalemate = snapshot.val();
+  // let stalemateArr = [];
+  // for (let piece in stalemate) {
+  //   stalemateArr.push(stalemate[piece]);
+  // }
+  // this.setState({whitePiecesStaleMate: stalemate});
+  // });
+  //
+  // let dbstalemateBlack = firebase.database().ref('stalemateBlack');
+  // dbstalemateBlack.on('value',(snapshot)=> {
+  // let stalemate = snapshot.val();
+  // let stalemateArr = [];
+  // for (let piece in stalemate) {
+  //   stalemateArr.push(stalemate[piece]);
+  // }
+  // this.setState({blackPiecesStaleMate: stalemate});
+  // });
+
+
   }
 
   checkByRook(pos,color,isKing,piecesPos1,piecePos2,arr,checkingPiece,testBoardLegalMove){
@@ -685,6 +707,8 @@ class MainBoard extends React.Component {
       }
 
       inCheck(pos,color,isGameOver,isGameOverCanKingMove,stalemate) {
+
+
         let checkingPiece = ['','','',''];
         let kingPosY;
         let kingPosX;
@@ -706,6 +730,12 @@ class MainBoard extends React.Component {
           let testArr = [];
           this.testForStalemate(pos,color,testArr);
           if (testArr.length === 0 && isGameOverCanKingMove.length === 0 && !this.state.check) {
+            if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
+              let dbModal = firebase.database().ref('gameOverModal');
+              dbModal.set({gameOver: true});
+              let dbGameOver = firebase.database().ref('gameOverBy');
+              dbGameOver.set({gameOver: 'Stalemate'});
+            }
             this.setState({showGameOverModal: true, gameOverBy: 'Stalemate'});
           }
           console.log('HELLLO',color,testArr);
@@ -1045,7 +1075,49 @@ class MainBoard extends React.Component {
           }
         }
       }
+
+      convertForDatabase(pos,db) {
+        // let newStalemateArr = [];
+        // for (let i=0; i < stalemateArr.length; i++) {
+        //   newStalemateArr.push(Object.assign({},stalemateArr[i]));
+        // }
+
+        db.on('value',(snapshot)=> {
+          let stalemate = snapshot.val();
+          for (let piece in stalemate) {
+
+            if (stalemate[piece].positionY === pos[0] && stalemate[piece].positionX === pos[1]) {
+          //  alert("sdgggs");
+              stalemate[piece] = null;
+              db.set(stalemate);
+          //    alert("segsehhggggggggg");
+            }
+          }
+
+        });
+
+        // let stalemateObj = {};
+        // for (let i=0; i < stalemateArr.length; i++) {
+        //   if (stalemateArr[i].piece === this.movePawn) {
+        //     stalemateArr[i].piece = 'pawn';
+        //   } else if (stalemateArr[i].piece === this.moveKight) {
+        //     stalemateArr[i].piece = 'knight';
+        //   } else if (stalemateArr[i].piece === this.moveRook) {
+        //     stalemateArr[i].piece = 'rook';
+        //   } else if (stalemateArr[i].piece === this.moveBishop) {
+        //     stalemateArr[i].piece = 'bishop';
+        //   } else if (stalemateArr[i].piece === this.moveQueen) {
+        //     stalemateArr[i].piece = 'queen';
+        //   } else if (stalemateArr[i].piece === this.moveKing) {
+        //     stalemateArr[i].piece = 'king';
+        //   }
+        //   stalemateObj[i] = stalemateArr[i];
+        // }
+        //  db.set(stalemateObj);
+      }
+
       updateBoard(pos,testCheckBoard) {
+    //    alert("update board")
         let newBoard;
         let newWhitePiecesStaleMate = this.state.whitePiecesStaleMate;
         let newBlackPiecesStaleMate = this.state.blackPiecesStaleMate;
@@ -1056,6 +1128,7 @@ class MainBoard extends React.Component {
         }
         let newTakenPiecesWhite = this.state.takenPiecesWhite.slice();
         let newTakenPiecesBlack = this.state.takenPiecesBlack.slice();
+        console.log("TeSSSSSSTTT", newTakenPiecesBlack)
         if (this.state.board[pos[0]][pos[1]].occupied !== null && !testCheckBoard) {
           let takenPiece = Object.assign({positionY: this.state.board[pos[0]][pos[1]].positionY, positionX: this.state.board[pos[0]][pos[1]].positionX, color: this.state.board[pos[0]][pos[1]].color, highlight: null, firstMove: this.state.board[pos[0]][pos[1]].firstMove, occupied: this.state.board[pos[0]][pos[1]].occupied}, {});
           //displays taken pieces below the board
@@ -1079,14 +1152,35 @@ class MainBoard extends React.Component {
           }
           //removes taken pieces from whitePiecesStaleMate and blackPiecesStaleMate arrays
           if (newBoard[pos[0]][pos[1]].color !== null && newBoard[pos[0]][pos[1]].color !== newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].color) {
+/////
+////////////
             if (newBoard[pos[0]][pos[1]].color === 'white') {
-              let test = newWhitePiecesStaleMate.indexOf(newBoard[pos[0]][pos[1]]);
-              newWhitePiecesStaleMate.splice(test,1);
+              if (this.props.match.params.handle === 'playerTwo') {
+              this.convertForDatabase(pos,firebase.database().ref('stalemateWhite'))
+          //this.convertForDatabase(pos,firebase.database().ref('stalemateBlack'));
+        } else {
+          let test = newWhitePiecesStaleMate.indexOf(newBoard[pos[0]][pos[1]]);
+          newWhitePiecesStaleMate.splice(test,1);
+          console.log(test);
+          console.log("newWhitePiecesStaleMate",newWhitePiecesStaleMate);
+        }
+
             } else if (newBoard[pos[0]][pos[1]].color === 'black') {
+              if (this.props.match.params.handle === 'playerOne') {
+              this.convertForDatabase(pos,firebase.database().ref('stalemateBlack'))
+              //this.convertForDatabase(pos,firebase.database().ref('stalemateWhite'));
+            } else {
               let test = newBlackPiecesStaleMate.indexOf(newBoard[pos[0]][pos[1]]);
               newBlackPiecesStaleMate.splice(test,1);
+              console.log(test);
+              console.log("newBlackPiecesStaleMate",newBlackPiecesStaleMate);
+            }
+
             }
           }
+
+////////////
+
         }
         if (!testCheckBoard && (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo')) {
           this.updateDatabase(pos);
@@ -1098,9 +1192,8 @@ class MainBoard extends React.Component {
             playerTurnDatabase.set({turn:'white'});
           }
         }
-    //    } else {
-    //      this.setState({check: newCheck});
       }
+
       newBoard[pos[0]][pos[1]] = newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]];
       newBoard[pos[0]][pos[1]].positionY = pos[0];
       newBoard[pos[0]][pos[1]].positionX = pos[1];
@@ -1109,8 +1202,8 @@ class MainBoard extends React.Component {
       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].positionY = this.state.moveFrom[0];
       newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].positionX = this.state.moveFrom[1];
       console.log('first',newBoard);
-      console.log(this.state.whitePiecesStaleMate);
-      console.log(this.state.blackPiecesStaleMate);
+  //    console.log(this.state.whitePiecesStaleMate);
+    //  console.log(this.state.blackPiecesStaleMate);
 
      if (newBoard[pos[0]][pos[1]].firstMove === true) {
        newBoard[pos[0]][pos[1]].firstMove = false;
@@ -1564,7 +1657,7 @@ class MainBoard extends React.Component {
                       if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
                         newBoard[0][3].piece = "rook";
                         let dbMoveRook = firebase.database().ref('board/0/3');
-                        dbMoveRook.set(newBoard[7][5]);
+                        dbMoveRook.set(newBoard[0][3]);
                         let dbMove = firebase.database().ref('board/0/0');
                         dbMove.set(newBoard[0][0]);
                       }
@@ -1702,7 +1795,7 @@ class MainBoard extends React.Component {
                           } else if (i === 7 && a === 4) {
                             let test2 = Object.assign({positionY: i, positionX: a, color: 'white', highlight: null, firstMove: true, occupied: wk, piece: this.moveKing}, {});
                             objectArr.push(test2);
-                            // newWhitePiecesStaleMate.push(test2);
+                            newWhitePiecesStaleMate.push(test2);
 
                           } else {
                             let test2 = Object.assign({positionY: i, positionX: a, color: null, highlight: null, firstMove: true, occupied: null, piece: null}, {});
@@ -1728,7 +1821,7 @@ class MainBoard extends React.Component {
                     document.title = 'Chess';
                   }
   firebaseBoard(){
-    this.populateBoard()
+    this.populateBoard();
     console.log(this.props.match.params);
     let dbCheck = firebase.database().ref('check');
     dbCheck.set({check: ''});
@@ -1760,22 +1853,30 @@ class MainBoard extends React.Component {
       this.occupied = occupied;
       this.piece = piece;
     }
+    let blackStaleMateDatabase = firebase.database().ref('stalemateBlack');
+    let whiteStaleMateDatabase = firebase.database().ref('stalemateWhite');
+    let whiteStalemate = {};
+    let blackStalemate = {};
+
     let row1 = firebase.database().ref('board/0');
-    row1.set({
-    0: new DatabasePiecePosition(0,0,"black",null,true,br,"rook"),
-    1: new DatabasePiecePosition(0,1,"black",null,true,bkn,"knight"),
-    2: new DatabasePiecePosition(0,2,"black",null,true,bb,"bishop"),
-    3: new DatabasePiecePosition(0,3,"black",null,true,bq,"queen"),
-    4: new DatabasePiecePosition(0,4,"black",null,true,bk,"king"),
-    5: new DatabasePiecePosition(0,5,"black",null,true,bb,"bishop"),
-    6: new DatabasePiecePosition(0,6,"black",null,true,bkn,"knight"),
-    7: new DatabasePiecePosition(0,7,"black",null,true,br,"rook")
-    });
+    let restartRow1 = {
+        0: new DatabasePiecePosition(0,0,"black",null,true,br,"rook"),
+        1: new DatabasePiecePosition(0,1,"black",null,true,bkn,"knight"),
+        2: new DatabasePiecePosition(0,2,"black",null,true,bb,"bishop"),
+        3: new DatabasePiecePosition(0,3,"black",null,true,bq,"queen"),
+        4: new DatabasePiecePosition(0,4,"black",null,true,bk,"king"),
+        5: new DatabasePiecePosition(0,5,"black",null,true,bb,"bishop"),
+        6: new DatabasePiecePosition(0,6,"black",null,true,bkn,"knight"),
+        7: new DatabasePiecePosition(0,7,"black",null,true,br,"rook")
+      }
+    row1.set(restartRow1);
+    blackStalemate = restartRow1;
     ///
     let row2 = firebase.database().ref('board/1');
     let row2Empty = {};
     for (let i=0; i < 8; i++) {
       row2Empty[i] = new DatabasePiecePosition(1,i,"black",null,true,bp,"pawn");
+      blackStalemate[i+8] = new DatabasePiecePosition(1,i,"black",null,true,bp,"pawn");
     }
     row2.set(row2Empty);
     ///
@@ -1807,15 +1908,8 @@ class MainBoard extends React.Component {
     }
     row6.set(row6Empty);
     ///
-    let row7 = firebase.database().ref('board/6');
-    let row7Empty = {};
-    for (let i=0; i < 8; i++) {
-      row7Empty[i] = new DatabasePiecePosition(6,i,"white",null,true,wp,"pawn");
-    }
-    row7.set(row7Empty);
-    ///
     let row8 = firebase.database().ref('board/7');
-    row8.set({
+    let restartRow8 = {
     0: new DatabasePiecePosition(7,0,"white",null,true,wr,"rook"),
     1: new DatabasePiecePosition(7,1,"white",null,true,wkn,"knight"),
     2: new DatabasePiecePosition(7,2,"white",null,true,wb,"bishop"),
@@ -1824,7 +1918,23 @@ class MainBoard extends React.Component {
     5: new DatabasePiecePosition(7,5,"white",null,true,wb,"bishop"),
     6: new DatabasePiecePosition(7,6,"white",null,true,wkn,"knight"),
     7: new DatabasePiecePosition(7,7,"white",null,true,wr,"rook")
-    });
+    }
+    row8.set(restartRow8);
+    whiteStalemate = restartRow8;
+
+    ///
+    let row7 = firebase.database().ref('board/6');
+    let row7Empty = {};
+    for (let i=0; i < 8; i++) {
+      row7Empty[i] = new DatabasePiecePosition(6,i,"white",null,true,wp,"pawn");
+      whiteStalemate[i+8] = new DatabasePiecePosition(6,i,"white",null,true,wp,"pawn");
+    }
+    row7.set(row7Empty);
+
+    blackStaleMateDatabase.set(blackStalemate);
+    whiteStaleMateDatabase.set(whiteStalemate);
+
+
 
     }
       testAdd(y,x){
@@ -1892,7 +2002,8 @@ class MainBoard extends React.Component {
       this.setState({board: newBoard})
   }
 updateDatabase(pos) {
-  //alert("pos" + pos + " - " + this.state.moveFrom);
+//alert("pos" + pos + " - " + this.state.moveFrom);
+    let currentPiece = this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]];
     let pieceMovement = this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece;
     let pieceMovementArr = [this.movePawn,this.moveKight,this.moveRook,this.moveBishop,this.moveQueen,this.moveKing];
     let newPiece;
@@ -1922,20 +2033,74 @@ updateDatabase(pos) {
       occupied: false,
       piece: false
     });
+    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'white') {
+
+    let dbstalemateWhite = firebase.database().ref('stalemateWhite');
+    dbstalemateWhite.on('value',(snapshot)=> {
+    let stalemate = snapshot.val();
+      for (let piece in stalemate) {
+        if (stalemate[piece].positionY === currentPiece.positionY && stalemate[piece].positionX === currentPiece.positionX) {
+      //    let update = firebase.database().ref('stalemateWhite/');
+          stalemate[piece].positionY = pos[0];
+          stalemate[piece].positionX = pos[1];
+          dbstalemateWhite.set(stalemate);
+        }
+      }
+    });
+}
+    if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === 'black') {
+    let dbstalemateBlack = firebase.database().ref('stalemateBlack');
+    dbstalemateBlack.on('value',(snapshot)=> {
+    let stalemate = snapshot.val();
+      for (let piece in stalemate) {
+        if (stalemate[piece].positionY === currentPiece.positionY && stalemate[piece].positionX === currentPiece.positionX) {
+        //  let update = firebase.database().ref('stalemateBlack/' + piece);
+          stalemate[piece].positionY = pos[0];
+          stalemate[piece].positionX = pos[1];
+          dbstalemateBlack.set(stalemate);
+        }
+      }
+    });
+  }
+
+  // let dbstalemateWhite = firebase.database().ref('stalemateWhite');
+  // dbstalemateWhite.on('value',(snapshot)=> {
+  // let stalemate = snapshot.val();
+  // let stalemateArr = [];
+  // for (let piece in stalemate) {
+  //   stalemateArr.push(stalemate[piece]);
+  // }
+  // this.setState({whitePiecesStaleMate: stalemate});
+  // });
+  //
+  // let dbstalemateBlack = firebase.database().ref('stalemateBlack');
+  // dbstalemateBlack.on('value',(snapshot)=> {
+  // let stalemate = snapshot.val();
+  // let stalemateArr = [];
+  // for (let piece in stalemate) {
+  //   stalemateArr.push(stalemate[piece]);
+  // }
+  // this.setState({blackPiecesStaleMate: stalemate});
+  // });
   }
 
 
                   movePiece(pos,testCheckBoard){
+                    let playerURL;
                     if (this.props.match.params.handle === 'playerOne') {
-                      console.log("WORKSSSS");
+                      playerURL = 'white';
+                    } else if (this.props.match.params.handle === 'playerTwo') {
+                      playerURL = 'black';
+                    } else {
+                      playerURL = this.state.playerTurn;
                     }
-                    console.log(this.props.match.params.handle);
+
                     let isGameOver = [];
                     let isGameOverCanKingMove = [];
                     let color;
                     let newBoard = this.state.board.slice();
 
-                    if (this.state.click === 0 && this.state.board[pos[0]][pos[1]].color === this.state.playerTurn) {
+                    if (this.state.click === 0 && this.state.board[pos[0]][pos[1]].color === this.state.playerTurn && this.state.playerTurn === playerURL) {
                       if (this.state.board[pos[0]][pos[1]].occupied !== null) {
                         let newBoard = this.state.board.slice();
                         newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid', borderWidth: 'thick', borderColor: 'green'}, {});
@@ -1950,7 +2115,7 @@ updateDatabase(pos) {
                         this.setState({moveFrom: [pos[0],pos[1]]});
                       }
                     }
-                    if (this.state.moveFrom.length !== 0 && this.state.click === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === this.state.playerTurn) {
+                    if (this.state.moveFrom.length !== 0 && this.state.click === 1 && this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color === this.state.playerTurn && this.state.playerTurn === playerURL) {
                       if (this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].color !== this.state.board[pos[0]][pos[1]].color) {
                         let testCheckBoard =[];
                         //run move on a test board to see if move is legal
@@ -1975,6 +2140,7 @@ updateDatabase(pos) {
                     if (isGameOver.length > 0 && isGameOverCanKingMove.length === 0) {
                   //    alert('is game over : ' + isGameOver);
                   if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
+                    this.updateStateFromDatabase();
                     let dbModal = firebase.database().ref('gameOverModal');
                     dbModal.set({gameOver: true});
                     let dbGameOver = firebase.database().ref('gameOverBy');
@@ -2033,24 +2199,76 @@ updateDatabase(pos) {
                     this.checkByRook(pos,color,false,kingPosY,kingPosX,testCheckBoard,null,newBoard);
                   }
   testForStalemate(pos,color,isStatemate) {
+
+  // if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
+  //   let dbstalemateWhite = firebase.database().ref('stalemateWhite');
+  //   dbstalemateWhite.on('value',(snapshot)=> {
+  //   let stalemate = snapshot.val();
+  //   let stalemateArr = [];
+  //   for (let piece in stalemate) {
+  //     stalemateArr.push(stalemate[piece]);
+  //   }
+  //   this.setState({whitePiecesStaleMate: stalemate});
+  //   });
+  //
+  //   let dbstalemateBlack = firebase.database().ref('stalemateBlack');
+  //   dbstalemateBlack.on('value',(snapshot)=> {
+  //   let stalemate = snapshot.val();
+  //   let stalemateArr = [];
+  //   for (let piece in stalemate) {
+  //     stalemateArr.push(stalemate[piece]);
+  //   }
+  //   this.setState({blackPiecesStaleMate: stalemate});
+  //   });
+  // }
+
     let newBoard = this.state.board.slice();
     let stalemate,rook,bishop,queen,knight,pawn;
     if (color === 2) {
-      stalemate = this.state.blackPiecesStaleMate;
+
+        if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
+            let dbstalemateWhite = firebase.database().ref('stalemateBlack');
+            dbstalemateWhite.on('value',(snapshot)=> {
+            let test = snapshot.val();
+            let stalemateArr = [];
+            for (let piece in test) {
+              stalemateArr.push(test[piece]);
+            }
+            stalemate = stalemateArr;
+            });
+        } else {
+          stalemate = this.state.blackPiecesStaleMate;
+
+       }
+      console.log("STALEMATE !!!!", stalemate);
       rook = br;
       bishop = bb;
       queen = bq;
       knight = bkn;
       pawn = bp;
     } else {
-      stalemate = this.state.whitePiecesStaleMate;
+      if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
+          let dbstalemateWhite = firebase.database().ref('stalemateWhite');
+          dbstalemateWhite.on('value',(snapshot)=> {
+          let test = snapshot.val();
+          let stalemateArr = [];
+          for (let piece in test) {
+            stalemateArr.push(test[piece]);
+          }
+          stalemate = stalemateArr;
+          });
+      } else {
+        stalemate = this.state.whitePiecesStaleMate;
+
+      }
+      console.log("STALEMATE !!!!", stalemate);
       rook = wr;
       bishop = wb;
       queen = wq;
       knight = wkn;
       pawn = wp;
     }
-    console.log('stalemate',stalemate);
+    console.log('stalemate ' + color,stalemate);
 
     for (let i=0; i<stalemate.length; i++){
       if (stalemate[i].occupied === rook || stalemate[i].occupied === queen) {

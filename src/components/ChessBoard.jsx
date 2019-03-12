@@ -47,7 +47,7 @@ function ChessBoard(props){
     if (props.handle === 'playerOne' || props.handle === 'playerTwo') {
       restartButton = <button style={navButtons} onClick={()=>props.firebaseBoard()}>Start New Online Play</button>
       navButtons = {
-        width: '22.95%'
+        width: '22.97%'
       }
       onlinePlay = "Online Play";
     } else {

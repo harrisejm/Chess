@@ -6,7 +6,11 @@ Live site: https://chess-eddie-harris.firebaseapp.com
 
 ## Project Description
 
+**Online play on two devices is not fully supported on Safari**
+
 Chess created in React
+
+Fully playable online chess game created with React. Two players can play against each other on two different devices (online) or locally on one screen. The game is designed to only allow legal moves and includes all rules: piece movements, castling, piece detection, promotion of pawns, tests for all check and checkmate scenarios.
 
 Features:
 - All pieces can only make legal moves.

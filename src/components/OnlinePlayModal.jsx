@@ -52,13 +52,13 @@ return(
     `}</style>
   <div style={modalStyle}>
     <p style={endOfGameMessage}></p>
-    <h4>Two Device Mode</h4>
-    <p>Two players can play against each other on two different devices. To begin, click the "Player 1" or "Player 2" button. Your opponent must then navigate to this website and click the opposite "Player" button.</p>
+    <h4>Two Devices</h4>
+    <p>Two players can play against each other on two different devices. To begin, select either "Player 1" or "Player 2". On a separate device, your opponent must then navigate to this site and select the opposite player.</p>
     <div>
     <Link to={"/playerOne"} onClick={()=>this.props.updateStateFromDatabase()}><button onClick={()=>this.props.closeOnlinePlayModal()}>Player 1 (White)</button></Link>
     <Link to={"/playerTwo"} onClick={()=>this.props.updateStateFromDatabase()}><button onClick={()=>this.props.closeOnlinePlayModal()}>Player 2 (Black)</button></Link></div>
-    <p><i><b>This site currently does not support the ability for more than one online game to played at a time. Game data is synced with only one database.</b></i></p>
-
+    <p><i><b>This site currently does not support the ability for more than one online game to be played at the same time. Game data is synced with only one database.</b></i></p>
+    <p><b>** Online play on two devices is not fully supported on Safari **</b></p>
 
 <button onClick={()=>this.props.closeOnlinePlayModal()}>Cancel</button>
   </div>
