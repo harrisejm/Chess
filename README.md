@@ -8,6 +8,8 @@ Live site: https://chess-eddie-harris.firebaseapp.com
 
 Chess created in React
 
+Fully playable online. Two players can play against each other on two different devices.
+
 Features:
 - All pieces can only make legal moves.
 - All pieces can take an opponent's piece if the move is a legal move.

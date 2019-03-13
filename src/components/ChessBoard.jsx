@@ -23,13 +23,13 @@ function ChessBoard(props){
 
     }
     let mainNavbar = {
-      borderStyle: 'solid'
+      borderStyle: 'solid',
+      borderWidth: 5
     }
     let buttons = {
     //  width: '95%',
       marginLeft: 'auto',
       marginRight: 'auto',
-      borderStyle: 'solid'
     }
 
     let player;
@@ -47,15 +47,21 @@ function ChessBoard(props){
     if (props.handle === 'playerOne' || props.handle === 'playerTwo') {
       restartButton = <button style={navButtons} onClick={()=>props.firebaseBoard()}>Start New Online Play</button>
       navButtons = {
-        width: '22.95%'
+        width: '23.02%'
       }
       onlinePlay = "Online Play";
     } else {
       restartButton = <button style={navButtons} onClick={()=>props.populateBoard()}>Start New Local Play</button>
       navButtons = {
-        width: '23.45%'
+        width: '23.49%'
       }
       onlinePlay = null
+    }
+    let currentTurn;
+    if (props.playerTurn === 'white') {
+      currentTurn = 'Player 1 (White)';
+    } else if (props.playerTurn === 'black'){
+      currentTurn = 'Player 2 (Black)';
     }
 
 
@@ -93,7 +99,7 @@ function ChessBoard(props){
       <span>{restartButton}</span>
       </div>
       </div>
-      <p style={showCheck}>Turn: {props.playerTurn}</p>
+      <p style={showCheck}>Turn: {currentTurn}</p>
       <p style={showCheck}>Check: {props.check}</p>
 
 

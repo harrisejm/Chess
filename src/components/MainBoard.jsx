@@ -1587,7 +1587,7 @@ class MainBoard extends React.Component {
                       if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
                         newBoard[0][3].piece = "rook";
                         let dbMoveRook = firebase.database().ref('board/0/3');
-                        dbMoveRook.set(newBoard[7][5]);
+                        dbMoveRook.set(newBoard[0][3]);
                         let dbMove = firebase.database().ref('board/0/0');
                         dbMove.set(newBoard[0][0]);
                       }
