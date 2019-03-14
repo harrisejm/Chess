@@ -18,12 +18,10 @@ class GameOver extends React.Component {
       bottom: 0,
       left: 0,
       right: 0,
-      backgroundColor: 'rgba(0,0,0,0.3)',
+      backgroundColor: 'rgba(0,0,0,0.4)',
       padding: 50
     };
     const modalStyle = {
-      // backgroundColor: '#fff',
-      // borderRadius: 5,
       maxWidth: 600,
       minHeight: 200,
       marginLeft: 'auto',
@@ -37,17 +35,17 @@ class GameOver extends React.Component {
       color: 'white'
     }
 
-return(
-  <div style={backdropStyle}>
-  <div style={modalStyle}>
-    <p style={endOfGameMessage}>Game Over: {this.props.gameOverBy}</p>
-    {restartButton}
-  </div>
-  </div>
+    return(
+      <div style={backdropStyle}>
+      <div style={modalStyle}>
+      <p style={endOfGameMessage}>Game Over: {this.props.gameOverBy}</p>
+      {restartButton}
+      </div>
+      </div>
 
-
-);
-}
+      
+    );
+  }
 }
 GameOver.propTypes = {
 

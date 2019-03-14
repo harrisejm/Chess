@@ -33,7 +33,6 @@ class PiecesToSelect extends React.Component {
     return pieceSelection;
   }
 
-
   render(props){
     if (this.props.showPieceSelectionModal === false) {
       return null;

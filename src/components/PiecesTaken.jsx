@@ -32,9 +32,13 @@ function PiecesTaken(props){
       blackPiecesTaken.push(<img src={props.takenPiecesBlack[i].occupied} key={i}/>);
     }
   }
+  const top = {
+    marginTop: '10px'
+  }
 
   return(
-    <div>
+    <div style={top}>
+    <h3>Pieces Taken</h3>
       <p>White: {whitePiecesTaken}</p>
       <p>Black: {blackPiecesTaken}</p>
     </div>

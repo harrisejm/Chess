@@ -7,20 +7,32 @@ function ChessBoard(props){
   const squareColor = {
     backgroundColor: '#ADD8E6'
   };
-  const showCheck = {
+  const whiteback = {
+    backgroundColor: 'white'
+  }
+  const showTurn = {
     fontSize: '30px'
-  //  color: 'red'
+  };
+  const showCheck = {
+    fontSize: 'none',
+    float: 'none',
+    textShadow: '1px 1px red'
   };
   let rotateImages;
     if (props.handle === 'playerTwo') {
       rotateImages = {
         msTransform: 'rotate(180deg)',
         WebkitTransform: 'rotate(180deg)',
-        transform: 'rotate(180deg)'
+        transform: 'rotate(180deg)',
+        marginRight: 'auto',
+        marginLeft: 'auto'
       }
     } else {
-      rotateImages = null;
-
+      //rotateImages = null;
+      rotateImages = {
+      marginRight: 'auto',
+      marginLeft: 'auto'
+    }
     }
     let mainNavbar = {
       borderStyle: 'solid',
@@ -46,9 +58,15 @@ function ChessBoard(props){
     let onlinePlay;
     if (props.handle === 'playerOne' || props.handle === 'playerTwo') {
       restartButton = <button style={navButtons} onClick={()=>props.firebaseBoard()}>Start New Online Play</button>
+      if (screen.width < 450) {
       navButtons = {
-        width: '23.02%'
+        width: '23.50%'
       }
+    } else {
+      navButtons = {
+      width: '23.02%'
+      }
+    }
       onlinePlay = "Online Play";
     } else {
       restartButton = <button style={navButtons} onClick={()=>props.populateBoard()}>Start New Local Play</button>
@@ -63,7 +81,6 @@ function ChessBoard(props){
     } else if (props.playerTurn === 'black'){
       currentTurn = 'Player 2 (Black)';
     }
-
 
   return(
     <div>
@@ -99,13 +116,13 @@ function ChessBoard(props){
       <span>{restartButton}</span>
       </div>
       </div>
-      <p style={showCheck}>Turn: {currentTurn}</p>
-      <p style={showCheck}>Check: {props.check}</p>
+      <p style={showTurn}>Turn: {currentTurn}</p>
+      <p style={showTurn}>Check: <span style={showCheck}>{props.check}</span></p>
 
 
       <table style={rotateImages}>
 
-      <tbody>
+      <tbody style={whiteback}>
       <tr className="row1">
 
       <td style={props.board[0][0].highlight} onClick={()=>props.movePiece([0,0])}><img src={props.board[0][0].occupied} style={rotateImages}/></td>
@@ -189,6 +206,7 @@ function ChessBoard(props){
       </tr>
       </tbody>
       </table>
+
       </div>
 
   );
