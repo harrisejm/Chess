@@ -48,7 +48,7 @@ class AboutModal extends React.Component {
     const endOfGameMessage = {
       fontSize: 50,
       color: 'white'
-    }
+    };
 
     const moveImage = {
       padding: 'auto',
@@ -58,14 +58,14 @@ class AboutModal extends React.Component {
       borderRadius: '100%',
       float: 'left',
       marginRight: 20
-    }
+    };
     const move = {
       //float: 'left'
-    }
+    };
     const info = {
       textAlign: 'left',
       lineHeight: '2.55em'
-    }
+    };
 
     const emailImage = {
       padding: 'auto',
@@ -78,76 +78,69 @@ class AboutModal extends React.Component {
       borderRadius: '100%',
       float: 'left',
       marginRight: 20
-    }
+    };
     const moveContactInfo = {
       width: 240,
       marginLeft: 'auto',
       marginRight: 'auto',
+    };
+
+    return(
+      <div style={backdropStyle}>
+
+      <style jsx>{`
+        p, li, h4 {
+          color: white;
+
+        }
+        img {
+          width: 100%;
+        }
+
+        `}</style>
+        <div style={modalStyle}>
+        <p style={endOfGameMessage}></p>
+        <h4>About Me</h4>
+        <p>My name is Eddie Harris and I created this game in React (with Google Firebase) as a side project. I transitioned into web and software development after spending 5+ years in the legal field. I really enjoy creating products from the ground up that people can use and enjoy.</p>
+        <p> Feel free to check out my GitHub and LinkedIn profiles or reach out to me directly. Thank you for playing the game!</p>
+        <br/>
+        <div style={moveContactInfo}>
+        <div style={move}>
+        <a href="https://github.com/harrisejm/Chess" target="_blank">
+        <div style={moveImage}>
+        <img src={github}/>
+        </div>
+        <p style={info}>Github: Online Chess</p>
+        </a>
+        </div>
+        <br/>
+        <div style={move}>
+        <a href="https://www.linkedin.com/in/edward-harris" target="_blank">
+        <div style={moveImage}>
+        <img src={linkedIn}/>
+        </div>
+        <p style={info}>LinkedIn: Edward Harris</p>
+        </a>
+        </div>
+        <br/>
+        <div style={move}>
+        <a href="mailto:harrisejm@gmail.com">
+        <div style={emailImage}>
+        <img src={email}/>
+        </div>
+        <p style={info}>Email: Edward Harris</p>
+        </a>
+        </div>
+        </div>
+        <br/>
+        <button onClick={()=>this.props.closeAboutModal()}>Close</button>
+        </div>
+        </div>
+      );
     }
+  }
+  AboutModal.propTypes = {
 
-return(
-  <div style={backdropStyle}>
+  };
 
-  <style jsx>{`
-    p, li, h4 {
-      color: white;
-
-    }
-    img {
-      width: 100%;
-    }
-
-    `}</style>
-  <div style={modalStyle}>
-    <p style={endOfGameMessage}></p>
-    <h4>About Me</h4>
-    <p>My name is Eddie Harris and I created this game as a side project. I transitioned into web and software development after spending 5+ years in the legal field. I really enjoy creating products from the ground up that people can use and enjoy. 
-    </p>
-    <br/>
-    <div style={moveContactInfo}>
-    <div style={move}>
-    <a href="https://github.com/harrisejm/Chess" target="_blank">
-       <div style={moveImage}>
-         <img src={github}/>
-       </div>
-       <p style={info}>Github: Online Chess</p>
-    </a>
-    </div>
-    <br/>
-    <div style={move}>
-    <a href="https://www.linkedin.com/in/edward-harris" target="_blank">
-       <div style={moveImage}>
-         <img src={linkedIn}/>
-       </div>
-       <p style={info}>LinkedIn: Edward Harris</p>
-    </a>
-    </div>
-    <br/>
-    <div style={move}>
-    <a href="mailto:harrisejm@gmail.com">
-       <div style={emailImage}>
-         <img src={email}/>
-       </div>
-       <p style={info}>Email: Edward Harris</p>
-    </a>
-    </div>
-</div>
-
-
-
-
-
-<br/>
-<button onClick={()=>this.props.closeAboutModal()}>Close</button>
-  </div>
-  </div>
-
-
-);
-}
-}
-AboutModal.propTypes = {
-
-};
-
-export default AboutModal;
+  export default AboutModal;

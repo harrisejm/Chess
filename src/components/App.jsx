@@ -8,7 +8,6 @@ import background2 from '../assets/img/chess2.jpg';
 
 class App extends React.Component {
 
-
   render(){
     let backImage;
 
@@ -20,7 +19,7 @@ class App extends React.Component {
         backgroundSize: 'cover',
         backgroundAttachment: 'fixed',
         backgroundPosition: 'center'
-      }
+      };
   } else {
     backImage = {
       backgroundImage: `url(${background1})`,
@@ -28,7 +27,7 @@ class App extends React.Component {
       backgroundSize: 'cover',
       backgroundAttachment: 'fixed',
       backgroundPosition: 'center'
-    }
+    };
   }
     return (
 
@@ -38,8 +37,6 @@ class App extends React.Component {
               <Route exact path='/' component={MainBoard}/>
             </Switch>
           </div>
-
-
     );
   }
 }

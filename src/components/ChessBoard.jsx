@@ -9,7 +9,7 @@ function ChessBoard(props){
   };
   const whiteback = {
     backgroundColor: 'white'
-  }
+  };
   const showTurn = {
     fontSize: '30px'
   };
@@ -26,54 +26,62 @@ function ChessBoard(props){
         transform: 'rotate(180deg)',
         marginRight: 'auto',
         marginLeft: 'auto'
-      }
+      };
     } else {
       //rotateImages = null;
       rotateImages = {
         marginRight: 'auto',
         marginLeft: 'auto'
-      }
+      };
     }
     let mainNavbar = {
       borderStyle: 'solid',
       borderWidth: 5
-    }
+    };
     let buttons = {
     //  width: '95%',
       marginLeft: 'auto',
       marginRight: 'auto',
-    }
+    };
 
     let player;
     if (props.handle === 'playerOne') {
-      player = "Player 1"
+      player = 'Player 1';
     } else if (props.handle === 'playerTwo') {
-      player = "Player 2"
+      player = 'Player 2';
     } else {
-      player = "Local Play"
+      player = 'Local Play';
     }
 
     let restartButton;
     let navButtons;
     let onlinePlay;
     if (props.handle === 'playerOne' || props.handle === 'playerTwo') {
-      restartButton = <button style={navButtons} onClick={()=>props.firebaseBoard()}>Start New Online Play</button>
+      restartButton = <button style={navButtons} onClick={()=>props.firebaseBoard()}>Start New Online Play</button>;
       if (screen.width < 450) {
       navButtons = {
-        width: '23.50%'
-      }
+        width: '23.40%'
+      };
     } else {
       navButtons = {
       width: '23.02%'
-      }
+      };
     }
-      onlinePlay = "Online Play";
+      onlinePlay = 'Online Play';
     } else {
-      restartButton = <button style={navButtons} onClick={()=>props.populateBoard()}>Start New Local Play</button>
+      restartButton = <button style={navButtons} onClick={()=>props.populateBoard()}>Start New Local Play</button>;
+      if (screen.width < 450) {
+        navButtons = {
+          width: '23.73%'
+        };
+      } else {
       navButtons = {
         width: '23.49%'
-      }
-      onlinePlay = null
+      };
+    }
+
+
+      onlinePlay = null;
     }
     let currentTurn;
     if (props.playerTurn === 'white') {
@@ -111,7 +119,7 @@ function ChessBoard(props){
       <div style={mainNavbar}>
       <div style={buttons}>
       <button style={navButtons} onClick={()=>props.openHowToPlayModal()}>How To Play</button>
-      <Link to={"/"} onClick={()=>props.populateBoard()}><button style={navButtons}>Local Play</button></Link>
+      <Link to={'/'} onClick={()=>props.populateBoard()}><button style={navButtons}>Local Play</button></Link>
       <button style={navButtons} onClick={()=>props.openOnlinePlayModal()}>Online Play</button>
       <span>{restartButton}</span>
       </div>

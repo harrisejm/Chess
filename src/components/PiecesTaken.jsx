@@ -5,12 +5,11 @@ function PiecesTaken(props){
   let whitePiecesTaken = [];
   let blackPiecesTaken = [];
 
-
   if (props.handle === 'playerOne' || props.handle === 'playerTwo') {
 
     let dbTakenPiecesWhite = firebase.database().ref('piecesTakenWhite');
     dbTakenPiecesWhite.on('value',(snapshot)=> {
-    let takenPieces = snapshot.val()
+    let takenPieces = snapshot.val();
     for (let piece in takenPieces) {
       whitePiecesTaken.push(<img src={takenPieces[piece].piece.occupied} key={piece}/>);
     }
@@ -18,7 +17,7 @@ function PiecesTaken(props){
 
     let dbTakenPiecesBlack = firebase.database().ref('piecesTakenBlack');
     dbTakenPiecesBlack.on('value',(snapshot)=> {
-    let takenPieces = snapshot.val()
+    let takenPieces = snapshot.val();
     for (let piece in takenPieces) {
       blackPiecesTaken.push(<img src={takenPieces[piece].piece.occupied} key={piece}/>);
     }
@@ -34,7 +33,7 @@ function PiecesTaken(props){
   }
   const top = {
     marginTop: '10px'
-  }
+  };
 
   return(
     <div style={top}>

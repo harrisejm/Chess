@@ -44,7 +44,7 @@ class HowToPlay extends React.Component {
     const endOfGameMessage = {
       fontSize: 50,
       color: 'white'
-    }
+    };
 
     return(
       <div style={backdropStyle}>

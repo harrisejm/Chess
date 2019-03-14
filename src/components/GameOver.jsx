@@ -8,9 +8,9 @@ class GameOver extends React.Component {
     }
     let restartButton;
     if (this.props.handle === 'playerOne' || this.props.handle === 'playerTwo') {
-      restartButton = <button onClick={()=>this.props.firebaseBoard()}>Start New Game</button>
+      restartButton = <button onClick={()=>this.props.firebaseBoard()}>Start New Game</button>;
     } else {
-      restartButton = <button onClick={()=>this.props.populateBoard()}>Start New Game</button>
+      restartButton = <button onClick={()=>this.props.populateBoard()}>Start New Game</button>;
     }
     const backdropStyle = {
       position: 'fixed',
@@ -33,7 +33,7 @@ class GameOver extends React.Component {
     const endOfGameMessage = {
       fontSize: 50,
       color: 'white'
-    }
+    };
 
     return(
       <div style={backdropStyle}>
@@ -43,7 +43,6 @@ class GameOver extends React.Component {
       </div>
       </div>
 
-      
     );
   }
 }
