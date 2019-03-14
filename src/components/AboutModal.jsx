@@ -101,11 +101,12 @@ return(
   <div style={modalStyle}>
     <p style={endOfGameMessage}></p>
     <h4>About Me</h4>
-    <p>My name is Eddie Harris and I created this game as a side project. I transitioned into web and software development after spending 5 years in the legal field.</p>
+    <p>My name is Eddie Harris and I created this game as a side project. I transitioned into web and software development after spending 5+ years in the legal field. I really enjoy creating products from the ground up that people can use and enjoy. 
+    </p>
     <br/>
     <div style={moveContactInfo}>
     <div style={move}>
-    <a href="https://github.com/harrisejm/Chess">
+    <a href="https://github.com/harrisejm/Chess" target="_blank">
        <div style={moveImage}>
          <img src={github}/>
        </div>
@@ -114,7 +115,7 @@ return(
     </div>
     <br/>
     <div style={move}>
-    <a href="https://www.linkedin.com/in/edward-harris">
+    <a href="https://www.linkedin.com/in/edward-harris" target="_blank">
        <div style={moveImage}>
          <img src={linkedIn}/>
        </div>

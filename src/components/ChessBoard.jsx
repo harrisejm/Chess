@@ -30,9 +30,9 @@ function ChessBoard(props){
     } else {
       //rotateImages = null;
       rotateImages = {
-      marginRight: 'auto',
-      marginLeft: 'auto'
-    }
+        marginRight: 'auto',
+        marginLeft: 'auto'
+      }
     }
     let mainNavbar = {
       borderStyle: 'solid',

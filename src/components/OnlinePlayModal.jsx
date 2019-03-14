@@ -45,7 +45,9 @@ class OnlinePlayModal extends React.Component {
       fontSize: 50,
       color: 'white'
     }
-
+    const onlinePlay = {
+      textShadow: '2px 2px red'
+    }
 
 
 
@@ -70,8 +72,8 @@ class OnlinePlayModal extends React.Component {
         <Link to={"/playerOne"} onClick={()=>this.props.updateStateFromDatabase(1)}><button onClick={()=>this.props.closeOnlinePlayModal()}>Player 1 (White)</button></Link>
         <Link to={"/playerTwo"} onClick={()=>this.props.updateStateFromDatabase(2)}><button onClick={()=>this.props.closeOnlinePlayModal()}>Player 2 (Black)</button></Link></div>
         <p><i><b>This site currently does not support the ability for more than one online game to be played at the same time. Game data is synced with only one database. </b></i></p>
-        <p><b>** Online play on two devices is not fully supported on Safari **</b></p>
-        
+        <p style={onlinePlay}><b>** Online play on two devices is not fully supported on Safari **</b></p>
+
         <button onClick={()=>this.props.closeOnlinePlayModal()}>Cancel</button>
         </div>
         </div>

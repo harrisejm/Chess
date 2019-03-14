@@ -1913,7 +1913,7 @@ class MainBoard extends React.Component {
     if (this.state.click === 0 && this.state.board[pos[0]][pos[1]].color === this.state.playerTurn && this.state.playerTurn === playerURL) {
       if (this.state.board[pos[0]][pos[1]].occupied !== null) {
         let newBoard = this.state.board.slice();
-        newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid', borderWidth: 'thick', borderColor: 'green'}, {});
+        newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid', borderWidth: 'thick', borderColor: 'red'}, {});
 
         if (this.props.match.params.handle === 'playerOne' || this.props.match.params.handle === 'playerTwo') {
           let clickDatabase = firebase.database().ref('click');
@@ -1944,7 +1944,7 @@ class MainBoard extends React.Component {
           this.state.board[this.state.moveFrom[0]][this.state.moveFrom[1]].piece(pos);
         }
       } else if (!newBoard[pos[0]][pos[1]].highlight) {
-        newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'green'}, {});
+        newBoard[pos[0]][pos[1]].highlight = Object.assign({border: 'solid',borderWidth: 'thick',borderColor: 'red'}, {});
         newBoard[this.state.moveFrom[0]][this.state.moveFrom[1]].highlight = null;
         this.setState({moveFrom: [pos[0],pos[1]]});
         this.setState({board: newBoard});
